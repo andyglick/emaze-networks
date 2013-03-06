@@ -48,6 +48,14 @@ public class Netmask implements Comparable<Netmask> {
         dbc.state(bits != 0, "Cannot widen netmask anymore");
         return new Netmask(bits - 1);
     }
+    
+    public boolean isNarrowest() {
+        return bits == 32;
+    }
+    
+    public boolean isWidest() {
+        return bits == 0;
+    }
 
     @Override
     public boolean equals(Object other) {

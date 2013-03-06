@@ -14,11 +14,17 @@ public class Cidr {
     private final Ipv4 network;
     private final Netmask netmask;
 
-    public Cidr(Ipv4 start, Netmask netmask) {
-        this.network = start.networkAddress(netmask);
+    public Cidr(Ipv4 ip, Netmask netmask) {
+        this.network = ip.networkAddress(netmask);
         this.netmask = netmask;
     }
-
+    
+    public static Cidr parse(String ip, int netmaskBits) {
+        final Netmask netmask = Netmask.fromBits(netmaskBits);
+        final Ipv4 network = Ipv4.parse(ip).networkAddress(netmask);
+        return new Cidr(network, netmask);
+    }
+    
     public Ipv4 network() {
         return network;
     }
@@ -55,6 +61,9 @@ public class Cidr {
         if (!this.contains(toBeExcluded)) {
             return Collections.singletonList(this);
         }
+        if (netmask.isNarrowest()) {
+            return Collections.emptyList();
+        }
         Netmask newNetmask = netmask.narrow();
         final List<Cidr> cidrs = new ArrayList<>();
 
@@ -62,19 +71,15 @@ public class Cidr {
         // FIXME: why should I need afterLast?
         Ipv4 upperIp = new Cidr(this.first(), newNetmask).last().next();
         Cidr lowerCidr = new Cidr(lowerIp, newNetmask);
-        Cidr upperCidr = new Cidr(upperIp, newNetmask);
         Ipv4 matched;
         Ipv4 unmatched;
-        while (32 >= newNetmask.toBits()) {
+        while (true) {
             if (lowerCidr.contains(toBeExcluded)) {
                 matched = lowerIp;
                 unmatched = upperIp;
-            } else if (upperCidr.contains(toBeExcluded)) {
+            } else {
                 matched = upperIp;
                 unmatched = lowerIp;
-            } else {
-                cidrs.add(this);
-                break;
             }
             final Cidr cidr = new Cidr(unmatched, newNetmask);
             cidrs.add(cidr);
@@ -86,19 +91,11 @@ public class Cidr {
             // FIXME: why should I need afterLast?
             upperIp = new Cidr(matched, newNetmask).last().next();
             lowerCidr = new Cidr(lowerIp, newNetmask);
-            upperCidr = new Cidr(upperIp, newNetmask);
         }
         Collections.sort(cidrs, new FirstIpThenLastIpCidrComparator());
         return cidrs;
     }
 
-    public static class FirstIpThenLastIpCidrComparator implements Comparator<Cidr> {
-
-        @Override
-        public int compare(Cidr lhs, Cidr rhs) {
-            return new CompareToBuilder().append(lhs.first(), rhs.first()).append(lhs.last(), rhs.last()).toComparison();
-        }
-    }
 
     @Override
     public String toString() {
@@ -118,4 +115,14 @@ public class Cidr {
     public int hashCode() {
         return new HashCodeBuilder().append(this.network).append(this.netmask).toHashCode();
     }
+    
+    //TODO: Should we make this public to test it? It's not just delegation...
+    private static class FirstIpThenLastIpCidrComparator implements Comparator<Cidr> {
+
+        @Override
+        public int compare(Cidr lhs, Cidr rhs) {
+            return new CompareToBuilder().append(lhs.first(), rhs.first()).append(lhs.last(), rhs.last()).toComparison();
+        }
+    }
+    
 }

@@ -1,7 +1,6 @@
 package net.emaze.networks;
 
 import junit.framework.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class DottedOctetFormToLongTest {
@@ -20,7 +19,7 @@ public class DottedOctetFormToLongTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void parsingAnInvalidDottedOctetFormYieldsException() {
-        new DottedOctetFormToLong().perform("192.168.0.256");
+        new DottedOctetFormToLong().perform("333.-1.999.256");
     }
 
     @Test

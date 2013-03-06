@@ -15,6 +15,16 @@ public class NetmaskTest {
     public void cannotNarrowNarrowestNetmask() {
         Netmask.fromBits(32).narrow();
     }
+    
+    @Test
+    public void isNarrowestYieldsTrueWhenNetmaskHas32bits() {
+        Assert.assertTrue(Netmask.fromBits(32).isNarrowest());
+    }
+    
+    @Test
+    public void isNarrowestYieldsFalseWhenNetmaskHasLessThan32bits() {
+        Assert.assertFalse(Netmask.fromBits(31).isNarrowest());
+    }
 
     @Test
     public void widenYieldsAWiderNetmask() {
@@ -25,6 +35,16 @@ public class NetmaskTest {
     @Test(expected = IllegalStateException.class)
     public void cannotWidenWidestNetmask() {
         Netmask.fromBits(0).widen();
+    }
+    
+    @Test
+    public void isWidestYieldsTrueWhenNetmaskHas0bits(){
+        Assert.assertTrue(Netmask.fromBits(0).isWidest());
+    }
+
+    @Test
+    public void isWidestYieldsFalseWhenNetmaskHasMoreThan0bits(){
+        Assert.assertFalse(Netmask.fromBits(1).isWidest());
     }
 
     @Test
