@@ -10,7 +10,7 @@ public class Ipv4 {
     private Ipv4(long address) {
         this.address = address;
     }
-    
+
     public static Ipv4 parse(String dottedIpAddress) {
         final long address = new DottedOctetFormToLong().perform(dottedIpAddress);
         return new Ipv4(address);
@@ -19,7 +19,6 @@ public class Ipv4 {
     public static Ipv4 fromLong(long ip) {
         return new Ipv4(ip);
     }
-
 
     public long toLong() {
         return address;
