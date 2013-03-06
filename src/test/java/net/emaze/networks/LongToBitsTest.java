@@ -18,6 +18,6 @@ public class LongToBitsTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void invalidNetmaskYieldsExpected() {
-        int bits = new LongToBits().perform(0xFFFF0001L);
+        new LongToBits().perform(0xFFFF0001L);
     }
 }
