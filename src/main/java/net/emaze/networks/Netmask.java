@@ -5,18 +5,19 @@ import net.emaze.dysfunctional.hashing.HashCodeBuilder;
 
 public class Netmask {
 
-    private int bits;
+    private final int bits;
+
+    private Netmask(int bits) {
+        this.bits = bits;
+    }
 
     public static Netmask parse(String dottedNetmask) {
-        final Netmask netmask = new Netmask();
-        netmask.bits = new LongToBits().perform(new DottedOctetFormToLong().perform(dottedNetmask));;
-        return netmask;
+        final int bits = new LongToBits().perform(new DottedOctetFormToLong().perform(dottedNetmask));;
+        return new Netmask(bits);
     }
 
     public static Netmask fromBits(int bits) {
-        final Netmask netmask = new Netmask();
-        netmask.bits = bits;
-        return netmask;
+        return new Netmask(bits);
     }
 
     public int toBits() {

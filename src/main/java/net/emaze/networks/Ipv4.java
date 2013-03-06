@@ -5,22 +5,21 @@ import net.emaze.dysfunctional.hashing.HashCodeBuilder;
 
 public class Ipv4 {
 
-    private long address;
+    private final long address;
 
+    private Ipv4(long address) {
+        this.address = address;
+    }
+    
     public static Ipv4 parse(String dottedIpAddress) {
-        final Ipv4 ipv4 = new Ipv4();
-        ipv4.address = new DottedOctetFormToLong().perform(dottedIpAddress);
-        return ipv4;
+        final long address = new DottedOctetFormToLong().perform(dottedIpAddress);
+        return new Ipv4(address);
     }
 
     public static Ipv4 fromLong(long ip) {
-        final Ipv4 ipv4 = new Ipv4();
-        ipv4.address = ip;
-        return ipv4;
+        return new Ipv4(ip);
     }
 
-    private Ipv4() {
-    }
 
     public long toLong() {
         return address;
