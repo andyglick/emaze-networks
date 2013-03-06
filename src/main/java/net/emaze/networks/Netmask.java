@@ -40,14 +40,12 @@ public class Netmask implements Comparable<Netmask> {
     }
     
     public Netmask narrow() {
-        //TODO: is this a pre or a state?
-        dbc.precondition(bits != 32, "Cannot narrow netmask anymore");
+        dbc.state(bits != 32, "Cannot narrow netmask anymore");
         return new Netmask(bits + 1);
     }
 
     public Netmask widen() {
-        //TODO: is this a pre or a state?
-        dbc.precondition(bits != 0, "Cannot widen netmask anymore");
+        dbc.state(bits != 0, "Cannot widen netmask anymore");
         return new Netmask(bits - 1);
     }
 

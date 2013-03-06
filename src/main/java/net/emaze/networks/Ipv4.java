@@ -26,12 +26,12 @@ public class Ipv4 implements Comparable<Ipv4>{
     }
     
     public Ipv4 next() {
-        dbc.precondition(!this.equals(LAST_IP), "There is no ip after last");
+        dbc.state(!this.equals(LAST_IP), "There is no ip after last");
         return new Ipv4(address + 1);
     }
     
     public Ipv4 previous() {
-        dbc.precondition(!this.equals(FIRST_IP), "There is no ip before first");
+        dbc.state(!this.equals(FIRST_IP), "There is no ip before first");
         return new Ipv4(address - 1);
     }
     
