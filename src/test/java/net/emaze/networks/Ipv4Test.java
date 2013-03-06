@@ -1,6 +1,7 @@
 package net.emaze.networks;
 
 import junit.framework.Assert;
+import net.emaze.dysfunctional.order.Order;
 import org.junit.Test;
 
 public class Ipv4Test {
@@ -30,6 +31,21 @@ public class Ipv4Test {
     @Test
     public void ipv4IsDifferentFromOtherObjects() {
         Assert.assertFalse(Ipv4.fromLong(LOCALHOST_AS_LONG).equals(new Object()));
+    }
+    
+    @Test
+    public void ipv4FromSameLongsCompareAsEquals() {
+        Assert.assertEquals(Order.EQ.order(), Ipv4.fromLong(LOCALHOST_AS_LONG).compareTo(Ipv4.fromLong(LOCALHOST_AS_LONG)));
+    }
+   
+    @Test
+    public void nextIpv4IsGreaterThan() {
+        Assert.assertEquals(Order.GT.order(), Ipv4.fromLong(LOCALHOST_AS_LONG + 1).compareTo(Ipv4.fromLong(LOCALHOST_AS_LONG)));
+    }
+    
+    @Test
+    public void previousIpv4IsLesserThan() {
+        Assert.assertEquals(Order.LT.order(), Ipv4.fromLong(LOCALHOST_AS_LONG - 1).compareTo(Ipv4.fromLong(LOCALHOST_AS_LONG)));
     }
    
 }

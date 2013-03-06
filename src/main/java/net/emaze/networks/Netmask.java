@@ -1,9 +1,11 @@
 package net.emaze.networks;
 
+import net.emaze.dysfunctional.contracts.dbc;
 import net.emaze.dysfunctional.equality.EqualsBuilder;
 import net.emaze.dysfunctional.hashing.HashCodeBuilder;
+import net.emaze.dysfunctional.order.CompareToBuilder;
 
-public class Netmask {
+public class Netmask implements Comparable<Netmask> {
 
     private final int bits;
 
@@ -36,6 +38,18 @@ public class Netmask {
     public String toString() {
         return String.format("%s", bits);
     }
+    
+    public Netmask narrow() {
+        //TODO: is this a pre or a state?
+        dbc.precondition(bits != 32, "Cannot narrow netmask anymore");
+        return new Netmask(bits + 1);
+    }
+
+    public Netmask widen() {
+        //TODO: is this a pre or a state?
+        dbc.precondition(bits != 0, "Cannot widen netmask anymore");
+        return new Netmask(bits - 1);
+    }
 
     @Override
     public boolean equals(Object other) {
@@ -50,4 +64,11 @@ public class Netmask {
     public int hashCode() {
         return new HashCodeBuilder().append(bits).toHashCode();
     }
+
+    @Override
+    public int compareTo(Netmask other) {
+        return new CompareToBuilder().append(this.bits, other.bits).toComparison();
+    }
+    
+    
 }
