@@ -23,12 +23,48 @@ public class IpRangeToCidrsTest {
     }
 
     @Test
-    public void canTransformASimpleRangeToCidr() throws UnknownHostException {
-        final Ipv4 startIp = Ipv4.parse("37.116.128.0");
-        final Ipv4 endIp = Ipv4.parse("37.116.128.255");
+    public void canTransformARangeWhenItCoincidesWithSpanningCidr() {
+        final Ipv4 startIp = Ipv4.parse("192.168.0.0");
+        final Ipv4 endIp = Ipv4.parse("192.168.0.255");
         final DenseRange<Ipv4> range = (DenseRange) RANGES.closed(startIp, endIp);
         final List<Cidr> got = new IpRangeToCidrs().perform(range);
-        final List<Cidr> expected = Arrays.asList(new Cidr(startIp, Netmask.fromBits(24)));
+        final List<Cidr> expected = Arrays.asList(Cidr.parse("192.168.0.0", 24));
+        org.junit.Assert.assertEquals(expected, got);
+    }
+    
+    @Test
+    public void canTransformARangeWhenRangeIsStartOfSpanningCidr() {
+        final Ipv4 startIp = Ipv4.parse("192.168.0.0");
+        final Ipv4 endIp = Ipv4.parse("192.168.1.1");
+        final DenseRange<Ipv4> range = (DenseRange) RANGES.closed(startIp, endIp);
+        final List<Cidr> got = new IpRangeToCidrs().perform(range);
+        final List<Cidr> expected = Arrays.asList(
+                Cidr.parse("192.168.0.0", 24),
+                Cidr.parse("192.168.1.0", 31));
+        org.junit.Assert.assertEquals(expected, got);
+    }
+    
+    @Test
+    public void canTransformARangeWhenRangeIsEndOfSpanningCidr() {
+        final Ipv4 startIp = Ipv4.parse("192.168.0.128");
+        final Ipv4 endIp = Ipv4.parse("192.168.1.255");
+        final DenseRange<Ipv4> range = (DenseRange) RANGES.closed(startIp, endIp);
+        final List<Cidr> got = new IpRangeToCidrs().perform(range);
+        final List<Cidr> expected = Arrays.asList(
+                Cidr.parse("192.168.0.128", 25),
+                Cidr.parse("192.168.1.0", 24));
+        org.junit.Assert.assertEquals(expected, got);
+    }
+    
+    @Test
+    public void canTransformARangeWhenRangeIsMiddleOfSpanningCidr() {
+        final Ipv4 startIp = Ipv4.parse("192.168.0.128");
+        final Ipv4 endIp = Ipv4.parse("192.168.1.127");
+        final DenseRange<Ipv4> range = (DenseRange) RANGES.closed(startIp, endIp);
+        final List<Cidr> got = new IpRangeToCidrs().perform(range);
+        final List<Cidr> expected = Arrays.asList(
+                Cidr.parse("192.168.0.128", 25),
+                Cidr.parse("192.168.1.0", 25));
         org.junit.Assert.assertEquals(expected, got);
     }
 
