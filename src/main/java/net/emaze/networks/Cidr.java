@@ -1,15 +1,8 @@
 package net.emaze.networks;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
 import net.emaze.dysfunctional.contracts.dbc;
-import net.emaze.dysfunctional.dispatching.delegates.BinaryDelegate;
 import net.emaze.dysfunctional.equality.EqualsBuilder;
 import net.emaze.dysfunctional.hashing.HashCodeBuilder;
-import net.emaze.dysfunctional.order.CompareToBuilder;
 import net.emaze.dysfunctional.order.Order;
 import net.emaze.dysfunctional.tuples.Pair;
 
@@ -19,6 +12,8 @@ public class Cidr {
     private final Netmask netmask;
 
     public Cidr(Ipv4 ip, Netmask netmask) {
+        // FIXME: Not sure that we should be doing this. Shouldn't we just 
+        // validate network address and manipulate it in a "parse" factory?
         this.network = ip.toNetworkAddress(netmask);
         this.netmask = netmask;
     }
@@ -27,6 +22,13 @@ public class Cidr {
         final Netmask netmask = Netmask.fromBits(netmaskBits);
         final Ipv4 network = Ipv4.parse(ip).toNetworkAddress(netmask);
         return new Cidr(network, netmask);
+    }
+    
+    public static Cidr parse(String cidrAsString) {
+        dbc.precondition(cidrAsString != null, "cidr cannot be null");
+        dbc.precondition(cidrAsString.contains("/"), "cidr is not in a valid format. Acceptable format is 0.0.0.0/0");
+        final String[] networkAndBits = cidrAsString.split("/", 2);
+        return Cidr.parse(networkAndBits[0], Integer.parseInt(networkAndBits[1]));
     }
 
     public Ipv4 network() {
@@ -37,7 +39,7 @@ public class Cidr {
         return netmask;
     }
 
-    // FIXME: this should be the next ip from network
+    // FIXME: this should be the first usable ip, not the network address
     public Ipv4 first() {
         return network;
     }
