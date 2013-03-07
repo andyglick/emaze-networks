@@ -4,7 +4,7 @@ import junit.framework.Assert;
 import net.emaze.dysfunctional.options.Maybe;
 import org.junit.Test;
 
-public class Ipv4SequencingPolicyTest {
+public class Ipv4ForwardSequencingPolicyTest {
     
     @Test
     public void nextYieldsFollowingIp() {
