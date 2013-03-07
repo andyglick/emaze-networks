@@ -90,4 +90,20 @@ public class CidrTest {
     public void cidrIsDifferentFromOtherObjects() {
         Assert.assertFalse(Cidr.parse("10.0.0.0", 8).equals(new Object()));
     }
+    @Test
+    public void networkYieldsCidrNetworkAddress() {
+        Assert.assertEquals(Ipv4.parse("10.0.0.0"), Cidr.parse("10.0.0.0/8").network());
+    }
+    @Test
+    public void broadcastYieldsCidrNetworkBroadcastAddress() {
+        Assert.assertEquals(Ipv4.parse("10.255.255.255"), Cidr.parse("10.0.0.0/8").broadcast());
+    }
+    @Test
+    public void firstYieldsFirtAllowedHostIp() {
+        Assert.assertEquals(Ipv4.parse("10.0.0.1"), Cidr.parse("10.0.0.0/8").firstHost());
+    }
+    @Test
+    public void lastYieldsLastAllowedHostIp() {
+        Assert.assertEquals(Ipv4.parse("10.255.255.254"), Cidr.parse("10.0.0.0/8").lastHost());
+    }
 }

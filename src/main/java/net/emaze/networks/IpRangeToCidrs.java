@@ -24,15 +24,15 @@ public class IpRangeToCidrs implements Delegate<List<Cidr>, DenseRange<Ipv4>> {
         final Ipv4 startIp = range.begin();
         // FIXME FIXME FIXME: A closed range SHOULD NOT return as last ip the first ip outside range !!!!!!!!!!
         final Ipv4 endIp = range.end().value().previous();
-        if (spanningCidr.first().equals(startIp) && spanningCidr.last().equals(endIp)) {
+        if (spanningCidr.network().equals(startIp) && spanningCidr.broadcast().equals(endIp)) {
             // Spanning CIDR matches start and end exactly;
             return Collections.singletonList(spanningCidr);
         }
-        if (spanningCidr.last().equals(endIp)) {
+        if (spanningCidr.broadcast().equals(endIp)) {
             // Spanning CIDR matches range end exactly;
             return pruneSpanningCidrHead(spanningCidr, startIp);
         }
-        if (spanningCidr.first().equals(startIp)) {
+        if (spanningCidr.network().equals(startIp)) {
             // Spanning CIDR matches range start exactly
             return pruneSpanningCidrTail(spanningCidr, endIp);
         }
@@ -48,7 +48,7 @@ public class IpRangeToCidrs implements Delegate<List<Cidr>, DenseRange<Ipv4>> {
         final List<Cidr> remainder = new SubtractIpFromCidr().perform(head, previousIp);
         boolean firstFound = false;
         for (Cidr cidr : remainder) {
-            if (cidr.first().equals(startIp)) {
+            if (cidr.network().equals(startIp)) {
                 firstFound = true;
             }
             if (firstFound) {
@@ -64,7 +64,7 @@ public class IpRangeToCidrs implements Delegate<List<Cidr>, DenseRange<Ipv4>> {
         final List<Cidr> remainder = new SubtractIpFromCidr().perform(tail, nextIp);
         for (Cidr cidr : remainder) {
             result.add(cidr);
-            if (cidr.last().equals(endIp)) {
+            if (cidr.broadcast().equals(endIp)) {
                 break;
             }
         }

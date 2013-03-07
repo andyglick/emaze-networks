@@ -43,7 +43,7 @@ public class SubtractIpFromCidr implements BinaryDelegate<List<Cidr>, Cidr, Ipv4
 
         @Override
         public int compare(Cidr lhs, Cidr rhs) {
-            return new CompareToBuilder().append(lhs.first(), rhs.first()).append(lhs.last(), rhs.last()).toComparison();
+            return new CompareToBuilder().append(lhs.network(), rhs.network()).append(lhs.broadcast(), rhs.broadcast()).toComparison();
         }
     }
 }

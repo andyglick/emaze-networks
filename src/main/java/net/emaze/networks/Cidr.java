@@ -23,7 +23,7 @@ public class Cidr {
         final Ipv4 network = Ipv4.parse(ip).toNetworkAddress(netmask);
         return new Cidr(network, netmask);
     }
-    
+
     public static Cidr parse(String cidrAsString) {
         dbc.precondition(cidrAsString != null, "cidr cannot be null");
         dbc.precondition(cidrAsString.contains("/"), "cidr is not in a valid format. Acceptable format is 0.0.0.0/0");
@@ -35,34 +35,37 @@ public class Cidr {
         return network;
     }
 
+    public Ipv4 broadcast() {
+        final int hostLength = 32 - netmask.toBits();
+        final long offset = (1L << hostLength) - 1;
+        return Ipv4.fromLong(network.toLong() + offset);
+    }
+
     public Netmask netmask() {
         return netmask;
     }
 
-    // FIXME: this should be the first usable ip, not the network address
-    public Ipv4 first() {
-        return network;
+    public Ipv4 firstHost() {
+        return network.next();
     }
 
-    public Ipv4 last() {
-        final int hostLength = 32 - netmask.toBits();
-        final long offset = (1L << hostLength) - 1;
-        return Ipv4.fromLong(network.toLong() + offset);
+    public Ipv4 lastHost() {
+        return this.broadcast().previous();
     }
 
     public Pair<Cidr, Cidr> split() {
         dbc.precondition(!netmask.isNarrowest(), "Unsplittable cidr");
         final Netmask splittedNetmask = netmask.narrow();
         final Cidr first = new Cidr(network, splittedNetmask);
-        final Cidr second = new Cidr(first.last().next(), splittedNetmask);
+        final Cidr second = new Cidr(first.broadcast().next(), splittedNetmask);
         return Pair.of(first, second);
     }
 
     public boolean contains(Ipv4 ipv4) {
-        if (Order.of(ipv4.compareTo(this.first())) == Order.LT) {
+        if (Order.of(ipv4.compareTo(this.network())) == Order.LT) {
             return false;
         }
-        if (Order.of(ipv4.compareTo(this.last())) == Order.GT) {
+        if (Order.of(ipv4.compareTo(this.broadcast())) == Order.GT) {
             return false;
         }
         return true;
@@ -86,5 +89,4 @@ public class Cidr {
     public int hashCode() {
         return new HashCodeBuilder().append(this.network).append(this.netmask).toHashCode();
     }
-
 }
