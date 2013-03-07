@@ -52,9 +52,9 @@ public class Cidr {
 
     public Pair<Cidr, Cidr> split() {
         dbc.precondition(!netmask.isNarrowest(), "Unsplittable cidr");
-        final Netmask netmask = this.netmask.narrow();
-        final Cidr first = new Cidr(network, netmask);
-        final Cidr second = new Cidr(first.last().next(), netmask);
+        final Netmask splittedNetmask = netmask.narrow();
+        final Cidr first = new Cidr(network, splittedNetmask);
+        final Cidr second = new Cidr(first.last().next(), splittedNetmask);
         return Pair.of(first, second);
     }
 
