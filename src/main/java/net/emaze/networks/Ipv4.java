@@ -36,7 +36,7 @@ public class Ipv4 implements Comparable<Ipv4> {
 
     public Ipv4 offset(long offset) {
         final long displaced = address + offset;
-        dbc.precondition((displaced >= 0) && (displaced <= LAST_IP.toLong()), "Offset overflows");
+        dbc.precondition((displaced >= 0) && (displaced <= LAST_IP.address), "Offset overflows");
         return new Ipv4(displaced);
     }
 
@@ -48,7 +48,7 @@ public class Ipv4 implements Comparable<Ipv4> {
     public String toString() {
         return new LongToDottedOctetForm().perform(address);
     }
-
+    
     public Ipv4 toNetworkAddress(Netmask netmask) {
         final long ip = address & ((((1L << netmask.toBits()) - 1) << (32L - netmask.toBits())));
         return new Ipv4(ip);

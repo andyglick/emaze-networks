@@ -38,7 +38,7 @@ public class Cidr {
     public Ipv4 broadcast() {
         final int hostLength = 32 - netmask.toBits();
         final long offset = (1L << hostLength) - 1;
-        return Ipv4.fromLong(network.toLong() + offset);
+        return network.offset(offset);
     }
 
     public Netmask netmask() {

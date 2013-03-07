@@ -12,7 +12,7 @@ import org.junit.Test;
 public class IpRangeToSpanningCidrTest {
     
     //TODO: extract a glorified factory? Or a façade for IPv4 ranges?
-    public static final Ranges RANGES = new Ranges(new ComparableComparator<Ipv4>(), new Ipv4SequencingPolicy(), Ipv4.FIRST_IP);
+    public static final Ranges RANGES = new Ranges(new ComparableComparator<Ipv4>(), new Ipv4ForwardSequencingPolicy(), Ipv4.FIRST_IP);
     
     @Test(expected = IllegalArgumentException.class)
     public void nullRangeYieldsException() {
@@ -21,7 +21,7 @@ public class IpRangeToSpanningCidrTest {
     
     @Test(expected = IllegalArgumentException.class)
     public void openEndedRangeYieldsException() {
-        final DenseRange<Ipv4> openEnded = new DenseRange<>(new Ipv4SequencingPolicy(), new JustBeforeNothingComparator(new ComparableComparator<Ipv4>()), Range.Endpoint.Include, Ipv4.FIRST_IP, Maybe.<Ipv4>nothing(), Range.Endpoint.Exclude);
+        final DenseRange<Ipv4> openEnded = new DenseRange<>(new Ipv4ForwardSequencingPolicy(), new JustBeforeNothingComparator(new ComparableComparator<Ipv4>()), Range.Endpoint.Include, Ipv4.FIRST_IP, Maybe.<Ipv4>nothing(), Range.Endpoint.Exclude);
         new IpRangeToSpanningCidr().perform(openEnded);
     }
     
