@@ -15,13 +15,13 @@ public class Cidr {
     private final Netmask netmask;
 
     public Cidr(Ipv4 ip, Netmask netmask) {
-        this.network = ip.networkAddress(netmask);
+        this.network = ip.toNetworkAddress(netmask);
         this.netmask = netmask;
     }
     
     public static Cidr parse(String ip, int netmaskBits) {
         final Netmask netmask = Netmask.fromBits(netmaskBits);
-        final Ipv4 network = Ipv4.parse(ip).networkAddress(netmask);
+        final Ipv4 network = Ipv4.parse(ip).toNetworkAddress(netmask);
         return new Cidr(network, netmask);
     }
     
