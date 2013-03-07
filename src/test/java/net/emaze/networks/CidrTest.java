@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import junit.framework.Assert;
+import net.emaze.dysfunctional.tuples.Pair;
 import org.junit.Test;
 
 public class CidrTest {
@@ -33,49 +34,18 @@ public class CidrTest {
     }
     
     @Test
-    public void excludingIpOutsideCidrYieldsCidr() {
-        final Cidr cidr = Cidr.parse("255.0.0.0", 30);
-        final List<Cidr> got = cidr.exclude(Ipv4.parse("10.0.0.0"));
-        Assert.assertEquals(Arrays.asList(cidr), got);
+    public void splitYieldsTwoHalvesOfCidr() {
+        final Cidr source = Cidr.parse("192.168.0.0", 24);
+        final Pair<Cidr, Cidr> expected = Pair.of(Cidr.parse("192.168.0.0", 25), Cidr.parse("192.168.0.128", 25));
+        final Pair<Cidr, Cidr> split = source.split();
+        Assert.assertEquals(expected, split);
     }
     
-    @Test
-    public void excludingAllCidrContentsYieldsEmptyList() {
-        final Cidr cidr = Cidr.parse("255.0.0.0", 32);
-        final List<Cidr> got = cidr.exclude(Ipv4.parse("255.0.0.0"));
-        Assert.assertEquals(Collections.emptyList(), got);
-    }
-
-    @Test
-    public void excludingFirstIpYieldsExpected() {
-        final Cidr cidr = Cidr.parse("255.0.0.0", 30);
-        final List<Cidr> got = cidr.exclude(Ipv4.parse("255.0.0.0"));
-        final List<Cidr> expected = Arrays.asList(
-                Cidr.parse("255.0.0.1", 32),
-                Cidr.parse("255.0.0.2", 31));
-        org.junit.Assert.assertEquals(expected, got);
+    @Test(expected = IllegalArgumentException.class)
+    public void cannotSplitASingleIpCidr() {
+        Cidr.parse("192.168.0.0", 32).split();
     }
     
-    @Test
-    public void excludingMiddleIpYieldsExpected() {
-        final Cidr cidr = Cidr.parse("255.0.0.0", 30);
-        final List<Cidr> got = cidr.exclude(Ipv4.parse("255.0.0.2"));
-        final List<Cidr> expected = Arrays.asList(
-                Cidr.parse("255.0.0.0", 31),
-                Cidr.parse("255.0.0.3", 32));
-        org.junit.Assert.assertEquals(expected, got);
-    }
-
-    @Test
-    public void excludingLastIpYieldsExpected() {
-        final Cidr cidr = Cidr.parse("255.0.0.0", 30);
-        final List<Cidr> got = cidr.exclude(Ipv4.parse("255.0.0.3"));
-        final List<Cidr> expected = Arrays.asList(
-                Cidr.parse("255.0.0.0", 31),
-                Cidr.parse("255.0.0.2", 32));
-        org.junit.Assert.assertEquals(expected, got);
-    }
-
     @Test
     public void cidrExtractsNetworkPartOfIpAddress() {
         final Cidr out = Cidr.parse("255.255.255.255", 24);
