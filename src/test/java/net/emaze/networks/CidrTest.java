@@ -63,7 +63,7 @@ public class CidrTest {
     @Test
     public void cidrExtractsNetworkPartOfIpAddress() {
         final Cidr out = Cidr.parse("255.255.255.255", 24);
-        Assert.assertEquals(out.network(), Ipv4.parse("255.255.255.0"));
+        Assert.assertEquals(Ipv4.parse("255.255.255.0"), out.network());
     }
 
     @Test
