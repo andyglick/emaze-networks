@@ -1,9 +1,7 @@
-
 package net.emaze.networks;
 
 import net.emaze.dysfunctional.contracts.dbc;
 import net.emaze.dysfunctional.dispatching.delegates.Delegate;
-
 
 public class LongToDottedOctetForm implements Delegate<String, Long> {
 
@@ -16,5 +14,4 @@ public class LongToDottedOctetForm implements Delegate<String, Long> {
         final long fourth = longForm & 0x000000FF;
         return String.format("%s.%s.%s.%s", first, second, third, fourth);
     }
-
 }

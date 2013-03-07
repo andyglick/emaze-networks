@@ -38,7 +38,7 @@ public class Netmask implements Comparable<Netmask> {
     public String toString() {
         return String.format("%s", bits);
     }
-    
+
     public Netmask narrow() {
         dbc.state(bits != 32, "Cannot narrow netmask anymore");
         return new Netmask(bits + 1);
@@ -48,11 +48,11 @@ public class Netmask implements Comparable<Netmask> {
         dbc.state(bits != 0, "Cannot widen netmask anymore");
         return new Netmask(bits - 1);
     }
-    
+
     public boolean isNarrowest() {
         return bits == 32;
     }
-    
+
     public boolean isWidest() {
         return bits == 0;
     }
@@ -75,6 +75,4 @@ public class Netmask implements Comparable<Netmask> {
     public int compareTo(Netmask other) {
         return new CompareToBuilder().append(this.bits, other.bits).toComparison();
     }
-    
-    
 }

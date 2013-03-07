@@ -1,10 +1,8 @@
-
 package net.emaze.networks;
 
 import net.emaze.dysfunctional.contracts.dbc;
 import net.emaze.dysfunctional.dispatching.delegates.Delegate;
 import net.emaze.dysfunctional.ranges.DenseRange;
-
 
 public class IpRangeToSpanningCidr implements Delegate<Cidr, DenseRange<Ipv4>> {
 
@@ -19,5 +17,4 @@ public class IpRangeToSpanningCidr implements Delegate<Cidr, DenseRange<Ipv4>> {
         } while (!candidate.contains(range.begin()));
         return candidate;
     }
-
 }
