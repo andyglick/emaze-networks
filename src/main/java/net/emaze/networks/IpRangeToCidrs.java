@@ -60,8 +60,7 @@ public class IpRangeToCidrs implements Delegate<List<Cidr>, DenseRange<Ipv4>> {
             }
             return result;
         }
-        // FIXME: using Order means that we know how compareTo is implemented!
-        if (spanningCidr.first().compareTo(startIp) != Order.GT.order() && spanningCidr.last().compareTo(endIp) != Order.LT.order()) {
+        if (Order.of(spanningCidr.first().compareTo(startIp)) != Order.GT && Order.of(spanningCidr.last().compareTo(endIp)) != Order.LT) {
             // Spanning CIDR overlaps entire range
             final Ipv4 previousIp = startIp.previous();
             final LinkedList<Cidr> result = new LinkedList<>();

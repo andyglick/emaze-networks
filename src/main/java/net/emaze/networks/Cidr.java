@@ -45,11 +45,10 @@ public class Cidr {
     }
 
     public boolean contains(Ipv4 ipv4) {
-        //TODO Demeter?
-        if (ipv4.compareTo(this.first()) == Order.LT.order()) {
+        if (Order.of(ipv4.compareTo(this.first())) == Order.LT) {
             return false;
         }
-        if (ipv4.compareTo(this.last()) == Order.GT.order()) {
+        if (Order.of(ipv4.compareTo(this.last())) == Order.GT) {
             return false;
         }
         return true;
