@@ -15,6 +15,11 @@ public class IpRangeToCidrsTest {
     //TODO: extract a glorified factory? Or a façade for IPv4 ranges?
     public static final Ranges RANGES = new Ranges(new ComparableComparator<Ipv4>(), new Ipv4SequencingPolicy(), Ipv4.FIRST_IP);
 
+    @Test(expected = IllegalArgumentException.class)
+    public void callingWithNullArgumentYieldsException() {
+        new IpRangeToCidrs().perform(null);
+    }
+    
     @Test
     public void canTransformAnEmptyRangeToNoCidrs() {
         final List<Cidr> got = new IpRangeToCidrs().perform((DenseRange) RANGES.empty());
