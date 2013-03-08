@@ -14,7 +14,7 @@ public class IpRangeToSpanningCidr implements BinaryDelegate<Cidr, Ipv4, Ipv4> {
         Netmask netmask = null;
         Cidr candidate;
         do {
-            netmask = (netmask == null ? Netmask.fromBits(32) : netmask.widen());
+            netmask = (netmask == null ? Netmask.fromBits(32) : netmask.wider());
             candidate = new Cidr(lastIp, netmask);
         } while (!candidate.contains(firstIp));
         return candidate;

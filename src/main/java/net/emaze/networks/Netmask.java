@@ -39,13 +39,13 @@ public class Netmask implements Comparable<Netmask> {
         return String.format("%s", bits);
     }
 
-    public Netmask narrow() {
-        dbc.state(bits != 32, "Cannot narrow netmask anymore");
+    public Netmask narrower() {
+        dbc.state(bits != 32, "There is no narrower netmask, current netmask is already the narrowest");
         return new Netmask(bits + 1);
     }
 
-    public Netmask widen() {
-        dbc.state(bits != 0, "Cannot widen netmask anymore");
+    public Netmask wider() {
+        dbc.state(bits != 0, "There is no wider netmask, current netmask is already the widest");
         return new Netmask(bits - 1);
     }
 

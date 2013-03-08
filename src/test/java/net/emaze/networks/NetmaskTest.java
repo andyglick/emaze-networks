@@ -6,14 +6,14 @@ import org.junit.Test;
 public class NetmaskTest {
 
     @Test
-    public void narrowYieldsANarrowerNetmask() {
-        final Netmask narrower = Netmask.fromBits(16).narrow();
+    public void narrowerYieldsANarrowerNetmask() {
+        final Netmask narrower = Netmask.fromBits(16).narrower();
         Assert.assertEquals(Netmask.fromBits(17), narrower);
     }
 
     @Test(expected = IllegalStateException.class)
     public void cannotNarrowNarrowestNetmask() {
-        Netmask.fromBits(32).narrow();
+        Netmask.fromBits(32).narrower();
     }
     
     @Test
@@ -27,14 +27,14 @@ public class NetmaskTest {
     }
 
     @Test
-    public void widenYieldsAWiderNetmask() {
-        final Netmask wider = Netmask.fromBits(16).widen();
+    public void widerYieldsAWiderNetmask() {
+        final Netmask wider = Netmask.fromBits(16).wider();
         Assert.assertEquals(Netmask.fromBits(15), wider);
     }
 
     @Test(expected = IllegalStateException.class)
     public void cannotWidenWidestNetmask() {
-        Netmask.fromBits(0).widen();
+        Netmask.fromBits(0).wider();
     }
     
     @Test
