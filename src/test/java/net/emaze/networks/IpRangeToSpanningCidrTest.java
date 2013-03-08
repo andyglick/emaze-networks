@@ -24,14 +24,14 @@ public class IpRangeToSpanningCidrTest {
 
     @Test
     public void spanningWhenFirstAndLastCoincidesYieldsCidr() {
-        final Cidr expected = new Cidr(ADDRESS, Netmask.fromBits(32));
+        final Cidr expected = Cidr.byContainedIp(ADDRESS, Netmask.fromBits(32));
         final Cidr spanning = new IpRangeToSpanningCidr().perform(ADDRESS, ADDRESS);
         Assert.assertEquals(expected, spanning);
     }
 
     @Test
     public void spanningAValidRangeYieldsExpected() {
-        final Cidr expected = new Cidr(Ipv4.parse("37.116.130.0"), Netmask.fromBits(18));
+        final Cidr expected = Cidr.byContainedIp(Ipv4.parse("37.116.130.0"), Netmask.fromBits(18));
         final Cidr spanning = new IpRangeToSpanningCidr().perform(Ipv4.parse("37.116.130.0"), Ipv4.parse("37.116.191.255"));
         Assert.assertEquals(expected, spanning);
     }

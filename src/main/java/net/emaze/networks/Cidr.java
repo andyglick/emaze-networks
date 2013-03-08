@@ -11,11 +11,14 @@ public class Cidr {
     private final Ipv4 network;
     private final Netmask netmask;
 
-    public Cidr(Ipv4 ip, Netmask netmask) {
-        // FIXME: Not sure that we should be doing this. Shouldn't we just 
-        // validate network address and manipulate it in a "parse" factory?
-        this.network = ip.mask(netmask);
+    public Cidr(Ipv4 network, Netmask netmask) {
+        dbc.precondition(network.mask(netmask).equals(network), "Network must not contain host information");
+        this.network = network;
         this.netmask = netmask;
+    }
+
+    public static Cidr byContainedIp(Ipv4 ip, Netmask netmask) {
+        return new Cidr(ip.mask(netmask), netmask);
     }
 
     public static Cidr parse(String ip, int netmaskBits) {
@@ -49,7 +52,7 @@ public class Cidr {
         dbc.precondition(!netmask.isNarrowest(), "Unsplittable cidr");
         final Netmask splittedNetmask = netmask.narrower();
         final Cidr first = new Cidr(network, splittedNetmask);
-        final Cidr second = new Cidr(this.lastIp(), splittedNetmask);
+        final Cidr second = Cidr.byContainedIp(this.lastIp(), splittedNetmask);
         return Pair.of(first, second);
     }
 

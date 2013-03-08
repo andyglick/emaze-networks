@@ -28,7 +28,7 @@ public class IpRangeToCidrsTest {
     @Test
     public void sameFirstAndLastIpYieldsSingleCidr() {
         final List<Cidr> got = new IpRangeToCidrs().perform(ADDRESS, ADDRESS);
-        final List<Cidr> expected = Arrays.asList(new Cidr(ADDRESS, Netmask.fromBits(32)));
+        final List<Cidr> expected = Arrays.asList(Cidr.byContainedIp(ADDRESS, Netmask.fromBits(32)));
         Assert.assertEquals(expected, got);
     }
 
