@@ -31,11 +31,11 @@ public class Cidr {
         return Cidr.parse(networkAndBits[0], Integer.parseInt(networkAndBits[1]));
     }
 
-    public Ipv4 network() {
+    public Ipv4 firstIp() {
         return network;
     }
 
-    public Ipv4 broadcast() {
+    public Ipv4 lastIp() {
         final int hostLength = 32 - netmask.toBits();
         final long displacement = (1L << hostLength) - 1;
         return network.offset(displacement);
@@ -45,28 +45,19 @@ public class Cidr {
         return netmask;
     }
 
-    public Ipv4 firstHost() {
-        return network.offset(1);
-    }
-
-    public Ipv4 lastHost() {
-        //FIXME: see rfc for what happens in a /31 or /32 net
-        return this.broadcast().offset(-1);
-    }
-
     public Pair<Cidr, Cidr> split() {
         dbc.precondition(!netmask.isNarrowest(), "Unsplittable cidr");
         final Netmask splittedNetmask = netmask.narrow();
         final Cidr first = new Cidr(network, splittedNetmask);
-        final Cidr second = new Cidr(this.broadcast(), splittedNetmask);
+        final Cidr second = new Cidr(this.lastIp(), splittedNetmask);
         return Pair.of(first, second);
     }
 
     public boolean contains(Ipv4 ipv4) {
-        if (Order.of(ipv4.compareTo(this.network())) == Order.LT) {
+        if (Order.of(ipv4.compareTo(this.firstIp())) == Order.LT) {
             return false;
         }
-        if (Order.of(ipv4.compareTo(this.broadcast())) == Order.GT) {
+        if (Order.of(ipv4.compareTo(this.lastIp())) == Order.GT) {
             return false;
         }
         return true;

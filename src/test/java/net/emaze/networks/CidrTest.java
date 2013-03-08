@@ -61,9 +61,9 @@ public class CidrTest {
     }
 
     @Test
-    public void cidrExtractsNetworkPartOfIpAddress() {
+    public void cidrIsBuiltFromNetworkPartOfIpAddress() {
         final Cidr out = Cidr.parse("255.255.255.255", 24);
-        Assert.assertEquals(Ipv4.parse("255.255.255.0"), out.network());
+        Assert.assertEquals(Ipv4.parse("255.255.255.0"), out.firstIp());
     }
 
     @Test
@@ -90,20 +90,14 @@ public class CidrTest {
     public void cidrIsDifferentFromOtherObjects() {
         Assert.assertFalse(Cidr.parse("10.0.0.0", 8).equals(new Object()));
     }
+
     @Test
-    public void networkYieldsCidrNetworkAddress() {
-        Assert.assertEquals(Ipv4.parse("10.0.0.0"), Cidr.parse("10.0.0.0/8").network());
+    public void firstIpYieldsLowerEnd() {
+        Assert.assertEquals(Ipv4.parse("10.0.0.0"), Cidr.parse("10.0.0.0/8").firstIp());
     }
+
     @Test
-    public void broadcastYieldsCidrNetworkBroadcastAddress() {
-        Assert.assertEquals(Ipv4.parse("10.255.255.255"), Cidr.parse("10.0.0.0/8").broadcast());
-    }
-    @Test
-    public void firstYieldsFirtAllowedHostIp() {
-        Assert.assertEquals(Ipv4.parse("10.0.0.1"), Cidr.parse("10.0.0.0/8").firstHost());
-    }
-    @Test
-    public void lastYieldsLastAllowedHostIp() {
-        Assert.assertEquals(Ipv4.parse("10.255.255.254"), Cidr.parse("10.0.0.0/8").lastHost());
+    public void lastIpYieldsUpperEnd() {
+        Assert.assertEquals(Ipv4.parse("10.255.255.255"), Cidr.parse("10.0.0.0/8").lastIp());
     }
 }

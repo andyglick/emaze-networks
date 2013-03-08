@@ -18,15 +18,15 @@ public class IpRangeToCidrs implements BinaryDelegate<List<Cidr>, Ipv4, Ipv4> {
         dbc.precondition(Order.of(firstIp.compareTo(lastIp)) != Order.GT, "lastIp cannot be lesser than firstIp");
         // Obtain a spanning cidr containing entire range
         final Cidr spanningCidr = new IpRangeToSpanningCidr().perform(firstIp, lastIp);
-        if (spanningCidr.network().equals(firstIp) && spanningCidr.broadcast().equals(lastIp)) {
+        if (spanningCidr.firstIp().equals(firstIp) && spanningCidr.lastIp().equals(lastIp)) {
             // Spanning CIDR matches start and end exactly;
             return Collections.singletonList(spanningCidr);
         }
-        if (spanningCidr.broadcast().equals(lastIp)) {
+        if (spanningCidr.lastIp().equals(lastIp)) {
             // Spanning CIDR matches range end exactly;
             return pruneSpanningCidrHead(spanningCidr, firstIp);
         }
-        if (spanningCidr.network().equals(firstIp)) {
+        if (spanningCidr.firstIp().equals(firstIp)) {
             // Spanning CIDR matches range start exactly
             return pruneSpanningCidrTail(spanningCidr, lastIp);
         }
@@ -42,7 +42,7 @@ public class IpRangeToCidrs implements BinaryDelegate<List<Cidr>, Ipv4, Ipv4> {
         final List<Cidr> remainder = new SubtractIpFromCidr().perform(head, previousIp);
         boolean firstFound = false;
         for (Cidr cidr : remainder) {
-            if (cidr.network().equals(firstIp)) {
+            if (cidr.firstIp().equals(firstIp)) {
                 firstFound = true;
             }
             if (firstFound) {
@@ -58,7 +58,7 @@ public class IpRangeToCidrs implements BinaryDelegate<List<Cidr>, Ipv4, Ipv4> {
         final List<Cidr> remainder = new SubtractIpFromCidr().perform(tail, nextIp);
         for (Cidr cidr : remainder) {
             result.add(cidr);
-            if (cidr.broadcast().equals(lastIp)) {
+            if (cidr.lastIp().equals(lastIp)) {
                 break;
             }
         }
