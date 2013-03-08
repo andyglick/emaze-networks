@@ -14,13 +14,13 @@ public class Cidr {
     public Cidr(Ipv4 ip, Netmask netmask) {
         // FIXME: Not sure that we should be doing this. Shouldn't we just 
         // validate network address and manipulate it in a "parse" factory?
-        this.network = ip.toNetworkAddress(netmask);
+        this.network = ip.mask(netmask);
         this.netmask = netmask;
     }
 
     public static Cidr parse(String ip, int netmaskBits) {
         final Netmask netmask = Netmask.fromBits(netmaskBits);
-        final Ipv4 network = Ipv4.parse(ip).toNetworkAddress(netmask);
+        final Ipv4 network = Ipv4.parse(ip).mask(netmask);
         return new Cidr(network, netmask);
     }
 

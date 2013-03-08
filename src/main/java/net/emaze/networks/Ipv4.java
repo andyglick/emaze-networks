@@ -35,7 +35,7 @@ public class Ipv4 implements Comparable<Ipv4> {
         return new LongToDottedOctetForm().perform(address);
     }
 
-    public Ipv4 toNetworkAddress(Netmask netmask) {
+    public Ipv4 mask(Netmask netmask) {
         final long ip = address & ((((1L << netmask.toBits()) - 1) << (32L - netmask.toBits())));
         return new Ipv4(ip);
     }
