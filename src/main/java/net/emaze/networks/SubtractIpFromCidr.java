@@ -20,11 +20,9 @@ public class SubtractIpFromCidr implements BinaryDelegate<List<Cidr>, Cidr, Ipv4
 
     private List<Cidr> recursivelySubtract(Cidr minuend, Ipv4 subtrahend) {
         if (!minuend.contains(subtrahend)) {
-            // This CIDR does not contains minuend, so return it without changes
             return Arrays.asList(minuend);
         }
         if (minuend.netmask().isNarrowest()) {
-            // This CIDR contains only the minuend, so return an empty list
             return Arrays.asList();
         }
         final List<Cidr> reminder = new LinkedList<>();

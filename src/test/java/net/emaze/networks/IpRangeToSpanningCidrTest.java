@@ -49,4 +49,10 @@ public class IpRangeToSpanningCidrTest {
         final Cidr spanning = new IpRangeToSpanningCidr().perform(Ipv4.parse("0.0.0.0"), Ipv4.parse("0.0.0.1"));
         Assert.assertEquals(expected, spanning);
     }
+    @Test
+    public void spanningWholeAddressSpaceCornerCase() {
+        final Cidr expected = new Cidr(Ipv4.parse("0.0.0.0"), Netmask.fromBits(0));
+        final Cidr spanning = new IpRangeToSpanningCidr().perform(Ipv4.FIRST_IP, Ipv4.LAST_IP);
+        Assert.assertEquals(expected, spanning);
+    }
 }

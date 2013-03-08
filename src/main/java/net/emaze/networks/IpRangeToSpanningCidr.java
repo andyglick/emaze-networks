@@ -11,10 +11,11 @@ public class IpRangeToSpanningCidr implements BinaryDelegate<Cidr, Ipv4, Ipv4> {
         dbc.precondition(firstIp != null, "startIp cannot be null");
         dbc.precondition(lastIp != null, "endIp cannot be null");
         dbc.precondition(Order.of(firstIp.compareTo(lastIp)) != Order.GT, "endIp cannot be lesser than startIp");
-        int prefix = 32;
+        Netmask netmask = null;
         Cidr candidate;
         do {
-            candidate = new Cidr(lastIp, Netmask.fromBits(prefix--));
+            netmask = (netmask == null ? Netmask.fromBits(32) : netmask.widen());
+            candidate = new Cidr(lastIp, netmask);
         } while (!candidate.contains(firstIp));
         return candidate;
     }
