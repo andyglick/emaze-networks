@@ -1,7 +1,6 @@
 package net.emaze.networks;
 
 import junit.framework.Assert;
-import net.emaze.dysfunctional.options.Maybe;
 import net.emaze.dysfunctional.order.Order;
 import org.junit.Test;
 
@@ -26,7 +25,7 @@ public class Ipv4Test {
 
     @Test
     public void differentIpv4sAreNotEqual() {
-        Assert.assertEquals(false,ADDRESS.equals(AFTER_ADDRESS));
+        Assert.assertEquals(false, ADDRESS.equals(AFTER_ADDRESS));
     }
 
     @Test
@@ -56,6 +55,11 @@ public class Ipv4Test {
         Assert.assertEquals(Order.LT.order(), BEFORE_ADDRESS.compareTo(ADDRESS));
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void comparingWithNullThrows() {
+        ADDRESS.compareTo(null);
+    }
+
     @Test
     public void offsetCanYieldAGreaterIp() {
         final Ipv4 displaced = ADDRESS.offset(1);
@@ -82,5 +86,18 @@ public class Ipv4Test {
     public void zeroOffsetYieldsSame() {
         final Ipv4 displaced = ADDRESS.offset(0);
         Assert.assertEquals(ADDRESS, displaced);
+    }
+
+    @Test
+    public void maskingAnAddressYieldsNetworkPart() {
+        final Ipv4 address = Ipv4.parse("192.168.1.123");
+        final Netmask netmask = Netmask.fromBits(16);
+        final Ipv4 expected = Ipv4.parse("192.168.0.0");
+        Assert.assertEquals(expected, address.mask(netmask));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void maskingWithNullThrows() {
+        ADDRESS.mask(null);
     }
 }

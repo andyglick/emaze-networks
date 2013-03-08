@@ -36,6 +36,7 @@ public class Ipv4 implements Comparable<Ipv4> {
     }
 
     public Ipv4 mask(Netmask netmask) {
+        dbc.precondition(netmask != null, "netmask cannot be null");
         final long ip = address & ((((1L << netmask.toBits()) - 1) << (32L - netmask.toBits())));
         return new Ipv4(ip);
     }
@@ -63,6 +64,7 @@ public class Ipv4 implements Comparable<Ipv4> {
 
     @Override
     public int compareTo(Ipv4 other) {
+        dbc.precondition(other != null, "other cannot be null"); // by contract this should have been a NPE
         return new CompareToBuilder().append(this.address, other.address).toComparison();
     }
 }
