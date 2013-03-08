@@ -7,6 +7,8 @@ import net.emaze.dysfunctional.order.CompareToBuilder;
 
 public class Netmask implements Comparable<Netmask> {
 
+    public static final Netmask NARROWEST = new Netmask(32);
+    public static final Netmask WIDEST = new Netmask(0);
     private final int bits;
 
     private Netmask(int bits) {
