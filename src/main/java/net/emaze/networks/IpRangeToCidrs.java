@@ -6,49 +6,43 @@ import java.util.List;
 import net.emaze.dysfunctional.Consumers;
 import net.emaze.dysfunctional.Multiplexing;
 import net.emaze.dysfunctional.contracts.dbc;
-import net.emaze.dysfunctional.dispatching.delegates.Delegate;
-import net.emaze.dysfunctional.ranges.DenseRange;
+import net.emaze.dysfunctional.dispatching.delegates.BinaryDelegate;
+import net.emaze.dysfunctional.order.Order;
 
-public class IpRangeToCidrs implements Delegate<List<Cidr>, DenseRange<Ipv4>> {
+public class IpRangeToCidrs implements BinaryDelegate<List<Cidr>, Ipv4, Ipv4> {
 
     @Override
-    public List<Cidr> perform(DenseRange<Ipv4> range) {
-        dbc.precondition(range != null, "range cannot be null");
-        dbc.precondition(range.end().hasValue(), "range cannot be open-ended");
-        if (!range.iterator().hasNext()) {
-            // An empty range results in an empty list of CIDRs
-            return Collections.emptyList();
-        }
+    public List<Cidr> perform(Ipv4 firstIp, Ipv4 lastIp) {
+        dbc.precondition(firstIp != null, "firstIp cannot be null");
+        dbc.precondition(lastIp != null, "lastIp cannot be null");
+        dbc.precondition(Order.of(firstIp.compareTo(lastIp)) != Order.GT, "lastIp cannot be lesser than firstIp");
         // Obtain a spanning cidr containing entire range
-        final Cidr spanningCidr = new IpRangeToSpanningCidr().perform(range);
-        final Ipv4 startIp = range.begin();
-        // FIXME FIXME FIXME: A closed range SHOULD NOT return as last ip the first ip outside range !!!!!!!!!!
-        final Ipv4 endIp = range.end().value().previous();
-        if (spanningCidr.network().equals(startIp) && spanningCidr.broadcast().equals(endIp)) {
+        final Cidr spanningCidr = new IpRangeToSpanningCidr().perform(firstIp, lastIp);
+        if (spanningCidr.network().equals(firstIp) && spanningCidr.broadcast().equals(lastIp)) {
             // Spanning CIDR matches start and end exactly;
             return Collections.singletonList(spanningCidr);
         }
-        if (spanningCidr.broadcast().equals(endIp)) {
+        if (spanningCidr.broadcast().equals(lastIp)) {
             // Spanning CIDR matches range end exactly;
-            return pruneSpanningCidrHead(spanningCidr, startIp);
+            return pruneSpanningCidrHead(spanningCidr, firstIp);
         }
-        if (spanningCidr.network().equals(startIp)) {
+        if (spanningCidr.network().equals(firstIp)) {
             // Spanning CIDR matches range start exactly
-            return pruneSpanningCidrTail(spanningCidr, endIp);
+            return pruneSpanningCidrTail(spanningCidr, lastIp);
         }
         // Spanning CIDR overlaps entire range
-        final LinkedList<Cidr> prunedHead = pruneSpanningCidrHead(spanningCidr, startIp);
-        final List<Cidr> prunedTail = pruneSpanningCidrTail(prunedHead.removeLast(), endIp);
+        final LinkedList<Cidr> prunedHead = pruneSpanningCidrHead(spanningCidr, firstIp);
+        final List<Cidr> prunedTail = pruneSpanningCidrTail(prunedHead.removeLast(), lastIp);
         return Consumers.all(Multiplexing.flatten(prunedHead, prunedTail));
     }
 
-    private LinkedList<Cidr> pruneSpanningCidrHead(Cidr head, Ipv4 startIp) {
-        final Ipv4 previousIp = startIp.previous();
+    private LinkedList<Cidr> pruneSpanningCidrHead(Cidr head, Ipv4 firstIp) {
+        final Ipv4 previousIp = firstIp.offset(-1);
         final LinkedList<Cidr> result = new LinkedList<>();
         final List<Cidr> remainder = new SubtractIpFromCidr().perform(head, previousIp);
         boolean firstFound = false;
         for (Cidr cidr : remainder) {
-            if (cidr.network().equals(startIp)) {
+            if (cidr.network().equals(firstIp)) {
                 firstFound = true;
             }
             if (firstFound) {
@@ -58,13 +52,13 @@ public class IpRangeToCidrs implements Delegate<List<Cidr>, DenseRange<Ipv4>> {
         return result;
     }
 
-    private LinkedList<Cidr> pruneSpanningCidrTail(Cidr tail, Ipv4 endIp) {
-        final Ipv4 nextIp = endIp.next();
+    private LinkedList<Cidr> pruneSpanningCidrTail(Cidr tail, Ipv4 lastIp) {
+        final Ipv4 nextIp = lastIp.offset(1);
         final LinkedList<Cidr> result = new LinkedList<>();
         final List<Cidr> remainder = new SubtractIpFromCidr().perform(tail, nextIp);
         for (Cidr cidr : remainder) {
             result.add(cidr);
-            if (cidr.broadcast().equals(endIp)) {
+            if (cidr.broadcast().equals(lastIp)) {
                 break;
             }
         }

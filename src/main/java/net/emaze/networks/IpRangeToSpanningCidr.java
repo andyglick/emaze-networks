@@ -1,20 +1,21 @@
 package net.emaze.networks;
 
 import net.emaze.dysfunctional.contracts.dbc;
-import net.emaze.dysfunctional.dispatching.delegates.Delegate;
-import net.emaze.dysfunctional.ranges.DenseRange;
+import net.emaze.dysfunctional.dispatching.delegates.BinaryDelegate;
+import net.emaze.dysfunctional.order.Order;
 
-public class IpRangeToSpanningCidr implements Delegate<Cidr, DenseRange<Ipv4>> {
+public class IpRangeToSpanningCidr implements BinaryDelegate<Cidr, Ipv4, Ipv4> {
 
     @Override
-    public Cidr perform(DenseRange<Ipv4> range) {
-        dbc.precondition(range != null, "range cannot be null");
-        dbc.precondition(range.end().hasValue(), "range cannot be open-ended");
+    public Cidr perform(Ipv4 firstIp, Ipv4 lastIp) {
+        dbc.precondition(firstIp != null, "startIp cannot be null");
+        dbc.precondition(lastIp != null, "endIp cannot be null");
+        dbc.precondition(Order.of(firstIp.compareTo(lastIp)) != Order.GT, "endIp cannot be lesser than startIp");
         int prefix = 32;
         Cidr candidate;
         do {
-            candidate = new Cidr(range.end().value().previous(), Netmask.fromBits(prefix--)); //FIXME: range problem with end element
-        } while (!candidate.contains(range.begin()));
+            candidate = new Cidr(lastIp, Netmask.fromBits(prefix--));
+        } while (!candidate.contains(firstIp));
         return candidate;
     }
 }

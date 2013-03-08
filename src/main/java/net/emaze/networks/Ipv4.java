@@ -7,8 +7,10 @@ import net.emaze.dysfunctional.order.CompareToBuilder;
 
 public class Ipv4 implements Comparable<Ipv4> {
 
-    public static final Ipv4 LAST_IP = new Ipv4(0xFFFFFFFFL);
-    public static final Ipv4 FIRST_IP = new Ipv4(0x0L);
+    public static final long MIN_ADDRESS_SPACE = 0x00000000L;
+    public static final long MAX_ADDRESS_SPACE = 0xFFFFFFFFL;
+    public static final Ipv4 LAST_IP = new Ipv4(MAX_ADDRESS_SPACE);
+    public static final Ipv4 FIRST_IP = new Ipv4(MIN_ADDRESS_SPACE);
     private final long address;
 
     private Ipv4(long address) {
@@ -24,22 +26,6 @@ public class Ipv4 implements Comparable<Ipv4> {
         return new Ipv4(ip);
     }
 
-    public Ipv4 next() {
-        dbc.state(!this.equals(LAST_IP), "There is no ip after last");
-        return new Ipv4(address + 1);
-    }
-
-    public Ipv4 previous() {
-        dbc.state(!this.equals(FIRST_IP), "There is no ip before first");
-        return new Ipv4(address - 1);
-    }
-
-    public Ipv4 offset(long offset) {
-        final long displaced = address + offset;
-        dbc.precondition((displaced >= 0) && (displaced <= LAST_IP.address), "Offset overflows");
-        return new Ipv4(displaced);
-    }
-
     public long toLong() {
         return address;
     }
@@ -48,10 +34,17 @@ public class Ipv4 implements Comparable<Ipv4> {
     public String toString() {
         return new LongToDottedOctetForm().perform(address);
     }
-    
+
     public Ipv4 toNetworkAddress(Netmask netmask) {
         final long ip = address & ((((1L << netmask.toBits()) - 1) << (32L - netmask.toBits())));
         return new Ipv4(ip);
+    }
+
+    public Ipv4 offset(long offset) {
+        dbc.precondition(Math.abs(offset) <= MAX_ADDRESS_SPACE, "Offset is bigger than IP address space");
+        final long displaced = address + offset;
+        dbc.precondition((displaced >= MIN_ADDRESS_SPACE) && (displaced <= MAX_ADDRESS_SPACE), "Offset overflows");
+        return new Ipv4(displaced);
     }
 
     @Override

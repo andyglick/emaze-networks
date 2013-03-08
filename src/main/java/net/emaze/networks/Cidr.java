@@ -37,8 +37,8 @@ public class Cidr {
 
     public Ipv4 broadcast() {
         final int hostLength = 32 - netmask.toBits();
-        final long offset = (1L << hostLength) - 1;
-        return network.offset(offset);
+        final long displacement = (1L << hostLength) - 1;
+        return network.offset(displacement);
     }
 
     public Netmask netmask() {
@@ -46,18 +46,19 @@ public class Cidr {
     }
 
     public Ipv4 firstHost() {
-        return network.next();
+        return network.offset(1);
     }
 
     public Ipv4 lastHost() {
-        return this.broadcast().previous();
+        //FIXME: see rfc for what happens in a /31 or /32 net
+        return this.broadcast().offset(-1);
     }
 
     public Pair<Cidr, Cidr> split() {
         dbc.precondition(!netmask.isNarrowest(), "Unsplittable cidr");
         final Netmask splittedNetmask = netmask.narrow();
         final Cidr first = new Cidr(network, splittedNetmask);
-        final Cidr second = new Cidr(first.broadcast().next(), splittedNetmask);
+        final Cidr second = new Cidr(this.broadcast(), splittedNetmask);
         return Pair.of(first, second);
     }
 
