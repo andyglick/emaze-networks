@@ -11,6 +11,8 @@ import net.emaze.dysfunctional.order.Order;
 
 public class IpRangeToCidrs implements BinaryDelegate<List<Cidr>, Ipv4, Ipv4> {
 
+    private static final SortCidrsByFirstThenLastIp sorter = new SortCidrsByFirstThenLastIp();
+
     @Override
     public List<Cidr> perform(Ipv4 firstIp, Ipv4 lastIp) {
         dbc.precondition(firstIp != null, "firstIp cannot be null");
@@ -39,7 +41,7 @@ public class IpRangeToCidrs implements BinaryDelegate<List<Cidr>, Ipv4, Ipv4> {
     private LinkedList<Cidr> pruneSpanningCidrHead(Cidr head, Ipv4 firstIp) {
         final Ipv4 previousIp = firstIp.offset(-1);
         final LinkedList<Cidr> result = new LinkedList<>();
-        final List<Cidr> remainder = new SubtractIpFromCidr().perform(head, previousIp);
+        final List<Cidr> remainder = sorter.perform(new SubtractIpFromCidr().perform(head, previousIp));
         boolean firstFound = false;
         for (Cidr cidr : remainder) {
             if (cidr.firstIp().equals(firstIp)) {
@@ -55,7 +57,7 @@ public class IpRangeToCidrs implements BinaryDelegate<List<Cidr>, Ipv4, Ipv4> {
     private LinkedList<Cidr> pruneSpanningCidrTail(Cidr tail, Ipv4 lastIp) {
         final Ipv4 nextIp = lastIp.offset(1);
         final LinkedList<Cidr> result = new LinkedList<>();
-        final List<Cidr> remainder = new SubtractIpFromCidr().perform(tail, nextIp);
+        final List<Cidr> remainder = sorter.perform(new SubtractIpFromCidr().perform(tail, nextIp));
         for (Cidr cidr : remainder) {
             result.add(cidr);
             if (cidr.lastIp().equals(lastIp)) {

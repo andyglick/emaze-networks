@@ -1,31 +1,26 @@
 package net.emaze.networks;
 
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import net.emaze.dysfunctional.dispatching.delegates.BinaryDelegate;
-import net.emaze.dysfunctional.order.CompareToBuilder;
 import net.emaze.dysfunctional.tuples.Pair;
 
-public class SubtractIpFromCidr implements BinaryDelegate<List<Cidr>, Cidr, Ipv4> {
+public class SubtractIpFromCidr implements BinaryDelegate<Set<Cidr>, Cidr, Ipv4> {
 
     @Override
-    public List<Cidr> perform(Cidr minuend, Ipv4 subtrahend) {
-        final List<Cidr> reminder = recursivelySubtract(minuend, subtrahend);
-        Collections.sort(reminder, new FirstIpThenLastIpCidrComparator());
-        return reminder;
+    public Set<Cidr> perform(Cidr minuend, Ipv4 subtrahend) {
+        return recursivelySubtract(minuend, subtrahend);
     }
 
-    private List<Cidr> recursivelySubtract(Cidr minuend, Ipv4 subtrahend) {
+    private Set<Cidr> recursivelySubtract(Cidr minuend, Ipv4 subtrahend) {
         if (!minuend.contains(subtrahend)) {
-            return Arrays.asList(minuend);
+            return Collections.singleton(minuend);
         }
         if (minuend.netmask().isNarrowest()) {
-            return Arrays.asList();
+            return Collections.emptySet();
         }
-        final List<Cidr> reminder = new LinkedList<>();
+        final Set<Cidr> reminder = new HashSet<>();
         final Pair<Cidr, Cidr> split = minuend.split();
         if (split.first().contains(subtrahend)) {
             reminder.add(split.second());
@@ -35,13 +30,5 @@ public class SubtractIpFromCidr implements BinaryDelegate<List<Cidr>, Cidr, Ipv4
             reminder.addAll(recursivelySubtract(split.second(), subtrahend));
         }
         return reminder;
-    }
-
-    private static class FirstIpThenLastIpCidrComparator implements Comparator<Cidr> {
-
-        @Override
-        public int compare(Cidr lhs, Cidr rhs) {
-            return new CompareToBuilder().append(lhs.firstIp(), rhs.firstIp()).append(lhs.lastIp(), rhs.lastIp()).toComparison();
-        }
     }
 }
