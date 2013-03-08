@@ -18,4 +18,8 @@ public abstract class CidrOperations {
     public static List<Cidr> sortByFirstThenLastIp(Collection<Cidr> cidrs) {
         return new SortCidrsByFirstThenLastIp().perform(cidrs);
     }
+
+    public static Set<Cidr> densify(Cidr... cidrs) {
+        return new DensifyCidrs().perform(Arrays.asList(cidrs));
+    }
 }
