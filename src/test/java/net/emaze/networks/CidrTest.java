@@ -8,7 +8,7 @@ public class CidrTest {
 
     @Test
     public void parseYieldsExpectedCidr() {
-        final Cidr expected = new Cidr(Ipv4.parse("10.0.0.0"), Netmask.fromBits(8));
+        final Cidr expected = new Cidr(Ipv4.parse("10.0.0.0"), Mask.net(8));
         final Cidr got = Cidr.parse("10.0.0.0/8");
         Assert.assertEquals(expected, got);
     }

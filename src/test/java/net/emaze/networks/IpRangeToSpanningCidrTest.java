@@ -24,34 +24,34 @@ public class IpRangeToSpanningCidrTest {
 
     @Test
     public void spanningWhenFirstAndLastCoincidesYieldsCidr() {
-        final Cidr expected = Cidr.byContainedIp(ADDRESS, Netmask.fromBits(32));
+        final Cidr expected = Cidr.byContainedIp(ADDRESS, Mask.net(32));
         final Cidr spanning = new IpRangeToSpanningCidr().perform(ADDRESS, ADDRESS);
         Assert.assertEquals(expected, spanning);
     }
 
     @Test
     public void spanningAValidRangeYieldsExpected() {
-        final Cidr expected = Cidr.byContainedIp(Ipv4.parse("37.116.130.0"), Netmask.fromBits(18));
+        final Cidr expected = Cidr.byContainedIp(Ipv4.parse("37.116.130.0"), Mask.net(18));
         final Cidr spanning = new IpRangeToSpanningCidr().perform(Ipv4.parse("37.116.130.0"), Ipv4.parse("37.116.191.255"));
         Assert.assertEquals(expected, spanning);
     }
 
     @Test
     public void spanningAroundLastIpCornerCase() {
-        final Cidr expected = new Cidr(Ipv4.parse("255.255.255.254"), Netmask.fromBits(31));
+        final Cidr expected = new Cidr(Ipv4.parse("255.255.255.254"), Mask.net(31));
         final Cidr spanning = new IpRangeToSpanningCidr().perform(Ipv4.parse("255.255.255.254"), Ipv4.parse("255.255.255.255"));
         Assert.assertEquals(expected, spanning);
     }
 
     @Test
     public void spanningAroundFirstIpCornerCase() {
-        final Cidr expected = new Cidr(Ipv4.parse("0.0.0.0"), Netmask.fromBits(31));
+        final Cidr expected = new Cidr(Ipv4.parse("0.0.0.0"), Mask.net(31));
         final Cidr spanning = new IpRangeToSpanningCidr().perform(Ipv4.parse("0.0.0.0"), Ipv4.parse("0.0.0.1"));
         Assert.assertEquals(expected, spanning);
     }
     @Test
     public void spanningWholeAddressSpaceCornerCase() {
-        final Cidr expected = new Cidr(Ipv4.parse("0.0.0.0"), Netmask.fromBits(0));
+        final Cidr expected = new Cidr(Ipv4.parse("0.0.0.0"), Mask.net(0));
         final Cidr spanning = new IpRangeToSpanningCidr().perform(Ipv4.FIRST_IP, Ipv4.LAST_IP);
         Assert.assertEquals(expected, spanning);
     }

@@ -91,7 +91,7 @@ public class Ipv4Test {
     @Test
     public void maskingAnAddressYieldsNetworkPart() {
         final Ipv4 address = Ipv4.parse("192.168.1.123");
-        final Netmask netmask = Netmask.fromBits(16);
+        final Mask netmask = Mask.net(16);
         final Ipv4 expected = Ipv4.parse("192.168.0.0");
         Assert.assertEquals(expected, address.mask(netmask));
     }

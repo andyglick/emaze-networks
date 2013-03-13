@@ -28,7 +28,7 @@ public class IpRangeToCidrsTest {
     @Test
     public void sameFirstAndLastIpYieldsSingleCidr() {
         final List<Cidr> got = new IpRangeToCidrs().perform(ADDRESS, ADDRESS);
-        final List<Cidr> expected = Arrays.asList(Cidr.byContainedIp(ADDRESS, Netmask.fromBits(32)));
+        final List<Cidr> expected = Arrays.asList(Cidr.byContainedIp(ADDRESS, Mask.net(32)));
         Assert.assertEquals(expected, got);
     }
 
@@ -80,11 +80,11 @@ public class IpRangeToCidrsTest {
         final Ipv4 lastIp = Ipv4.parse("37.116.191.255");
         final List<Cidr> got = new IpRangeToCidrs().perform(firstIp, lastIp);
         final List<Cidr> expected = Arrays.asList(
-                new Cidr(Ipv4.parse("37.116.130.0"), Netmask.fromBits(23)),
-                new Cidr(Ipv4.parse("37.116.132.0"), Netmask.fromBits(22)),
-                new Cidr(Ipv4.parse("37.116.136.0"), Netmask.fromBits(21)),
-                new Cidr(Ipv4.parse("37.116.144.0"), Netmask.fromBits(20)),
-                new Cidr(Ipv4.parse("37.116.160.0"), Netmask.fromBits(19)));
+                new Cidr(Ipv4.parse("37.116.130.0"), Mask.net(23)),
+                new Cidr(Ipv4.parse("37.116.132.0"), Mask.net(22)),
+                new Cidr(Ipv4.parse("37.116.136.0"), Mask.net(21)),
+                new Cidr(Ipv4.parse("37.116.144.0"), Mask.net(20)),
+                new Cidr(Ipv4.parse("37.116.160.0"), Mask.net(19)));
         org.junit.Assert.assertEquals(expected, got);
     }
 }

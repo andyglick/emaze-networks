@@ -17,7 +17,7 @@ public class SubtractIpFromCidr implements BinaryDelegate<Set<Cidr>, Cidr, Ipv4>
         if (!minuend.contains(subtrahend)) {
             return Collections.singleton(minuend);
         }
-        if (minuend.netmask().isNarrowest()) {
+        if (minuend.netmask().equals(Mask.NARROWEST)){
             return Collections.emptySet();
         }
         final Set<Cidr> reminder = new HashSet<>();
