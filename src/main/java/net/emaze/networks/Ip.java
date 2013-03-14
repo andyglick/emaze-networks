@@ -6,10 +6,10 @@ import net.emaze.dysfunctional.hashing.HashCodeBuilder;
 
 public class Ip implements Comparable<Ip> {
 
-    private static final int MIN_ADDRESS_SPACE = 0x00000000;
-    private static final int MAX_ADDRESS_SPACE = 0xFFFFFFFF;
-    public static final Ip LAST_IP = new Ip(MAX_ADDRESS_SPACE);
-    public static final Ip FIRST_IP = new Ip(MIN_ADDRESS_SPACE);
+    private static final int MIN_ADDRESS_IN_BITS = 0x00000000;
+    private static final int MAX_ADDRESS_IN_BITS = 0xFFFFFFFF;
+    public static final Ip LAST_IP = new Ip(MAX_ADDRESS_IN_BITS);
+    public static final Ip FIRST_IP = new Ip(MIN_ADDRESS_IN_BITS);
     private final int address;
 
     private Ip(int bits) {
@@ -36,11 +36,11 @@ public class Ip implements Comparable<Ip> {
     }
 
     public Ip next() {
-        return address == MAX_ADDRESS_SPACE ? LAST_IP : new Ip(address + 1);
+        return address == MAX_ADDRESS_IN_BITS ? LAST_IP : new Ip(address + 1);
     }
 
     public Ip previous() {
-        return address == MIN_ADDRESS_SPACE ? FIRST_IP : new Ip(address - 1);
+        return address == MIN_ADDRESS_IN_BITS ? FIRST_IP : new Ip(address - 1);
     }
 
     @Override

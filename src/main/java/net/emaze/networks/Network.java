@@ -37,6 +37,7 @@ public class Network {
     }
 
     public static Network byContainedIp(Ip ip, Mask netmask) {
+        dbc.precondition(netmask.isNetmask(), "mask must be a netmask, not a hostmask");
         return new Network(ip.mask(netmask), netmask);
     }
 
