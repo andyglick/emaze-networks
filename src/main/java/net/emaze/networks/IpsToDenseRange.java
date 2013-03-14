@@ -8,6 +8,6 @@ public class IpsToDenseRange implements BinaryDelegate<DenseRange<Ip>, Ip, Ip> {
 
     @Override
     public DenseRange<Ip> perform(Ip first, Ip last) {
-        return (DenseRange<Ip>) new Ipv4Ranges().closed(first, last);
+        return (DenseRange<Ip>) new IpRanges().closed(first, last);
     }
 }

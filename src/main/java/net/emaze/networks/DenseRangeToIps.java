@@ -10,7 +10,7 @@ public class DenseRangeToIps implements Delegate<Pair<Ip, Ip>, DenseRange<Ip>> {
     @Override
     public Pair<Ip, Ip> perform(DenseRange<Ip> range) {
         dbc.precondition(range.iterator().hasNext(), "Range cannot be empty");
-        final Ip lastIp = range.end().fmap(new PreviousIpv4()).orElse(Ip.LAST_IP); // Workaround for range.end()
+        final Ip lastIp = range.end().fmap(new PreviousIp()).orElse(Ip.LAST_IP); // Workaround for range.end()
         return Pair.of(range.begin(), lastIp);
     }
 }

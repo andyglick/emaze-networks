@@ -24,6 +24,7 @@ public class Mask implements Comparable<Mask> {
     }
 
     public static Mask host(int population) {
+        //TODO pre 0 <= pop <= 32  or return widest/narrowest when over?
         if (population == 0) {
             return WIDEST;
         }
@@ -31,6 +32,7 @@ public class Mask implements Comparable<Mask> {
     }
 
     public static Mask net(int population) {
+        //TODO pre 0 <= pop <= 32  or return widest/narrowest when over?
         if (population == 0) {
             return WIDEST;
         }

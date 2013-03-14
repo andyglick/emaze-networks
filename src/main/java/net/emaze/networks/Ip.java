@@ -17,6 +17,7 @@ public class Ip implements Comparable<Ip> {
     }
 
     public static Ip parse(String dottedIpAddress) {
+        dbc.precondition(dottedIpAddress != null, "address must be not-null");
         final long address = new DottedOctetFormToLong().perform(dottedIpAddress);
         return new Ip((int) address);
     }
