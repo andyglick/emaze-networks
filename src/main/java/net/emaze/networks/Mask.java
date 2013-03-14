@@ -61,6 +61,14 @@ public class Mask implements Comparable<Mask> {
         return new Mask(bits << 1);
     }
 
+    public boolean isNetmask() {
+        return bits == 0 ? true : Integer.highestOneBit(bits) == 0x80000000;
+    }
+
+    public boolean isHostmask() {
+        return bits == 0 ? true : Integer.lowestOneBit(bits) == 0x00000001;
+    }
+
     @Override
     public boolean equals(Object other) {
         if (other instanceof Mask == false) {

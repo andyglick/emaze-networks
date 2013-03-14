@@ -149,4 +149,34 @@ public class MaskTest {
     public void malformedMaskThrows() {
         Assert.assertEquals(8, Mask.parse("255.0.0.255").population());
     }
+
+    @Test
+    public void widestIsHostmask() {
+        Assert.assertEquals(true, Mask.WIDEST.isHostmask());
+    }
+
+    @Test
+    public void narrowestIsHostmask() {
+        Assert.assertEquals(true, Mask.NARROWEST.isHostmask());
+    }
+
+    @Test
+    public void whenPopulationIsOnLowestBitsIsHostmask() {
+        Assert.assertEquals(true, Mask.parse("0.0.0.1").isHostmask());
+    }
+
+    @Test
+    public void widestIsNetmask() {
+        Assert.assertEquals(true, Mask.WIDEST.isNetmask());
+    }
+
+    @Test
+    public void narrowestIsNetmask() {
+        Assert.assertEquals(true, Mask.NARROWEST.isNetmask());
+    }
+
+    @Test
+    public void whenPopulationOnHighestBitsIsNetmask() {
+        Assert.assertEquals(true, Mask.parse("128.0.0.0").isNetmask());
+    }
 }
