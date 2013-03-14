@@ -134,4 +134,19 @@ public class MaskTest {
     public void toStringOfNarrowestIs() {
         Assert.assertEquals("255.255.255.255", Mask.NARROWEST.toString());
     }
+
+    @Test
+    public void parseValidNetmaskYieldsMaskWithExpectedPopulation() {
+        Assert.assertEquals(8, Mask.parse("255.0.0.0").population());
+    }
+
+    @Test
+    public void parseValidHostmaskYieldsMaskWithExpectedPopulation() {
+        Assert.assertEquals(8, Mask.parse("0.0.0.255").population());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void malformedMaskThrows() {
+        Assert.assertEquals(8, Mask.parse("255.0.0.255").population());
+    }
 }

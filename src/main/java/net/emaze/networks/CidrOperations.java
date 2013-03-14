@@ -7,7 +7,7 @@ import java.util.Set;
 
 public abstract class CidrOperations {
 
-    public static Set<Cidr> subtract(Cidr minuend, Ipv4 subtrahend) {
+    public static Set<Cidr> subtract(Cidr minuend, Ip subtrahend) {
         return new SubtractIpFromCidr().perform(minuend, subtrahend);
     }
 

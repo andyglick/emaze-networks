@@ -8,22 +8,22 @@ import net.emaze.dysfunctional.tuples.Pair;
 
 public class Cidr {
 
-    private final Ipv4 network;
+    private final Ip network;
     private final Mask netmask;
 
-    public Cidr(Ipv4 network, Mask netmask) {
+    public Cidr(Ip network, Mask netmask) {
         dbc.precondition(network.mask(netmask).equals(network), "Network must not contain host information");
         this.network = network;
         this.netmask = netmask;
     }
 
-    public static Cidr byContainedIp(Ipv4 ip, Mask netmask) {
+    public static Cidr byContainedIp(Ip ip, Mask netmask) {
         return new Cidr(ip.mask(netmask), netmask);
     }
 
     public static Cidr parse(String ip, int netmaskBits) {
         final Mask netmask = Mask.net(netmaskBits);
-        final Ipv4 network = Ipv4.parse(ip).mask(netmask);
+        final Ip network = Ip.parse(ip).mask(netmask);
         return new Cidr(network, netmask);
     }
 
@@ -34,14 +34,14 @@ public class Cidr {
         return Cidr.parse(networkAndBits[0], Integer.parseInt(networkAndBits[1]));
     }
 
-    public Ipv4 firstIp() {
+    public Ip firstIp() {
         return network;
     }
 
-    public Ipv4 lastIp() {
-        final int hostLength = 32 - netmask.population();
-        final long displacement = (1L << hostLength) - 1;
-        return network.offset(displacement);
+    public Ip lastIp() {
+        final Mask hostMask = Mask.host(32 - netmask.population());
+        final Ip hostPart = Ip.LAST_IP.mask(hostMask);
+        return Ip.fromBits(network.toBits() | hostPart.toBits());
     }
 
     public Mask netmask() {
@@ -56,7 +56,7 @@ public class Cidr {
         return Pair.of(first, second);
     }
 
-    public boolean contains(Ipv4 ipv4) {
+    public boolean contains(Ip ipv4) {
         if (Order.of(ipv4.compareTo(this.firstIp())) == Order.LT) {
             return false;
         }

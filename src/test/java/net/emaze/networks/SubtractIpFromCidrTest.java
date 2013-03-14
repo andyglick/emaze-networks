@@ -13,21 +13,21 @@ public class SubtractIpFromCidrTest {
     @Test
     public void excludingIpOutsideCidrYieldsCidr() {
         final Cidr cidr = Cidr.parse("255.0.0.0", 30);
-        final Set<Cidr> got = subtractor.perform(cidr, Ipv4.parse("10.0.0.0"));
+        final Set<Cidr> got = subtractor.perform(cidr, Ip.parse("10.0.0.0"));
         Assert.assertEquals(Collections.singleton(cidr), got);
     }
     
     @Test
     public void excludingAllCidrContentsYieldsEmptySet() {
         final Cidr cidr = Cidr.parse("255.0.0.0", 32);
-        final Set<Cidr> got = subtractor.perform(cidr, Ipv4.parse("255.0.0.0"));
+        final Set<Cidr> got = subtractor.perform(cidr, Ip.parse("255.0.0.0"));
         Assert.assertEquals(Collections.emptySet(), got);
     }
 
     @Test
     public void excludingFirstIpYieldsExpected() {
         final Cidr cidr = Cidr.parse("255.0.0.0", 30);
-        final Set<Cidr> got = subtractor.perform(cidr, Ipv4.parse("255.0.0.0"));
+        final Set<Cidr> got = subtractor.perform(cidr, Ip.parse("255.0.0.0"));
         final Set<Cidr> expected = new HashSet<>(Arrays.asList(
                 Cidr.parse("255.0.0.1", 32),
                 Cidr.parse("255.0.0.2", 31)));
@@ -37,7 +37,7 @@ public class SubtractIpFromCidrTest {
     @Test
     public void excludingMiddleIpYieldsExpected() {
         final Cidr cidr = Cidr.parse("255.0.0.0", 30);
-        final Set<Cidr> got = subtractor.perform(cidr, Ipv4.parse("255.0.0.2"));
+        final Set<Cidr> got = subtractor.perform(cidr, Ip.parse("255.0.0.2"));
         final Set<Cidr> expected = new HashSet<>(Arrays.asList(
                 Cidr.parse("255.0.0.0", 31),
                 Cidr.parse("255.0.0.3", 32)));
@@ -47,7 +47,7 @@ public class SubtractIpFromCidrTest {
     @Test
     public void excludingLastIpYieldsExpected() {
         final Cidr cidr = Cidr.parse("255.0.0.0", 30);
-        final Set<Cidr> got = subtractor.perform(cidr, Ipv4.parse("255.0.0.3"));
+        final Set<Cidr> got = subtractor.perform(cidr, Ip.parse("255.0.0.3"));
         final Set<Cidr> expected = new HashSet<>(Arrays.asList(
                 Cidr.parse("255.0.0.0", 31),
                 Cidr.parse("255.0.0.2", 32)));

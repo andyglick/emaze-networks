@@ -3,14 +3,14 @@ package net.emaze.networks;
 import net.emaze.dysfunctional.options.Maybe;
 import net.emaze.dysfunctional.order.SequencingPolicy;
 
-public class Ipv4ForwardSequencingPolicy implements SequencingPolicy<Ipv4> {
+public class Ipv4ForwardSequencingPolicy implements SequencingPolicy<Ip> {
 
     @Override
-    public Maybe<Ipv4> next(Ipv4 element) {
-        if (Ipv4.LAST_IP.equals(element)) {
+    public Maybe<Ip> next(Ip element) {
+        if (Ip.LAST_IP.equals(element)) {
             return Maybe.nothing();
         }
-        return Maybe.just(element.offset(1));
+        return Maybe.just(element.next());
     }
 
     @Override

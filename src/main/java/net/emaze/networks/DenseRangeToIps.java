@@ -5,12 +5,12 @@ import net.emaze.dysfunctional.dispatching.delegates.Delegate;
 import net.emaze.dysfunctional.ranges.DenseRange;
 import net.emaze.dysfunctional.tuples.Pair;
 
-public class DenseRangeToIps implements Delegate<Pair<Ipv4, Ipv4>, DenseRange<Ipv4>> {
+public class DenseRangeToIps implements Delegate<Pair<Ip, Ip>, DenseRange<Ip>> {
 
     @Override
-    public Pair<Ipv4, Ipv4> perform(DenseRange<Ipv4> range) {
+    public Pair<Ip, Ip> perform(DenseRange<Ip> range) {
         dbc.precondition(range.iterator().hasNext(), "Range cannot be empty");
-        final Ipv4 lastIp = range.end().fmap(new PreviousIpv4()).orElse(Ipv4.LAST_IP); // Workaround for range.end()
+        final Ip lastIp = range.end().fmap(new PreviousIpv4()).orElse(Ip.LAST_IP); // Workaround for range.end()
         return Pair.of(range.begin(), lastIp);
     }
 }

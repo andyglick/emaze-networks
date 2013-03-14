@@ -47,11 +47,7 @@ public class Mask implements Comparable<Mask> {
 
     @Override
     public String toString() {
-        final long first = (bits & 0xFF000000) >>> 24;
-        final long second = (bits & 0x00FF0000) >> 16;
-        final long third = (bits & 0x0000FF00) >> 8;
-        final long fourth = bits & 0x000000FF;
-        return String.format("%s.%s.%s.%s", first, second, third, fourth);
+        return new IntToDottedOctetForm().perform(bits);
     }
 
     public Mask narrowHosts() {

@@ -6,14 +6,14 @@ import java.util.Set;
 import net.emaze.dysfunctional.dispatching.delegates.BinaryDelegate;
 import net.emaze.dysfunctional.tuples.Pair;
 
-public class SubtractIpFromCidr implements BinaryDelegate<Set<Cidr>, Cidr, Ipv4> {
+public class SubtractIpFromCidr implements BinaryDelegate<Set<Cidr>, Cidr, Ip> {
 
     @Override
-    public Set<Cidr> perform(Cidr minuend, Ipv4 subtrahend) {
+    public Set<Cidr> perform(Cidr minuend, Ip subtrahend) {
         return recursivelySubtract(minuend, subtrahend);
     }
 
-    private Set<Cidr> recursivelySubtract(Cidr minuend, Ipv4 subtrahend) {
+    private Set<Cidr> recursivelySubtract(Cidr minuend, Ip subtrahend) {
         if (!minuend.contains(subtrahend)) {
             return Collections.singleton(minuend);
         }

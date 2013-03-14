@@ -3,18 +3,18 @@ package net.emaze.networks;
 import junit.framework.Assert;
 import org.junit.Test;
 
-public class LongToDottedOctetFormTest {
+public class IntToDottedOctetFormTest {
 
-    private final static long LOCALHOST_AS_LONG = 2130706433L;
+    private final static int LOCALHOST_AS_LONG = 2130706433;
 
     @Test(expected = IllegalArgumentException.class)
     public void nullArgumentYieldsException() {
-        new LongToDottedOctetForm().perform(null);
+        new IntToDottedOctetForm().perform(null);
     }
 
     @Test
     public void conversionYieldsCorrectRepresentation() {
-        final String dottedOctetForm = new LongToDottedOctetForm().perform(LOCALHOST_AS_LONG);
+        final String dottedOctetForm = new IntToDottedOctetForm().perform(LOCALHOST_AS_LONG);
         Assert.assertEquals("127.0.0.1", dottedOctetForm);
     }
 }

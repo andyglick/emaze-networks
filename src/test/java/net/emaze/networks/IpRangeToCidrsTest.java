@@ -8,7 +8,7 @@ import org.junit.Test;
 
 public class IpRangeToCidrsTest {
     
-    public static final Ipv4 ADDRESS = Ipv4.parse("127.0.0.1");
+    public static final Ip ADDRESS = Ip.parse("127.0.0.1");
 
     @Test(expected = IllegalArgumentException.class)
     public void callingWithNullFirstIpThrows() {
@@ -22,7 +22,7 @@ public class IpRangeToCidrsTest {
     
     @Test(expected = IllegalArgumentException.class)
     public void callingWithFirstIpGreaterThanLastIpThrows() {
-        new IpRangeToCidrs().perform(ADDRESS.offset(1), ADDRESS);
+        new IpRangeToCidrs().perform(ADDRESS.next(), ADDRESS);
     }
     
     @Test
@@ -34,8 +34,8 @@ public class IpRangeToCidrsTest {
 
     @Test
     public void canTransformARangeWhenItCoincidesWithSpanningCidr() {
-        final Ipv4 firstIp = Ipv4.parse("192.168.0.0");
-        final Ipv4 lastIp = Ipv4.parse("192.168.0.255");
+        final Ip firstIp = Ip.parse("192.168.0.0");
+        final Ip lastIp = Ip.parse("192.168.0.255");
         final List<Cidr> got = new IpRangeToCidrs().perform(firstIp, lastIp);
         final List<Cidr> expected = Arrays.asList(Cidr.parse("192.168.0.0", 24));
         org.junit.Assert.assertEquals(expected, got);
@@ -43,8 +43,8 @@ public class IpRangeToCidrsTest {
     
     @Test
     public void canTransformARangeWhenRangeIsStartOfSpanningCidr() {
-        final Ipv4 firstIp = Ipv4.parse("192.168.0.0");
-        final Ipv4 lastIp = Ipv4.parse("192.168.1.1");
+        final Ip firstIp = Ip.parse("192.168.0.0");
+        final Ip lastIp = Ip.parse("192.168.1.1");
         final List<Cidr> got = new IpRangeToCidrs().perform(firstIp, lastIp);
         final List<Cidr> expected = Arrays.asList(
                 Cidr.parse("192.168.0.0", 24),
@@ -54,8 +54,8 @@ public class IpRangeToCidrsTest {
     
     @Test
     public void canTransformARangeWhenRangeIsEndOfSpanningCidr() {
-        final Ipv4 firstIp = Ipv4.parse("192.168.0.128");
-        final Ipv4 lastIp = Ipv4.parse("192.168.1.255");
+        final Ip firstIp = Ip.parse("192.168.0.128");
+        final Ip lastIp = Ip.parse("192.168.1.255");
         final List<Cidr> got = new IpRangeToCidrs().perform(firstIp, lastIp);
         final List<Cidr> expected = Arrays.asList(
                 Cidr.parse("192.168.0.128", 25),
@@ -65,8 +65,8 @@ public class IpRangeToCidrsTest {
     
     @Test
     public void canTransformARangeWhenRangeIsMiddleOfSpanningCidr() {
-        final Ipv4 firstIp = Ipv4.parse("192.168.0.128");
-        final Ipv4 lastIp = Ipv4.parse("192.168.1.127");
+        final Ip firstIp = Ip.parse("192.168.0.128");
+        final Ip lastIp = Ip.parse("192.168.1.127");
         final List<Cidr> got = new IpRangeToCidrs().perform(firstIp, lastIp);
         final List<Cidr> expected = Arrays.asList(
                 Cidr.parse("192.168.0.128", 25),
@@ -76,15 +76,15 @@ public class IpRangeToCidrsTest {
 
     @Test
     public void canTransformAComplexRangeToCidr() throws UnknownHostException {
-        final Ipv4 firstIp = Ipv4.parse("37.116.130.0");
-        final Ipv4 lastIp = Ipv4.parse("37.116.191.255");
+        final Ip firstIp = Ip.parse("37.116.130.0");
+        final Ip lastIp = Ip.parse("37.116.191.255");
         final List<Cidr> got = new IpRangeToCidrs().perform(firstIp, lastIp);
         final List<Cidr> expected = Arrays.asList(
-                new Cidr(Ipv4.parse("37.116.130.0"), Mask.net(23)),
-                new Cidr(Ipv4.parse("37.116.132.0"), Mask.net(22)),
-                new Cidr(Ipv4.parse("37.116.136.0"), Mask.net(21)),
-                new Cidr(Ipv4.parse("37.116.144.0"), Mask.net(20)),
-                new Cidr(Ipv4.parse("37.116.160.0"), Mask.net(19)));
+                new Cidr(Ip.parse("37.116.130.0"), Mask.net(23)),
+                new Cidr(Ip.parse("37.116.132.0"), Mask.net(22)),
+                new Cidr(Ip.parse("37.116.136.0"), Mask.net(21)),
+                new Cidr(Ip.parse("37.116.144.0"), Mask.net(20)),
+                new Cidr(Ip.parse("37.116.160.0"), Mask.net(19)));
         org.junit.Assert.assertEquals(expected, got);
     }
 }

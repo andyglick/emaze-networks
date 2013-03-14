@@ -23,18 +23,18 @@ import net.emaze.dysfunctional.ranges.RangeIsEmpty;
 
 public class SubtractCidrsFromCidr implements BinaryDelegate<Set<Cidr>, Cidr, Collection<Cidr>> {
 
-    private static final Delegate<DenseRange<Ipv4>, Cidr> cidrToDenseRange = Compositions.compose(Tuples.tupled(new IpsToDenseRange()), new CidrToIps());
-    private static final Delegate<List<Cidr>, DenseRange<Ipv4>> denseRangeToCidr = Compositions.compose(Tuples.tupled(new IpRangeToCidrs()), new DenseRangeToIps());
+    private static final Delegate<DenseRange<Ip>, Cidr> cidrToDenseRange = Compositions.compose(Tuples.tupled(new IpsToDenseRange()), new CidrToIps());
+    private static final Delegate<List<Cidr>, DenseRange<Ip>> denseRangeToCidr = Compositions.compose(Tuples.tupled(new IpRangeToCidrs()), new DenseRangeToIps());
 
     @Override
     public Set<Cidr> perform(Cidr parent, Collection<Cidr> children) {
         dbc.precondition(parent != null, "parent cannot be null");
         dbc.precondition(children != null, "children cannot be null");
-        final Range<Ipv4> parentAsRange = cidrToDenseRange.perform(parent);
-        final Iterator<Range<Ipv4>> childrenAsRanges = Applications.transform(children, Compositions.compose(new Vary<Range<Ipv4>, DenseRange<Ipv4>>(), cidrToDenseRange));
-        final Range<Ipv4> remainder = new Ipv4Ranges().difference(Multiplexing.chain(Iterations.iterator(parentAsRange), childrenAsRanges));
+        final Range<Ip> parentAsRange = cidrToDenseRange.perform(parent);
+        final Iterator<Range<Ip>> childrenAsRanges = Applications.transform(children, Compositions.compose(new Vary<Range<Ip>, DenseRange<Ip>>(), cidrToDenseRange));
+        final Range<Ip> remainder = new Ipv4Ranges().difference(Multiplexing.chain(Iterations.iterator(parentAsRange), childrenAsRanges));
         //Reductions.reduce(childrenAsRanges, new SubtractRangeFromRange(), (Range) parentAsRange);
-        final Iterator<DenseRange<Ipv4>> densifiedNotEmptyRemainders = Filtering.filter(remainder.densified(), Logic.not(new RangeIsEmpty<DenseRange<Ipv4>, Ipv4>()));
+        final Iterator<DenseRange<Ip>> densifiedNotEmptyRemainders = Filtering.filter(remainder.densified(), Logic.not(new RangeIsEmpty<DenseRange<Ip>, Ip>()));
         return Consumers.all(Multiplexing.flatten(Applications.transform(densifiedNotEmptyRemainders, denseRangeToCidr)), new HashSet<Cidr>());
     }
 }

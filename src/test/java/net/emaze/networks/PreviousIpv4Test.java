@@ -5,8 +5,8 @@ import org.junit.Test;
 
 public class PreviousIpv4Test {
     
-    private static final Ipv4 ADDRESS = Ipv4.parse("127.0.0.1");
-    private static final Ipv4 BEFORE_ADDRESS = Ipv4.parse("127.0.0.0");
+    private static final Ip ADDRESS = Ip.parse("127.0.0.1");
+    private static final Ip BEFORE_ADDRESS = Ip.parse("127.0.0.0");
     
     @Test
     public void yieldsPreviousIpv4() {

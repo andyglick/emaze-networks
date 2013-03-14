@@ -8,7 +8,7 @@ public class CidrTest {
 
     @Test
     public void parseYieldsExpectedCidr() {
-        final Cidr expected = new Cidr(Ipv4.parse("10.0.0.0"), Mask.net(8));
+        final Cidr expected = new Cidr(Ip.parse("10.0.0.0"), Mask.net(8));
         final Cidr got = Cidr.parse("10.0.0.0/8");
         Assert.assertEquals(expected, got);
     }
@@ -26,25 +26,25 @@ public class CidrTest {
     @Test
     public void containsYieldsTrueForNetwork() {
         final Cidr cidr = Cidr.parse("10.0.0.0", 8);
-        Assert.assertTrue(cidr.contains(Ipv4.parse("10.0.0.0")));
+        Assert.assertTrue(cidr.contains(Ip.parse("10.0.0.0")));
     }
 
     @Test
     public void containsYieldsTrueForLastIpOfNetwork() {
         final Cidr cidr = Cidr.parse("10.0.0.0", 8);
-        Assert.assertTrue(cidr.contains(Ipv4.parse("10.255.255.255")));
+        Assert.assertTrue(cidr.contains(Ip.parse("10.255.255.255")));
     }
 
     @Test
     public void containsYieldsTrueForIpInsideCidr() {
         final Cidr cidr = Cidr.parse("10.0.0.0", 8);
-        Assert.assertTrue(cidr.contains(Ipv4.parse("10.255.255.254")));
+        Assert.assertTrue(cidr.contains(Ip.parse("10.255.255.254")));
     }
 
     @Test
     public void containsYieldsFalseForIpOutsideCidr() {
         final Cidr cidr = Cidr.parse("10.0.0.0", 8);
-        Assert.assertFalse(cidr.contains(Ipv4.parse("172.16.0.1")));
+        Assert.assertFalse(cidr.contains(Ip.parse("172.16.0.1")));
     }
 
     @Test
@@ -63,7 +63,7 @@ public class CidrTest {
     @Test
     public void cidrIsBuiltFromNetworkPartOfIpAddress() {
         final Cidr out = Cidr.parse("255.255.255.255", 24);
-        Assert.assertEquals(Ipv4.parse("255.255.255.0"), out.firstIp());
+        Assert.assertEquals(Ip.parse("255.255.255.0"), out.firstIp());
     }
 
     @Test
@@ -93,11 +93,11 @@ public class CidrTest {
 
     @Test
     public void firstIpYieldsLowerEnd() {
-        Assert.assertEquals(Ipv4.parse("10.0.0.0"), Cidr.parse("10.0.0.0/8").firstIp());
+        Assert.assertEquals(Ip.parse("10.0.0.0"), Cidr.parse("10.0.0.0/8").firstIp());
     }
 
     @Test
     public void lastIpYieldsUpperEnd() {
-        Assert.assertEquals(Ipv4.parse("10.255.255.255"), Cidr.parse("10.0.0.0/8").lastIp());
+        Assert.assertEquals(Ip.parse("10.255.255.255"), Cidr.parse("10.0.0.0/8").lastIp());
     }
 }

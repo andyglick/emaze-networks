@@ -5,12 +5,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import java.io.IOException;
-import net.emaze.networks.Ipv4;
+import net.emaze.networks.Ip;
 
-public class Ipv4ToString extends JsonSerializer<Ipv4> {
+public class Ipv4ToString extends JsonSerializer<Ip> {
 
     @Override
-    public void serialize(Ipv4 ipv4, JsonGenerator jg, SerializerProvider sp) throws IOException, JsonProcessingException {
+    public void serialize(Ip ipv4, JsonGenerator jg, SerializerProvider sp) throws IOException, JsonProcessingException {
         jg.writeString(ipv4.toString());
     }
 }

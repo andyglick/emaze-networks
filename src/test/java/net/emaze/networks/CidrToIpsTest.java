@@ -8,7 +8,7 @@ public class CidrToIpsTest {
     
     @Test
     public void canTransformCidrToPairOfIpv4() {
-        final Pair<Ipv4, Ipv4> expected = Pair.of(Ipv4.FIRST_IP, Ipv4.LAST_IP);
+        final Pair<Ip, Ip> expected = Pair.of(Ip.FIRST_IP, Ip.LAST_IP);
         final Cidr cidr = Cidr.parse("0.0.0.0/0");
         Assert.assertEquals(expected, new CidrToIps().perform(cidr));
     }
