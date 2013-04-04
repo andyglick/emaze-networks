@@ -24,7 +24,7 @@ public class NetworkTest {
     }
 
     @Test
-    public void containsYieldsTrueForNetwork() {
+    public void containsYieldsTrueForNetworkAddress() {
         final Network cidr = Network.fromCidrNotation("10.0.0.0", 8);
         Assert.assertTrue(cidr.contains(Ip.parse("10.0.0.0")));
     }
@@ -45,6 +45,20 @@ public class NetworkTest {
     public void containsYieldsFalseForIpOutsideCidr() {
         final Network cidr = Network.fromCidrNotation("10.0.0.0", 8);
         Assert.assertFalse(cidr.contains(Ip.parse("172.16.0.1")));
+    }
+
+    @Test
+    public void containsYieldsTrueForIncludedNetwork() {
+        final Network container = Network.fromCidrNotation("10.0.0.0/8");
+        final Network contained = Network.fromCidrNotation("10.128.0.0/10");
+        Assert.assertTrue(container.contains(contained));
+    }
+
+    @Test
+    public void containsYieldsFalseForSeparateNetwork() {
+        final Network container = Network.fromCidrNotation("10.0.0.0/8");
+        final Network contained = Network.fromCidrNotation("192.168.0.0/16");
+        Assert.assertFalse(container.contains(contained));
     }
 
     @Test

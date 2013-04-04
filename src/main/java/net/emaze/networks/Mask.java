@@ -71,6 +71,10 @@ public class Mask implements Comparable<Mask> {
         return bits == 0 ? true : Integer.lowestOneBit(bits) == 0x00000001;
     }
 
+    public long hosts() {
+        return 2L << (32 - this.population());
+    }
+
     @Override
     public boolean equals(Object other) {
         if (other instanceof Mask == false) {

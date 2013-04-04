@@ -56,6 +56,10 @@ public class Network {
         return netmask;
     }
 
+    public long size() {
+        return netmask.hosts();
+    }
+
     public Pair<Ip, Mask> toCidr() {
         return Pair.of(network, netmask);
     }
@@ -80,6 +84,12 @@ public class Network {
             return false;
         }
         return true;
+    }
+
+    public boolean contains(Network other) {
+        final Order first = Order.of(this.firstIp().compareTo(other.firstIp()));
+        final Order last = Order.of(this.lastIp().compareTo(other.lastIp()));
+        return (first == Order.LT || first == Order.EQ) && (last == Order.EQ || last == Order.GT);
     }
 
     @Override
