@@ -15,6 +15,10 @@ public abstract class NetworkOperations {
         return new SubtractNetworksFromNetwork().perform(minuend, Arrays.asList(subtrahends));
     }
 
+    public static Set<Network> subtract(Network minuend, List<Network> subtrahends) {
+        return new SubtractNetworksFromNetwork().perform(minuend, subtrahends);
+    }
+
     public static List<Network> sortByFirstThenLastIp(Collection<Network> cidrs) {
         return new SortNetworksByFirstThenLastIp().perform(cidrs);
     }
