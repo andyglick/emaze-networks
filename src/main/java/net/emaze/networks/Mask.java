@@ -72,7 +72,7 @@ public class Mask implements Comparable<Mask> {
     }
 
     public long hosts() {
-        return 2L << (32 - this.population());
+        return 1L << (32 - this.population());
     }
 
     @Override

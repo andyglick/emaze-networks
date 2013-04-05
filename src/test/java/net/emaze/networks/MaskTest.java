@@ -179,4 +179,14 @@ public class MaskTest {
     public void whenPopulationOnHighestBitsIsNetmask() {
         Assert.assertEquals(true, Mask.parse("128.0.0.0").isNetmask());
     }
+
+    @Test
+    public void hostsOfNarrowestNetmaskIsOne() {
+        Assert.assertEquals(1L, Mask.NARROWEST.hosts());
+    }
+
+    @Test
+    public void hostsOfWidestNetmaskIsLots() {
+        Assert.assertEquals(1L << 32, Mask.WIDEST.hosts());
+    }
 }
