@@ -26,4 +26,8 @@ public abstract class NetworkOperations {
     public static Set<Network> densify(Network... cidrs) {
         return new DensifyNetworks().perform(Arrays.asList(cidrs));
     }
+    
+    public static Set<Network> densify(Collection<Network> cidrs) {
+        return new DensifyNetworks().perform(cidrs);
+    }
 }
