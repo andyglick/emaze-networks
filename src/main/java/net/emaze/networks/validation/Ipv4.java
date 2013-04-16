@@ -17,7 +17,7 @@ import net.emaze.networks.Ip;
 @Documented
 public @interface Ipv4 {
 
-    String message();
+    String message() default "Non è un indirizzo IP valido";
 
     Class<?>[] groups() default {};
 

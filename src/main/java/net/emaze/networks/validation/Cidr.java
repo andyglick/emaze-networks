@@ -17,7 +17,7 @@ import net.emaze.networks.Network;
 @Documented
 public @interface Cidr {
 
-    String message();
+    String message() default "Non è un CIDR valido";
 
     Class<?>[] groups() default {};
 

@@ -17,7 +17,7 @@ import net.emaze.networks.Mask;
 @Documented
 public @interface Netmask {
 
-    String message();
+    String message() default "Non è una netmask valida";
 
     Class<?>[] groups() default {};
 

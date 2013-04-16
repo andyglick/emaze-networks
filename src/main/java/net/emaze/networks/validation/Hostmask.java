@@ -17,7 +17,7 @@ import net.emaze.networks.Mask;
 @Documented
 public @interface Hostmask {
 
-    String message();
+    String message() default "Non è una hostmask valida";
 
     Class<?>[] groups() default {};
 
