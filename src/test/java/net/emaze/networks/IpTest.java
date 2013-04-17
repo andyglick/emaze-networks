@@ -109,4 +109,9 @@ public class IpTest {
     public void toStringRendersCorrectlyWhenHighestBitOff() {
         Assert.assertEquals("0.0.0.0", Ip.FIRST_IP.toString());
     }
+    
+    @Test
+    public void canonicalNameIsExpected() {
+        Assert.assertEquals("net.emaze.networks.Ip", Ip.class.getCanonicalName());
+    }
 }
