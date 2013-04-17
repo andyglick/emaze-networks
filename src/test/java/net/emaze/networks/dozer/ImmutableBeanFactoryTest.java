@@ -14,7 +14,7 @@ public class ImmutableBeanFactoryTest {
 
     @BeforeClass
     public static void setup() {
-        mapper.addMapping(ImmutableBeanFactoryTest.class.getResourceAsStream("/net/emaze/networks/dozer/network-mappings.xml"));
+        mapper.addMapping(new NetworksBeanMappings());
     }
 
     @Test
@@ -40,7 +40,7 @@ public class ImmutableBeanFactoryTest {
         final MaskContainer got = mapper.map(MaskContainer.of(Mask.parse("255.255.255.0")), MaskContainer.class);
         Assert.assertEquals(Mask.net(24), got.getValue());
     }
-    
+
     @Test
     public void canMapNetwork() {
         final Network got = mapper.map(Network.fromCidrNotation("127.0.0.0/16"), Network.class);
@@ -52,12 +52,16 @@ public class ImmutableBeanFactoryTest {
         final NetworkContainer got = mapper.map(NetworkContainer.of(Network.fromCidrNotation("127.0.0.0/16")), NetworkContainer.class);
         Assert.assertEquals(Network.fromCidrNotation("127.0.0.0/16"), got.getValue());
     }
-    
 
-    public static class IpContainer extends Container<Ip>{};
-    public static class MaskContainer extends Container<Mask>{};
-    public static class NetworkContainer extends Container<Network>{};
-    
+    public static class IpContainer extends Container<Ip> {
+    };
+
+    public static class MaskContainer extends Container<Mask> {
+    };
+
+    public static class NetworkContainer extends Container<Network> {
+    };
+
     public static class Container<T> {
 
         private T value;
