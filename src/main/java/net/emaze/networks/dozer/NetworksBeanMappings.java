@@ -4,7 +4,6 @@ package net.emaze.networks.dozer;
 import net.emaze.networks.Ip;
 import net.emaze.networks.Mask;
 import net.emaze.networks.Network;
-import net.emaze.networks.dozer.ImmutableBeanFactory;
 import org.dozer.loader.api.BeanMappingBuilder;
 import org.dozer.loader.api.TypeMappingOptions;
 
