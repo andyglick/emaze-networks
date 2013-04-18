@@ -11,7 +11,7 @@ import org.hibernate.usertype.UserType;
 
 public class MaskType implements UserType {
 
-    public static final int STORED_SQL_TYPE = Types.LONGVARCHAR;
+    public static final int STORED_SQL_TYPE = Types.VARCHAR;
 
     @Override
     public int[] sqlTypes() {
