@@ -25,6 +25,14 @@ public class Ip implements Comparable<Ip> {
     public static Ip fromBits(int ip) {
         return new Ip(ip);
     }
+    
+    public int[] octets(){
+        final int[] o = new int[4];
+        for(int i=0;i!=4;++i){
+            o[3-i] = address >> i*8 & 0xff;
+        }
+        return o;
+    }
 
     public int toBits() {
         return address;

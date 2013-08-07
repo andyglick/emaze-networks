@@ -11,6 +11,23 @@ public class IpTest {
     private static final Ip BEFORE_ADDRESS = Ip.parse("127.0.0.0");
     private static final Ip AFTER_ADDRESS = Ip.parse("127.0.0.2");
 
+    
+    @Test
+    public void canExtractFirstOctet() {        
+        Assert.assertEquals(127, Ip.parse("127.0.0.1").octets()[0]);
+    }
+    
+    @Test
+    public void canExtractLastOctet() {        
+        Assert.assertEquals(1, Ip.parse("127.0.0.1").octets()[3]);
+    }
+    @Test
+    public void octetsAreUnsigned() {        
+        Assert.assertEquals(255, Ip.parse("255.0.0.0").octets()[0]);
+    }
+    
+    
+    
     @Test
     public void sameIpv4sAreEqual() {
         final Ip anAddress = Ip.fromBits(LOCALHOST_AS_INT);

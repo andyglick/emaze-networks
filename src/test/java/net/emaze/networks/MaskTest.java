@@ -6,6 +6,11 @@ import org.junit.Test;
 public class MaskTest {
 
     @Test
+    public void canExtractFirstOctet() {
+        Assert.assertEquals(255, Mask.net(8).octets()[0]);
+    }
+
+    @Test
     public void netCreatesAMaskWithPopulationOfLeadingOnes() {
         int bits = Mask.net(24).bits();
         Assert.assertEquals(0xffffff00, bits);

@@ -43,6 +43,14 @@ public class Mask implements Comparable<Mask> {
         return bits;
     }
 
+    public int[] octets() {
+        final int[] o = new int[4];
+        for (int i = 0; i != 4; ++i) {
+            o[3 - i] = bits >> i * 8 & 0xff;
+        }
+        return o;
+    }
+
     public int population() {
         return Integer.bitCount(bits);
     }
