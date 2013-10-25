@@ -11,6 +11,7 @@ public class Network {
 
     private final Ip network;
     private final Mask netmask;
+    private String toString;
 
     /**
      * Creates a new network with an Ip and a Mask.
@@ -175,7 +176,11 @@ public class Network {
 
     @Override
     public String toString() {
-        return String.format("%s/%s", network, netmask.population());
+        //Network is immutable, so we can cache the toString value
+        if (toString == null) {
+            toString = String.format("%s/%s", network, netmask.population());
+        }
+        return toString;
     }
 
     @Override
