@@ -1,6 +1,9 @@
 package net.emaze.networks.dozer;
 
 import net.emaze.networks.Ip;
+import net.emaze.networks.Ipv6;
+import net.emaze.networks.Ipv6Mask;
+import net.emaze.networks.Ipv6Network;
 import net.emaze.networks.Mask;
 import net.emaze.networks.Network;
 import org.dozer.DozerBeanMapper;
@@ -53,6 +56,42 @@ public class ImmutableBeanFactoryTest {
         Assert.assertEquals(Network.fromCidrNotation("127.0.0.0/16"), got.getValue());
     }
 
+    @Test
+    public void canMapIpv6() {
+        final Ipv6 got = mapper.map(Ipv6.parse("::1"), Ipv6.class);
+        Assert.assertEquals(Ipv6.parse("::1"), got);
+    }
+
+    @Test
+    public void canMapContainedIpv6() {
+        final Ipv6Container got = mapper.map(Ipv6Container.of(Ipv6.parse("::1")), Ipv6Container.class);
+        Assert.assertEquals(Ipv6.parse("::1"), got.getValue());
+    }
+
+    @Test
+    public void canMapIpv6Mask() {
+        final Ipv6Mask got = mapper.map(Ipv6Mask.net(64), Ipv6Mask.class);
+        Assert.assertEquals(Ipv6Mask.net(64), got);
+    }
+
+    @Test
+    public void canMapContainedIpv6Mask() {
+        final Ipv6MaskContainer got = mapper.map(Ipv6MaskContainer.of(Ipv6Mask.net(64)), Ipv6MaskContainer.class);
+        Assert.assertEquals(Ipv6Mask.net(64), got.getValue());
+    }
+
+    @Test
+    public void canMapIpv6Network() {
+        final Ipv6Network got = mapper.map(Ipv6Network.fromCidrNotation("::/64"), Ipv6Network.class);
+        Assert.assertEquals(Ipv6Network.fromCidrNotation("::/64"), got);
+    }
+
+    @Test
+    public void canMapContainedIpv6Network() {
+        final Ipv6NetworkContainer got = mapper.map(Ipv6NetworkContainer.of(Ipv6Network.fromCidrNotation("::/64")), Ipv6NetworkContainer.class);
+        Assert.assertEquals(Ipv6Network.fromCidrNotation("::/64"), got.getValue());
+    }
+
     public static class IpContainer extends Container<Ip> {
     };
 
@@ -60,6 +99,15 @@ public class ImmutableBeanFactoryTest {
     };
 
     public static class NetworkContainer extends Container<Network> {
+    };
+
+    public static class Ipv6Container extends Container<Ipv6> {
+    };
+
+    public static class Ipv6MaskContainer extends Container<Ipv6Mask> {
+    };
+
+    public static class Ipv6NetworkContainer extends Container<Ipv6Network> {
     };
 
     public static class Container<T> {
