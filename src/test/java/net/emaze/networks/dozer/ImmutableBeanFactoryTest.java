@@ -1,11 +1,11 @@
 package net.emaze.networks.dozer;
 
-import net.emaze.networks.Ip;
+import net.emaze.networks.Ipv4;
 import net.emaze.networks.Ipv6;
 import net.emaze.networks.Ipv6Mask;
 import net.emaze.networks.Ipv6Network;
-import net.emaze.networks.Mask;
-import net.emaze.networks.Network;
+import net.emaze.networks.Ipv4Mask;
+import net.emaze.networks.Ipv4Network;
 import org.dozer.DozerBeanMapper;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -22,38 +22,38 @@ public class ImmutableBeanFactoryTest {
 
     @Test
     public void canMapIp() {
-        final Ip got = mapper.map(Ip.parse("127.0.0.1"), Ip.class);
-        Assert.assertEquals(Ip.parse("127.0.0.1"), got);
+        final Ipv4 got = mapper.map(Ipv4.parse("127.0.0.1"), Ipv4.class);
+        Assert.assertEquals(Ipv4.parse("127.0.0.1"), got);
     }
 
     @Test
     public void canMapContainedIp() {
-        final IpContainer got = mapper.map(IpContainer.of(Ip.parse("127.0.0.1")), IpContainer.class);
-        Assert.assertEquals(Ip.parse("127.0.0.1"), got.getValue());
+        final IpContainer got = mapper.map(IpContainer.of(Ipv4.parse("127.0.0.1")), IpContainer.class);
+        Assert.assertEquals(Ipv4.parse("127.0.0.1"), got.getValue());
     }
 
     @Test
     public void canMapMask() {
-        final Mask got = mapper.map(Mask.parse("255.255.255.0"), Mask.class);
-        Assert.assertEquals(Mask.net(24), got);
+        final Ipv4Mask got = mapper.map(Ipv4Mask.parse("255.255.255.0"), Ipv4Mask.class);
+        Assert.assertEquals(Ipv4Mask.net(24), got);
     }
 
     @Test
     public void canMapContainedMask() {
-        final MaskContainer got = mapper.map(MaskContainer.of(Mask.parse("255.255.255.0")), MaskContainer.class);
-        Assert.assertEquals(Mask.net(24), got.getValue());
+        final MaskContainer got = mapper.map(MaskContainer.of(Ipv4Mask.parse("255.255.255.0")), MaskContainer.class);
+        Assert.assertEquals(Ipv4Mask.net(24), got.getValue());
     }
 
     @Test
     public void canMapNetwork() {
-        final Network got = mapper.map(Network.fromCidrNotation("127.0.0.0/16"), Network.class);
-        Assert.assertEquals(Network.fromCidrNotation("127.0.0.0/16"), got);
+        final Ipv4Network got = mapper.map(Ipv4Network.fromCidrNotation("127.0.0.0/16"), Ipv4Network.class);
+        Assert.assertEquals(Ipv4Network.fromCidrNotation("127.0.0.0/16"), got);
     }
 
     @Test
     public void canMapContainedNetwork() {
-        final NetworkContainer got = mapper.map(NetworkContainer.of(Network.fromCidrNotation("127.0.0.0/16")), NetworkContainer.class);
-        Assert.assertEquals(Network.fromCidrNotation("127.0.0.0/16"), got.getValue());
+        final NetworkContainer got = mapper.map(NetworkContainer.of(Ipv4Network.fromCidrNotation("127.0.0.0/16")), NetworkContainer.class);
+        Assert.assertEquals(Ipv4Network.fromCidrNotation("127.0.0.0/16"), got.getValue());
     }
 
     @Test
@@ -92,13 +92,13 @@ public class ImmutableBeanFactoryTest {
         Assert.assertEquals(Ipv6Network.fromCidrNotation("::/64"), got.getValue());
     }
 
-    public static class IpContainer extends Container<Ip> {
+    public static class IpContainer extends Container<Ipv4> {
     };
 
-    public static class MaskContainer extends Container<Mask> {
+    public static class MaskContainer extends Container<Ipv4Mask> {
     };
 
-    public static class NetworkContainer extends Container<Network> {
+    public static class NetworkContainer extends Container<Ipv4Network> {
     };
 
     public static class Ipv6Container extends Container<Ipv6> {

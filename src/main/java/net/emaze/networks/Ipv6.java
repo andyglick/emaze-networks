@@ -47,11 +47,11 @@ public class Ipv6 implements Comparable<Ipv6> {
 
     /**
      * @param ip
-     * @return Ipv6
+     * @return Ipv4v6
      * @see <a href="http://tools.ietf.org/html/rfc4291#section-2.5.5.2">RFC
      * 4291 2.5.5.2</a>
      */
-    public static Ipv6 ipv4Mapped(Ip ip) {
+    public static Ipv6 ipv4Mapped(Ipv4 ip) {
         final int ipBits = ip.toBits();
         return fromPieces(0, 0, 0, 0, 0, 0xFFFF, ipBits >>> Short.SIZE, ipBits & 0xFFFF);
     }

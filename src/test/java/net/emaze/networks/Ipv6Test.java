@@ -8,7 +8,7 @@ public class Ipv6Test {
 
     @Test
     public void mapsFromIpv4() {
-        final Ip ipv4 = Ip.parse("127.0.0.1");
+        final Ipv4 ipv4 = Ipv4.parse("127.0.0.1");
         final Ipv6 ipv6 = Ipv6.ipv4Mapped(ipv4);
         final Ipv6 expeced = Ipv6.parse("::ffff:7f00:1");
         Assert.assertEquals(expeced, ipv6);

@@ -9,31 +9,30 @@ import javax.validation.Constraint;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import javax.validation.Payload;
-import net.emaze.networks.Ipv6Network;
+import net.emaze.networks.Ipv4Mask;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = Ipv6Cidr.Validator.class)
+@Constraint(validatedBy = Ipv4Hostmask.Validator.class)
 @Documented
-public @interface Ipv6Cidr {
+public @interface Ipv4Hostmask {
 
-    String message() default "Non è un CIDR IPv6 valido";
+    String message() default "Non è una hostmask valida";
 
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
 
-    public static class Validator implements ConstraintValidator<Ipv6Cidr, String> {
+    public static class Validator implements ConstraintValidator<Ipv4Hostmask, String> {
 
         @Override
-        public void initialize(Ipv6Cidr constraintAnnotation) {
+        public void initialize(Ipv4Hostmask constraintAnnotation) {
         }
 
         @Override
         public boolean isValid(String value, ConstraintValidatorContext context) {
             try {
-                Ipv6Network.fromCidrNotation(value);
-                return true;
+                return Ipv4Mask.parse(value).isHostmask();
             } catch (Exception ex) {
                 return false;
             }

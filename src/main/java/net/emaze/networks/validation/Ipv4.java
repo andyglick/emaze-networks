@@ -9,11 +9,10 @@ import javax.validation.Constraint;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import javax.validation.Payload;
-import net.emaze.networks.Ip;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = Ipv4.Ipv4Validator.class)
+@Constraint(validatedBy = Ipv4.Validator.class)
 @Documented
 public @interface Ipv4 {
 
@@ -23,7 +22,7 @@ public @interface Ipv4 {
 
     Class<? extends Payload>[] payload() default {};
 
-    public static class Ipv4Validator implements ConstraintValidator<Ipv4, String> {
+    public static class Validator implements ConstraintValidator<Ipv4, String> {
 
         @Override
         public void initialize(Ipv4 constraintAnnotation) {
@@ -32,7 +31,7 @@ public @interface Ipv4 {
         @Override
         public boolean isValid(String value, ConstraintValidatorContext context) {
             try {
-                Ip.parse(value);
+                net.emaze.networks.Ipv4.parse(value);
                 return true;
             } catch (Exception ex) {
                 return false;

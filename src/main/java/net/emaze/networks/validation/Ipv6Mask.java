@@ -12,7 +12,7 @@ import javax.validation.Payload;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = Ipv6Mask.Ipv6MaskValidator.class)
+@Constraint(validatedBy = Ipv6Mask.Validator.class)
 @Documented
 public @interface Ipv6Mask {
 
@@ -22,7 +22,7 @@ public @interface Ipv6Mask {
 
     Class<? extends Payload>[] payload() default {};
 
-    public static class Ipv6MaskValidator implements ConstraintValidator<Ipv6Mask, String> {
+    public static class Validator implements ConstraintValidator<Ipv6Mask, String> {
 
         @Override
         public void initialize(Ipv6Mask constraintAnnotation) {
