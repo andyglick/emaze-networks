@@ -21,14 +21,29 @@ public class Ipv6Mask implements Comparable<Ipv6Mask> {
         this.size = size;
     }
 
+    /**
+     * Constructs a mask with the given size {@code x}, resulting in {@code /x}.
+     *
+     * @throws IllegalArgumentException if size is negative or greater than 128
+     */
     public static Ipv6Mask net(int size) {
         return new Ipv6Mask(size);
     }
 
+    /**
+     * Constructs a mask counting bits from the right. This is equivalent to
+     * {@code Ipv6Mask.net(Ipv6Mask.BITS - size)}.
+     *
+     * @throws IllegalArgumentException if size is negative or greater than 128
+     */
     public static Ipv6Mask host(int size) {
         return new Ipv6Mask(BITS - size);
     }
 
+    /**
+     * Parses the netmask from the format {@code /x}, where {@code x} is the
+     * network size.
+     */
     public static Ipv6Mask parse(String mask) {
         dbc.precondition(mask.startsWith("/"), "mask format must be /nnn");
         return new Ipv6Mask(Integer.parseInt(mask.substring(1)));
@@ -38,6 +53,12 @@ public class Ipv6Mask implements Comparable<Ipv6Mask> {
         return size;
     }
 
+    /**
+     * Returns the 128 bits of the mask, with the sequences of ones on the left.
+     * Because of {@code BigInteger} implementation, a byte with value 0 is
+     * prepended when the mask has size greater than 0.
+     * @deprecated not sure which is better, BigInteger or byte[]
+     */
     public BigInteger bits() {
         return ALL_MASK.shiftRight(size).xor(ALL_MASK);
     }
@@ -46,6 +67,9 @@ public class Ipv6Mask implements Comparable<Ipv6Mask> {
         return bits().not().and(ALL_MASK);
     }
 
+    /**
+     * Returns 8 pieces each of 16 bit, as the Ipv6 format.
+     */
     public int[] pieces() {
         final int[] pieces = new int[8];
         if (size == 0) {

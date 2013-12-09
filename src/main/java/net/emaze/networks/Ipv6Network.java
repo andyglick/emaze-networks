@@ -30,6 +30,11 @@ public class Ipv6Network {
         return new Ipv6Network(network, mask);
     }
 
+    /**
+     * Parses an Ipv6 network from a format of type {@code x:x:x:x:x:x:x:x/nnn}.
+     * Ipv6 format can be one of those described in
+     * {@link Ipv6#parse(java.lang.String) Ipv6.parse}.
+     */
     public static Ipv6Network fromCidrNotation(String cidrAsString) {
         dbc.precondition(cidrAsString != null, "cidr cannot be null");
         dbc.precondition(cidrAsString.contains("/") && cidrAsString.indexOf("/") == cidrAsString.lastIndexOf("/"), "cidr is not in a valid format. Acceptable format is ::/0");
@@ -57,6 +62,9 @@ public class Ipv6Network {
         return mask;
     }
 
+    /**
+     * The amount of hosts that can be contained in the network.
+     */
     public BigInteger size() {
         return mask.hosts();
     }
