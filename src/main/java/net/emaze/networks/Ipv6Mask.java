@@ -15,7 +15,6 @@ public class Ipv6Mask implements Comparable<Ipv6Mask> {
     public static final Ipv6Mask NARROWEST = new Ipv6Mask(BITS);
     public static final Ipv6Mask WIDEST = new Ipv6Mask(0);
     private final int size;
-    private String memoizedToString = null;
 
     private Ipv6Mask(int size) {
         dbc.precondition(size >= 0 && size <= Ipv6Mask.BITS, "mask size must be between 0 and %s", Ipv6Mask.BITS);
