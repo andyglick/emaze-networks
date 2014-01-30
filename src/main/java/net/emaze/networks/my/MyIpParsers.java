@@ -2,31 +2,40 @@ package net.emaze.networks.my;
 
 import java.math.BigInteger;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import net.emaze.dysfunctional.contracts.dbc;
-import net.emaze.dysfunctional.dispatching.delegates.BinaryDelegate;
 import net.emaze.dysfunctional.dispatching.delegates.Delegate;
-import net.emaze.dysfunctional.tuples.Pair;
 
-public class MyParsers {
+public class MyIpParsers {
+
+    public static MyIp parse(String ip) {
+        dbc.precondition(ip != null, "address must be not-null");
+        if (ip.contains(":")) {
+            return parseFromStringV6(ip);
+        }
+        return parseFromStringV4(ip);
+    }
 
     public static MyIp parseFromStringV4(String dottedIpAddress) {
         dbc.precondition(dottedIpAddress != null, "address must be not-null");
         final byte[] octets = new Ipv4DottedOctetFormToByteArray().perform(dottedIpAddress);
-        return new MyIp(new BigInteger(octets), new IpPolicy.V4());
+        return new MyIp(new BigInteger(1, octets), new IpPolicy.V4());
     }
 
-    //FIXME: If I create a BigInteger directly from bits, do I get the same result?
+    public static MyIp parseFromStringV6(String ip) {
+        dbc.precondition(ip != null, "address must be not-null");
+        final BigInteger bits = new BigInteger(new Ipv6ToByteArray().perform(ip));
+        return new MyIp(bits, new IpPolicy.V6());
+    }
+
+    //FIXME: If I create a BigInteger directly from bits, do I get the same result? NO
     public static MyIp parseFromBitsV4(int bits) {
         final byte firstOctet = (byte) ((bits & 0xFF000000) >>> 24);
         final byte secondOctet = (byte) ((bits & 0x00FF0000) >> 16);
         final byte thirdOctet = (byte) ((bits & 0x0000FF00) >> 8);
         final byte fourthOctet = (byte) (bits & 0x000000FF);
         final byte[] octets = new byte[]{firstOctet, secondOctet, thirdOctet, fourthOctet};
-        return new MyIp(new BigInteger(octets), new IpPolicy.V4());
+        return new MyIp(new BigInteger(1, octets), new IpPolicy.V4());
     }
 
     public static class Ipv4DottedOctetFormToByteArray implements Delegate<byte[], String> {
@@ -106,33 +115,6 @@ public class MyParsers {
             return copy;
         }
 
-    }
-
-    public static class SubtractIpFromNetwork implements BinaryDelegate<Set<MyNetwork>, MyNetwork, MyIp> {
-
-        @Override
-        public Set<MyNetwork> perform(MyNetwork minuend, MyIp subtrahend) {
-            return recursivelySubtract(minuend, subtrahend);
-        }
-
-        private Set<MyNetwork> recursivelySubtract(MyNetwork minuend, MyIp subtrahend) {
-            if (!minuend.contains(subtrahend)) {
-                return Collections.singleton(minuend);
-            }
-            if (minuend.netmask().isNarrowest()) {
-                return Collections.emptySet();
-            }
-            final Set<MyNetwork> reminder = new HashSet<>();
-            final Pair<MyNetwork, MyNetwork> split = minuend.split();
-            if (split.first().contains(subtrahend)) {
-                reminder.add(split.second());
-                reminder.addAll(recursivelySubtract(split.first(), subtrahend));
-            } else {
-                reminder.add(split.first());
-                reminder.addAll(recursivelySubtract(split.second(), subtrahend));
-            }
-            return reminder;
-        }
     }
 
 }

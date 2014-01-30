@@ -1,61 +1,56 @@
 package net.emaze.networks.my;
 
 import java.math.BigInteger;
+import net.emaze.dysfunctional.contracts.dbc;
 import net.emaze.dysfunctional.hashing.HashCodeBuilder;
 import net.emaze.dysfunctional.order.Order;
 
 public class MyMask implements Comparable<MyMask> {
 
-    private final BigInteger mask;
+    private final int size;
     final IpPolicy policy;
 
-    public MyMask(BigInteger mask, IpPolicy policy) {
-        this.mask = mask;
+    public MyMask(int size, IpPolicy policy) {
+        dbc.precondition(size <= policy.getNarrowestMask().population(), "mask exceed maximum size");
+        this.size = size;
         this.policy = policy;
     }
-    
+
     public IpPolicy version() {
         return policy;
     }
 
     public BigInteger bits() {
-        return mask;
+        final BigInteger fullMask = policy.getNarrowestMask().bits();
+        return fullMask.shiftLeft(policy.maxPopulation() - size).and(fullMask);
     }
 
     public BigInteger hostBits() {
-        return mask.xor(policy.maxValue());
+        return bits().xor(policy.maxValue());
     }
 
     public int population() {
-        return mask.bitCount();
+        return size;
     }
 
     public BigInteger hosts() {
-        return BigInteger.ONE.shiftLeft(policy.maxPopulation() - population());
+        return BigInteger.ONE.shiftLeft(policy.maxPopulation() - size);
     }
 
     public MyMask narrowHosts() {
-        return mask.bitCount() == policy.maxPopulation() ? policy.getNarrowestMask() : new MyMask(mask.add(BigInteger.ONE), policy);
+        return size == policy.maxPopulation() ? policy.getNarrowestMask() : new MyMask(size + 1, policy);
     }
 
     public MyMask widenHosts() {
-        return mask.bitCount() == 0 ? policy.getWidestMask() : new MyMask(mask.subtract(BigInteger.ONE), policy);
+        return size == 0 ? policy.getWidestMask() : new MyMask(size - 1, policy);
     }
 
-    public boolean isHostmask() {
-        return mask.equals(BigInteger.ZERO) ? true : bits().getLowestSetBit() == 0;
-    }
-
-    public boolean isNetmask() {
-        return mask.equals(BigInteger.ZERO) ? true : bits().bitLength() == policy.maxPopulation();
-    }
-    
     public boolean isNarrowest() {
-        return mask.equals(policy.getNarrowestMask());
+        return this.equals(policy.getNarrowestMask());
     }
-    
+
     public boolean isWidest() {
-        return mask.equals(policy.getWidestMask());
+        return this.equals(policy.getWidestMask());
     }
 
     @Override
@@ -65,7 +60,7 @@ public class MyMask implements Comparable<MyMask> {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(mask).toHashCode();
+        return new HashCodeBuilder().append(size).toHashCode();
     }
 
     @Override
@@ -76,5 +71,4 @@ public class MyMask implements Comparable<MyMask> {
         final MyMask other = (MyMask) object;
         return Order.of(policy.selectForComparison(other.policy).compare(this, other)) == Order.EQ;
     }
-
 }

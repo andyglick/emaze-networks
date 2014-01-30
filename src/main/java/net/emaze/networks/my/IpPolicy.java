@@ -1,7 +1,6 @@
 package net.emaze.networks.my;
 
 import java.math.BigInteger;
-import java.util.Comparator;
 import net.emaze.dysfunctional.Ranges;
 import net.emaze.dysfunctional.contracts.dbc;
 import net.emaze.dysfunctional.options.Maybe;
@@ -9,8 +8,8 @@ import net.emaze.dysfunctional.order.ComparableComparator;
 import net.emaze.dysfunctional.order.SequencingPolicy;
 import net.emaze.dysfunctional.tuples.Pair;
 
-
 public interface IpPolicy extends SequencingPolicy<MyIp> {
+
     public static final BigInteger IPV4_TO_V6_PREFIX = new BigInteger("000000000000000000000FFFF00000000", 16);
     public static final BigInteger IPV4_TO_V6_MASK = new BigInteger("FFFFFFFFFFFFFFFFFFFFFFFF00000000", 16);
     public static final int IPV4_TO_V6_POPULATION = 96;
@@ -22,7 +21,9 @@ public interface IpPolicy extends SequencingPolicy<MyIp> {
     MyMask getNarrowestMask();
 
     MyMask getWidestMask();
-    
+
+    MyMask mask(int size);
+
     Ranges<MyIp> getRanges();
 
     BigInteger maxValue();
@@ -30,11 +31,11 @@ public interface IpPolicy extends SequencingPolicy<MyIp> {
     BigInteger minValue();
 
     int maxPopulation();
-    
+
     int compare(MyIp lhs, MyIp rhs);
-    
+
     int compare(MyMask lhs, MyMask rhs);
-    
+
     IpPolicy selectForComparison(IpPolicy other);
 
     public static class V6 implements IpPolicy {
@@ -44,8 +45,8 @@ public interface IpPolicy extends SequencingPolicy<MyIp> {
         private static final int MAX_MASK_POPULATION = 128;
         private static final MyIp FIRST_IP = new MyIp(MIN_ADDRESS_IN_BITS, new V6());
         private static final MyIp LAST_IP = new MyIp(MAX_ADDRESS_IN_BITS, new V6());
-        private static final MyMask NARROWEST = new MyMask(MAX_ADDRESS_IN_BITS, new V6());
-        private static final MyMask WIDEST = new MyMask(MIN_ADDRESS_IN_BITS, new V6());
+        private static final MyMask NARROWEST = new MyMask(MAX_MASK_POPULATION, new V6());
+        private static final MyMask WIDEST = new MyMask(0, new V6());
         private static final Ranges<MyIp> RANGES = new Ranges<>(new ComparableComparator<MyIp>(), new V6(), FIRST_IP);
 
         @Override
@@ -64,13 +65,18 @@ public interface IpPolicy extends SequencingPolicy<MyIp> {
         }
 
         @Override
+        public MyMask mask(int size) {
+            return new MyMask(size, this);
+        }
+
+        @Override
         public MyMask getWidestMask() {
             return WIDEST;
         }
 
         @Override
         public Ranges<MyIp> getRanges() {
-           return RANGES;
+            return RANGES;
         }
 
         @Override
@@ -82,21 +88,21 @@ public interface IpPolicy extends SequencingPolicy<MyIp> {
         public BigInteger minValue() {
             return MIN_ADDRESS_IN_BITS;
         }
-        
+
         @Override
         public int compare(MyIp lhs, MyIp rhs) {
             final BigInteger left = lhs.version() instanceof V6 ? lhs.bits() : IPV4_TO_V6_PREFIX.or(lhs.bits());
             final BigInteger right = rhs.version() instanceof V6 ? rhs.bits() : IPV4_TO_V6_PREFIX.or(rhs.bits());
             return left.compareTo(right);
         }
-        
+
         @Override
         public int compare(MyMask lhs, MyMask rhs) {
             final BigInteger left = lhs.version() instanceof V6 ? lhs.bits() : IPV4_TO_V6_PREFIX.or(lhs.bits());
             final BigInteger right = rhs.version() instanceof V6 ? rhs.bits() : IPV4_TO_V6_PREFIX.or(rhs.bits());
             return left.compareTo(right);
         }
-        
+
         @Override
         public IpPolicy selectForComparison(IpPolicy other) {
             return this;
@@ -114,8 +120,8 @@ public interface IpPolicy extends SequencingPolicy<MyIp> {
             if (source.policy instanceof V6) {
                 return source;
             }
-            final BigInteger mask = IPV4_TO_V6_MASK.or(source.bits());
-            return new MyMask(mask, new IpPolicy.V6());
+
+            return new MyMask(source.population() + IPV4_TO_V6_POPULATION, new IpPolicy.V6());
         }
 
         public static MyNetwork toV6(MyNetwork source) {
@@ -123,7 +129,7 @@ public interface IpPolicy extends SequencingPolicy<MyIp> {
                 return source;
             }
             final Pair<MyIp, MyMask> cidr = source.toCidr();
-            return new MyNetwork(toV6(cidr.first()), toV6(cidr.second()), new V6());
+            return new MyNetwork(toV6(cidr.first()), toV6(cidr.second()));
         }
 
         @Override
@@ -157,8 +163,8 @@ public interface IpPolicy extends SequencingPolicy<MyIp> {
         private static final int MAX_MASK_POPULATION = 32;
         private static final MyIp FIRST_IP = new MyIp(MIN_ADDRESS_IN_BITS, new V4());
         private static final MyIp LAST_IP = new MyIp(MAX_ADDRESS_IN_BITS, new V4());
-        private static final MyMask NARROWEST = new MyMask(MAX_ADDRESS_IN_BITS, new V4());
-        private static final MyMask WIDEST = new MyMask(MIN_ADDRESS_IN_BITS, new V4());
+        private static final MyMask NARROWEST = new MyMask(MAX_MASK_POPULATION, new V4());
+        private static final MyMask WIDEST = new MyMask(0, new V4());
         private static final Ranges<MyIp> RANGES = new Ranges<>(new ComparableComparator<MyIp>(), new V4(), FIRST_IP);
 
         @Override
@@ -180,10 +186,15 @@ public interface IpPolicy extends SequencingPolicy<MyIp> {
         public MyMask getWidestMask() {
             return WIDEST;
         }
-        
+
+        @Override
+        public MyMask mask(int size) {
+            return new MyMask(size, new IpPolicy.V4());
+        }
+
         @Override
         public Ranges<MyIp> getRanges() {
-           return RANGES;
+            return RANGES;
         }
 
         @Override
@@ -195,19 +206,19 @@ public interface IpPolicy extends SequencingPolicy<MyIp> {
         public BigInteger minValue() {
             return MIN_ADDRESS_IN_BITS;
         }
-        
+
         @Override
         public int compare(MyIp lhs, MyIp rhs) {
             dbc.precondition((lhs.version() instanceof V4) && (rhs.version() instanceof V4), "Use V6 to compare V4 with V6");
             return lhs.bits().compareTo(rhs.bits());
         }
-        
+
         @Override
         public int compare(MyMask lhs, MyMask rhs) {
             dbc.precondition((lhs.version() instanceof V4) && (rhs.version() instanceof V4), "Use V6 to compare V4 with V6");
             return lhs.bits().compareTo(rhs.bits());
         }
-        
+
         @Override
         public IpPolicy selectForComparison(IpPolicy other) {
             if (other instanceof V4) {
@@ -229,9 +240,8 @@ public interface IpPolicy extends SequencingPolicy<MyIp> {
             if (source.policy instanceof V4) {
                 return source;
             }
-            dbc.precondition(source.bits().and(IPV4_TO_V6_MASK).equals(IPV4_TO_V6_MASK), "Mask cannot be converted to IPv4");
-            final BigInteger mask = source.bits().andNot(IPV4_TO_V6_MASK);
-            return new MyMask(mask, new IpPolicy.V4());
+            dbc.precondition(source.population() >= IPV4_TO_V6_POPULATION, "Mask cannot be converted to IPv4");
+            return new MyMask(source.population() - IPV4_TO_V6_POPULATION, new IpPolicy.V4());
         }
 
         public static MyNetwork toV4(MyNetwork source) {
@@ -239,7 +249,7 @@ public interface IpPolicy extends SequencingPolicy<MyIp> {
                 return source;
             }
             final Pair<MyIp, MyMask> cidr = source.toCidr();
-            return new MyNetwork(toV4(cidr.first()), toV4(cidr.second()), new V4());
+            return new MyNetwork(toV4(cidr.first()), toV4(cidr.second()));
         }
 
         @Override
@@ -264,7 +274,5 @@ public interface IpPolicy extends SequencingPolicy<MyIp> {
         public int hashCode() {
             return V4.class.hashCode();
         }
-
     }
-    
 }

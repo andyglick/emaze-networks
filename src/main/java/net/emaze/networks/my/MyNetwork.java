@@ -14,10 +14,11 @@ public class MyNetwork {
     private final MyMask mask;
     private final IpPolicy policy;
 
-    public MyNetwork(MyIp ip, MyMask mask, IpPolicy policy) {
+    public MyNetwork(MyIp ip, MyMask mask) {
+        dbc.precondition(ip.version().equals(mask.version()), "version of ip and mask must be the same");
         this.ip = ip;
         this.mask = mask;
-        this.policy = policy;
+        this.policy = ip.version();
     }
 
     public IpPolicy version() {
@@ -51,8 +52,8 @@ public class MyNetwork {
     public Pair<MyNetwork, MyNetwork> split() {
         dbc.precondition(mask.equals(policy.getNarrowestMask()), "Unsplittable CIDR");
         final MyMask halfMask = mask.narrowHosts();
-        final MyNetwork first = new MyNetwork(ip, halfMask, policy);
-        final MyNetwork second = new MyNetwork(lastIp().mask(halfMask), halfMask, policy);
+        final MyNetwork first = new MyNetwork(ip, halfMask);
+        final MyNetwork second = new MyNetwork(lastIp().mask(halfMask), halfMask);
         return Pair.of(first, second);
     }
 
