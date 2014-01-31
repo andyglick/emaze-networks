@@ -10,7 +10,7 @@ public class MyIp implements Comparable<MyIp> {
     private final IpPolicy policy;
 
     public MyIp(FixedSizeNatural address, IpPolicy policy) {
-        dbc.precondition(Order.of(address.compareTo(policy.getLastIp().bits())).isLte(), "Ip number is out of range");
+        dbc.precondition(Order.of(address.compareTo(policy.maxValue())).isLte(), "Ip number is out of range");
         this.address = address;
         this.policy = policy;
     }
@@ -28,6 +28,7 @@ public class MyIp implements Comparable<MyIp> {
     }
 
     public MyIp mask(MyMask mask) {
+        dbc.precondition(mask != null, "Cannot mask using a null value");
         return new MyIp(address.and(mask.bits()), policy);
     }
 
@@ -41,6 +42,7 @@ public class MyIp implements Comparable<MyIp> {
 
     @Override
     public int compareTo(MyIp other) {
+        dbc.precondition(other != null, "Cannot compare with a null ip"); //FIXME: Interface says: throw a NPE...
         return policy.selectForComparison(other.policy).compare(this, other);
     }
 

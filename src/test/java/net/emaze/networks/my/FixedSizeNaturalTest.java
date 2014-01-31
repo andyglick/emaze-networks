@@ -319,6 +319,14 @@ public class FixedSizeNaturalTest {
         final FixedSizeNatural second = new FixedSizeNatural(secondInts, 129);
         Assert.assertEquals(Order.LT, Order.of(first.compareTo(second)));
     }
+    
+    @Test
+    public void minimumComparedToMaximumIsLessThanEqual() {
+        final FixedSizeNatural first = new FixedSizeNatural(new int[]{0}, 32);
+        final FixedSizeNatural second = new FixedSizeNatural(new int[]{0xFFFFFFFF}, 32);
+        final int order = first.compareTo(second);
+        Assert.assertEquals(true, Order.of(order).isLte());
+    }
 
     @Test
     public void canCountBits() {

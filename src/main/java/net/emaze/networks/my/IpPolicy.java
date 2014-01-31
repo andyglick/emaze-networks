@@ -43,25 +43,20 @@ public interface IpPolicy extends SequencingPolicy<MyIp> {
         private static final int MAX_MASK_POPULATION = 128;
         private static final FixedSizeNatural MIN_ADDRESS_IN_BITS = FixedSizeNatural.zero(IPV6_BITS);
         private static final FixedSizeNatural MAX_ADDRESS_IN_BITS = FixedSizeNatural.biggest(IPV6_BITS);
-        private static final MyIp FIRST_IP = new MyIp(MIN_ADDRESS_IN_BITS, new V6());
-        private static final MyIp LAST_IP = new MyIp(MAX_ADDRESS_IN_BITS, new V6());
-        private static final MyMask NARROWEST = new MyMask(MAX_MASK_POPULATION, new V6());
-        private static final MyMask WIDEST = new MyMask(0, new V6());
-        private static final Ranges<MyIp> RANGES = new Ranges<>(new ComparableComparator<MyIp>(), new V6(), FIRST_IP);
 
         @Override
         public MyIp getFirstIp() {
-            return FIRST_IP;
+            return new MyIp(MIN_ADDRESS_IN_BITS, new V6());
         }
 
         @Override
         public MyIp getLastIp() {
-            return LAST_IP;
+            return new MyIp(MAX_ADDRESS_IN_BITS, new V6());
         }
 
         @Override
         public MyMask getNarrowestMask() {
-            return NARROWEST;
+            return new MyMask(MAX_MASK_POPULATION, new V6());
         }
 
         @Override
@@ -71,12 +66,12 @@ public interface IpPolicy extends SequencingPolicy<MyIp> {
 
         @Override
         public MyMask getWidestMask() {
-            return WIDEST;
+            return new MyMask(0, new V6());
         }
 
         @Override
         public Ranges<MyIp> getRanges() {
-            return RANGES;
+            return new Ranges<>(new ComparableComparator<MyIp>(), new V6(), this.getFirstIp());
         }
 
         @Override
@@ -138,7 +133,7 @@ public interface IpPolicy extends SequencingPolicy<MyIp> {
 
         @Override
         public Maybe<MyIp> next(MyIp ip) {
-            if (LAST_IP.equals(ip)) {
+            if (this.getLastIp().equals(ip)) {
                 return Maybe.nothing();
             }
             return Maybe.just(ip.next());
@@ -157,34 +152,29 @@ public interface IpPolicy extends SequencingPolicy<MyIp> {
 
     public static class V4 implements IpPolicy {
 
-        public static final int IPV4_BITS = 32;
+        private static final int IPV4_BITS = 32;
         private static final int MAX_MASK_POPULATION = 32;
         private static final FixedSizeNatural MIN_ADDRESS_IN_BITS = FixedSizeNatural.zero(IPV4_BITS);
         private static final FixedSizeNatural MAX_ADDRESS_IN_BITS = FixedSizeNatural.biggest(IPV4_BITS);
-        private static final MyIp FIRST_IP = new MyIp(MIN_ADDRESS_IN_BITS, new V4());
-        private static final MyIp LAST_IP = new MyIp(MAX_ADDRESS_IN_BITS, new V4());
-        private static final MyMask NARROWEST = new MyMask(MAX_MASK_POPULATION, new V4());
-        private static final MyMask WIDEST = new MyMask(0, new V4());
-        private static final Ranges<MyIp> RANGES = new Ranges<>(new ComparableComparator<MyIp>(), new V4(), FIRST_IP);
 
         @Override
         public MyIp getFirstIp() {
-            return FIRST_IP;
+            return new MyIp(MIN_ADDRESS_IN_BITS, this);
         }
 
         @Override
         public MyIp getLastIp() {
-            return LAST_IP;
+            return new MyIp(MAX_ADDRESS_IN_BITS, this);
         }
 
         @Override
         public MyMask getNarrowestMask() {
-            return NARROWEST;
+            return new MyMask(MAX_MASK_POPULATION, this);
         }
 
         @Override
         public MyMask getWidestMask() {
-            return WIDEST;
+            return new MyMask(0, this);
         }
 
         @Override
@@ -194,7 +184,7 @@ public interface IpPolicy extends SequencingPolicy<MyIp> {
 
         @Override
         public Ranges<MyIp> getRanges() {
-            return RANGES;
+            return new Ranges<>(new ComparableComparator<MyIp>(), this, this.getFirstIp());
         }
 
         @Override
@@ -259,7 +249,7 @@ public interface IpPolicy extends SequencingPolicy<MyIp> {
 
         @Override
         public Maybe<MyIp> next(MyIp ip) {
-            if (LAST_IP.equals(ip)) {
+            if (this.getLastIp().equals(ip)) {
                 return Maybe.nothing();
             }
             return Maybe.just(ip.next());

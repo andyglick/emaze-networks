@@ -1,6 +1,5 @@
 package net.emaze.networks.my;
 
-import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
 import net.emaze.dysfunctional.contracts.dbc;
@@ -19,7 +18,8 @@ public class MyIpParsers {
     public static MyIp parseFromStringV4(String dottedIpAddress) {
         dbc.precondition(dottedIpAddress != null, "address must be not-null");
         final byte[] octets = new Ipv4DottedOctetFormToByteArray().perform(dottedIpAddress);
-        return new MyIp(FixedSizeNatural.fromByteArray(octets), new IpPolicy.V4());
+        final IpPolicy.V4 v4 = new IpPolicy.V4();
+        return new MyIp(FixedSizeNatural.fromByteArray(octets), v4);
     }
 
     public static MyIp parseFromStringV6(String ip) {

@@ -1,6 +1,5 @@
 package net.emaze.networks.my;
 
-import java.math.BigInteger;
 import net.emaze.dysfunctional.contracts.dbc;
 import net.emaze.dysfunctional.hashing.HashCodeBuilder;
 import net.emaze.dysfunctional.order.Order;
@@ -11,7 +10,7 @@ public class MyMask implements Comparable<MyMask> {
     final IpPolicy policy;
 
     public MyMask(int size, IpPolicy policy) {
-        dbc.precondition(size <= policy.getNarrowestMask().population(), "mask exceed maximum size");
+        dbc.precondition(size <= policy.maxPopulation(), "mask exceed maximum size");
         this.size = size;
         this.policy = policy;
     }
@@ -21,7 +20,7 @@ public class MyMask implements Comparable<MyMask> {
     }
 
     public FixedSizeNatural bits() {
-        final FixedSizeNatural fullMask = policy.getNarrowestMask().bits();
+        final FixedSizeNatural fullMask = policy.maxValue();
         return fullMask.shiftLeft(policy.maxPopulation() - size).and(fullMask);
     }
 

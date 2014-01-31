@@ -49,7 +49,7 @@ public class MyNetwork {
     }
 
     public Pair<MyNetwork, MyNetwork> split() {
-        dbc.precondition(mask.equals(policy.getNarrowestMask()), "Unsplittable CIDR");
+        dbc.precondition(mask.isNarrowest(), "Unsplittable CIDR");
         final MyMask halfMask = mask.narrowHosts();
         final MyNetwork first = new MyNetwork(ip, halfMask);
         final MyNetwork second = new MyNetwork(lastIp().mask(halfMask), halfMask);
