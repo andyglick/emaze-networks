@@ -26,6 +26,22 @@ public class FixedSizeNatural implements Iterable<Boolean> {
         this.length = lengthInBits;
     }
 
+    public static FixedSizeNatural zero(int length) {
+        return new FixedSizeNatural(new int[lengthOfIntContainer(length)], length);
+    }
+
+    public static FixedSizeNatural one(int length) {
+        final int[] internal = new int[lengthOfIntContainer(length)];
+        internal[internal.length - 1] = 1;
+        return new FixedSizeNatural(internal, length);
+    }
+
+    public static FixedSizeNatural biggest(int length) {
+        final int[] internal = new int[lengthOfIntContainer(length)];
+        Arrays.fill(internal, 0xFFFFFFFF);
+        return new FixedSizeNatural(clearExcess(internal, length), length);
+    }
+
     public static FixedSizeNatural fromByteArray(byte[] in) {
         final int[] out = new int[(in.length * Byte.SIZE) / Integer.SIZE + ((in.length * Byte.SIZE) % Integer.SIZE > 0 ? 1 : 0)];
         final int remaining = in.length % 4;
@@ -114,30 +130,30 @@ public class FixedSizeNatural implements Iterable<Boolean> {
     }
 
     public FixedSizeNatural and(FixedSizeNatural other) {
-        dbc.precondition(this.length == other.length, "FixedSizeNatural length is different");
+        dbc.precondition(this.length == other.length, "FixedSizeNatural lengths are different");
         final int[] conjunction = new int[internal.length];
         for (int index = 0; index != internal.length; ++index) {
             conjunction[index] = this.internal[index] & other.internal[index];
         }
-        return new FixedSizeNatural(clearExcess(conjunction, length), length);
+        return new FixedSizeNatural(conjunction, length);
     }
 
     public FixedSizeNatural or(FixedSizeNatural other) {
-        dbc.precondition(this.length == other.length, "FixedSizeNatural length is different");
+        dbc.precondition(this.length == other.length, "FixedSizeNatural lengths are different");
         final int[] inclusiveDisjunction = new int[internal.length];
         for (int index = 0; index != internal.length; ++index) {
             inclusiveDisjunction[index] = this.internal[index] | other.internal[index];
         }
-        return new FixedSizeNatural(clearExcess(inclusiveDisjunction, length), length);
+        return new FixedSizeNatural(inclusiveDisjunction, length);
     }
 
     public FixedSizeNatural xor(FixedSizeNatural other) {
-        dbc.precondition(this.length == other.length, "FixedSizeNatural length is different");
+        dbc.precondition(this.length == other.length, "FixedSizeNatural lengths are different");
         final int[] exclusiveDisjunction = new int[internal.length];
         for (int index = 0; index != internal.length; ++index) {
             exclusiveDisjunction[index] = this.internal[index] ^ other.internal[index];
         }
-        return new FixedSizeNatural(clearExcess(exclusiveDisjunction, length), length);
+        return new FixedSizeNatural(exclusiveDisjunction, length);
     }
 
     public FixedSizeNatural increment() {
@@ -158,10 +174,10 @@ public class FixedSizeNatural implements Iterable<Boolean> {
             return this;
         }
         final int[] decremented = new int[internal.length];
-        int carry = -1;
-        for (int index = internal.length - 1; index >= 0 && carry < 0; --index) {
-            decremented[index] = internal[index] + carry;
-            carry = internal[index] == 0 ? -1 : 0;
+        int borrow = -1;
+        for (int index = internal.length - 1; index >= 0 && borrow < 0; --index) {
+            decremented[index] = internal[index] + borrow;
+            borrow = internal[index] == 0 ? -1 : 0;
         }
         return new FixedSizeNatural(clearExcess(decremented, length), length);
     }
@@ -194,21 +210,21 @@ public class FixedSizeNatural implements Iterable<Boolean> {
         return this.first().not();
     }
 
-    public FixedSizeNatural widen(int newLength) {
-        dbc.precondition(newLength > length, "newLength shoul be greater than current length");
+    public FixedSizeNatural extendTo(int newLength) {
+        dbc.precondition(newLength > length, "new length should be greater than current length");
         final int[] wider = new int[lengthOfIntContainer(newLength)];
         System.arraycopy(internal, 0, wider, wider.length - internal.length, internal.length);
         return new FixedSizeNatural(wider, newLength);
     }
 
-    public FixedSizeNatural narrow(int newLength) {
-        dbc.precondition(newLength < length, "newLength shoul be lesser than current length");
+    public FixedSizeNatural truncateTo(int newLength) {
+        dbc.precondition(newLength < length, "new length should be less than current length");
         final int[] narrower = new int[lengthOfIntContainer(newLength)];
         System.arraycopy(internal, internal.length - narrower.length, narrower, 0, narrower.length);
-        return new FixedSizeNatural(narrower, newLength);
+        return new FixedSizeNatural(clearExcess(narrower, newLength), newLength);
     }
 
-    private int lengthOfIntContainer(int numBits) {
+    private static int lengthOfIntContainer(int numBits) {
         return numBits / Integer.SIZE + (numBits % Integer.SIZE > 0 ? 1 : 0);
     }
 
@@ -249,7 +265,7 @@ public class FixedSizeNatural implements Iterable<Boolean> {
     }
 
     public boolean bit(int index) {
-        dbc.precondition((index >= 0) && (index < length), "index must be a value between 0 and %s", length);
+        dbc.precondition((index >= 0) && (index < length), "index must be a value in [0, %s)", length);
         final int value = (internal[internal.length - 1 - index / 32] & 1 << (index % 32)) >>> index;
         return value > 0;
     }
@@ -259,10 +275,10 @@ public class FixedSizeNatural implements Iterable<Boolean> {
         return new BitsIterator(this);
     }
 
-    public int[] clearExcess(int[] bits, int lengthInBits) {
+    private static int[] clearExcess(int[] bits, int lengthInBits) {
         final int[] copy = new int[bits.length];
         System.arraycopy(bits, 0, copy, 0, bits.length);
-        final int bitsToClear = intsLength() * 32 - lengthInBits;
+        final int bitsToClear = lengthOfIntContainer(lengthInBits) * 32 - lengthInBits;
         final int intsToClear = bitsToClear / 32;
         final int remaining = bitsToClear - (bitsToClear / 32) * 32;
         int cleared = 0;

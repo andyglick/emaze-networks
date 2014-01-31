@@ -36,6 +36,30 @@ public class FixedSizeNaturalTest {
     }
 
     @Test
+    public void canConstructZero() {
+        final int length = 1;
+        final FixedSizeNatural zero = FixedSizeNatural.zero(length);
+        final FixedSizeNatural expected = new FixedSizeNatural(new int[]{0}, length);
+        Assert.assertEquals(expected, zero);
+    }
+
+    @Test
+    public void canConstructOne() {
+        final int length = 1;
+        final FixedSizeNatural one = FixedSizeNatural.one(length);
+        final FixedSizeNatural expected = new FixedSizeNatural(new int[]{1}, length);
+        Assert.assertEquals(expected, one);
+    }
+
+    @Test
+    public void canConstructBiggestNatural() {
+        final int length = 4;
+        final FixedSizeNatural biggest = FixedSizeNatural.biggest(length);
+        final FixedSizeNatural expected = new FixedSizeNatural(new int[]{0xF}, length);
+        Assert.assertEquals(expected, biggest);
+    }
+
+    @Test
     public void toByteArrayYieldsInternalRapresentationInBytes() {
         final int[] ints = {1, 1};
         final byte[] got = new FixedSizeNatural(ints, 33).toByteArray();
@@ -88,12 +112,167 @@ public class FixedSizeNaturalTest {
         Assert.assertEquals(expected, got);
     }
 
+    @Test
+    public void canNegateNaturalBits() {
+        final int cases = 2;
+        final int[] ints = {0b01};
+        final FixedSizeNatural expected = new FixedSizeNatural(ints, cases);
+        final int[] expectedInts = {0b10};
+        final FixedSizeNatural got = new FixedSizeNatural(expectedInts, cases).not();
+        Assert.assertEquals(expected, got);
+    }
+
+    @Test
+    public void andOfTwoNaturals() {
+        final int cases = 4;
+        final int[] formerInts = {0b0011};
+        final int[] latterInts = {0b0101};
+        final int[] expectedInts = {0b0001};
+        final FixedSizeNatural expected = new FixedSizeNatural(expectedInts, cases);
+        final FixedSizeNatural got = new FixedSizeNatural(formerInts, cases).and(new FixedSizeNatural(latterInts, cases));
+        Assert.assertEquals(expected, got);
+    }
+
+    @Test
+    public void orOfTwoNaturals() {
+        final int cases = 4;
+        final int[] formerInts = {0b0011};
+        final int[] latterInts = {0b0101};
+        final int[] expectedInts = {0b0111};
+        final FixedSizeNatural expected = new FixedSizeNatural(expectedInts, cases);
+        final FixedSizeNatural got = new FixedSizeNatural(formerInts, cases).or(new FixedSizeNatural(latterInts, cases));
+        Assert.assertEquals(expected, got);
+    }
+
+    @Test
+    public void xorOfTwoNaturals() {
+        final int cases = 4;
+        final int[] formerInts = {0b0011};
+        final int[] latterInts = {0b0101};
+        final int[] expectedInts = {0b0110};
+        final FixedSizeNatural expected = new FixedSizeNatural(expectedInts, cases);
+        final FixedSizeNatural got = new FixedSizeNatural(formerInts, cases).xor(new FixedSizeNatural(latterInts, cases));
+        Assert.assertEquals(expected, got);
+    }
+
+    @Test
+    public void canIncrementANumber() {
+        final int[] ints = {1};
+        final int size = 2;
+        final FixedSizeNatural got = new FixedSizeNatural(ints, size).increment();
+        final int[] expectedInts = {2};
+        final FixedSizeNatural expected = new FixedSizeNatural(expectedInts, size);
+        Assert.assertEquals(expected, got);
+    }
+
+    @Test
+    public void incrementCarriesToMoreSignificativeChunk() {
+        final int[] ints = {0, 0xFFFFFFFF};
+        final int size = 33;
+        final FixedSizeNatural got = new FixedSizeNatural(ints, size).increment();
+        final int[] expectedInts = {1, 0};
+        final FixedSizeNatural expected = new FixedSizeNatural(expectedInts, size);
+        Assert.assertEquals(expected, got);
+    }
+
+    @Test
+    public void incrementYieldsLastInsteadOfOverflowing() {
+        final int[] ints = {0xF};
+        final int size = 4;
+        final FixedSizeNatural got = new FixedSizeNatural(ints, size).increment();
+        final FixedSizeNatural expected = got.last();
+        Assert.assertEquals(expected, got);
+    }
+
+    @Test
+    public void canDecrementANumber() {
+        final int[] ints = {2};
+        final int[] expectedInts = {1};
+        final int size = 2;
+        final FixedSizeNatural got = new FixedSizeNatural(ints, size).decrement();
+        final FixedSizeNatural expected = new FixedSizeNatural(expectedInts, size);
+        Assert.assertEquals(expected, got);
+    }
+
+    @Test
+    public void decrementBorrowsToLessSignificativeChunk() {
+        final int[] ints = {1, 0};
+        final int[] expectedInts = {0, 0xFFFFFFFF};
+        final int size = 33;
+        final FixedSizeNatural got = new FixedSizeNatural(ints, size).decrement();
+        final FixedSizeNatural expected = new FixedSizeNatural(expectedInts, size);
+        Assert.assertEquals(expected, got);
+    }
+
+    @Test
+    public void decrementYieldsFirstInsteadOfUnderflowing() {
+        final int[] ints = {0};
+        final int size = 4;
+        final FixedSizeNatural got = new FixedSizeNatural(ints, size).decrement();
+        final FixedSizeNatural expected = FixedSizeNatural.zero(size);
+        Assert.assertEquals(expected, got);
+    }
+
+    @Test
+    public void firstIsZero() {
+        final int[] ints = {0};
+        final FixedSizeNatural expected = new FixedSizeNatural(ints, 32);
+        final FixedSizeNatural got = expected.first();
+        Assert.assertEquals(expected, got);
+    }
+
+    @Test
+    public void lastIsTheNegationOfFirst() {
+        final FixedSizeNatural expected = FixedSizeNatural.zero(32);
+        final FixedSizeNatural got = FixedSizeNatural.biggest(32).not();
+        Assert.assertEquals(expected, got);
+    }
+
+    @Test
+    public void extendToAddsBitsToInternalRepresentation() {
+        final int[] ints = {1};
+        final FixedSizeNatural expected = new FixedSizeNatural(ints, 2);
+        final FixedSizeNatural got = new FixedSizeNatural(ints, 1).extendTo(2);
+        Assert.assertEquals(expected, got);
+    }
+
+    @Test
+    public void truncateToRemovesBitsToInternalRepresentation() {
+        final int[] ints = {2};
+        final int[] expectedInts = {0};
+        final FixedSizeNatural expected = new FixedSizeNatural(expectedInts, 1);
+        final FixedSizeNatural got = new FixedSizeNatural(ints, 2).truncateTo(1);
+        Assert.assertEquals(expected, got);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void bitWithNegativeIndexThrows() {
+        final int[] ints = {0b00100000};
+        final FixedSizeNatural number = new FixedSizeNatural(ints, 8);
+        number.bit(-1);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void bitWithIndexNotLessThanLengthThrows() {
+        final int[] ints = {0b00100000};
+        final FixedSizeNatural number = new FixedSizeNatural(ints, 8);
+        number.bit(8);
+    }
+
+    @Test
+    public void bitYieldsTheBitAtTheGivenIndex() {
+        final int[] ints = {0b00100000};
+        final FixedSizeNatural number = new FixedSizeNatural(ints, 8);
+        final boolean bit = number.bit(5);
+        Assert.assertEquals(true, bit);
+    }
+
     @Ignore
     @Test
     public void shiftLeftPerformanceTest() {
         final BigInteger t1 = BigInteger.probablePrime(64, new Random(System.currentTimeMillis()));
         final int shift = 19;
-        final int cycles = 10000000;
+        final int cycles = 10_000_000;
         final long startBig = System.currentTimeMillis();
         for (int i = 0; i != cycles; ++i) {
             t1.shiftLeft(shift);
@@ -114,7 +293,7 @@ public class FixedSizeNaturalTest {
     public void shiftRightPerformanceTest() {
         final BigInteger t1 = BigInteger.probablePrime(64, new Random(System.currentTimeMillis()));
         final int shift = 19;
-        final int cycles = 10000000;
+        final int cycles = 10_000_000;
         final long startBig = System.currentTimeMillis();
         for (int i = 0; i != cycles; ++i) {
             t1.shiftRight(shift);
