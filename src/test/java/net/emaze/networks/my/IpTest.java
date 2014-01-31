@@ -1,7 +1,7 @@
 package net.emaze.networks.my;
 
-import junit.framework.Assert;
 import net.emaze.dysfunctional.order.Order;
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -19,7 +19,7 @@ public class IpTest {
         final Ip sameAddress = IpParsers.parseFromBitsV4(V4_LOCALHOST_AS_INT);
         Assert.assertEquals(anAddress, sameAddress);
     }
-    
+
     @Test
     public void sameIpRepresentedAsV4AndV6areEqual() {
         final Ip anAddress = IpParsers.parseFromStringV6("::FFFF:127.0.0.1");
@@ -36,7 +36,7 @@ public class IpTest {
     public void differentIpsAreNotEqual() {
         Assert.assertEquals(false, V4_ADDRESS.equals(V4_AFTER_ADDRESS));
     }
-    
+
     @Test
     public void ipIsDifferentFromNull() {
         Assert.assertEquals(false, V4_ADDRESS.equals(null));

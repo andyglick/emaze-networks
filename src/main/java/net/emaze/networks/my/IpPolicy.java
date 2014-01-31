@@ -5,7 +5,6 @@ import net.emaze.dysfunctional.contracts.dbc;
 import net.emaze.dysfunctional.options.Maybe;
 import net.emaze.dysfunctional.order.ComparableComparator;
 import net.emaze.dysfunctional.order.SequencingPolicy;
-import net.emaze.dysfunctional.tuples.Pair;
 
 public interface IpPolicy extends SequencingPolicy<Ip> {
 

@@ -6,10 +6,8 @@ import java.util.Arrays;
 import java.util.List;
 import net.emaze.dysfunctional.Strings;
 import net.emaze.dysfunctional.contracts.dbc;
-import net.emaze.dysfunctional.dispatching.delegates.Delegate;
 import net.emaze.dysfunctional.equality.EqualsBuilder;
 import net.emaze.dysfunctional.hashing.HashCodeBuilder;
-import net.emaze.dysfunctional.iterations.ReadOnlyIterator;
 
 public class FixedSizeNatural implements Comparable<FixedSizeNatural> {
 

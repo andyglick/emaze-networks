@@ -6,7 +6,6 @@ import java.util.List;
 import net.emaze.dysfunctional.Consumers;
 import net.emaze.dysfunctional.Filtering;
 import net.emaze.dysfunctional.Multiplexing;
-import net.emaze.dysfunctional.Strings;
 import net.emaze.dysfunctional.contracts.dbc;
 import net.emaze.dysfunctional.dispatching.delegates.Delegate;
 import net.emaze.dysfunctional.iterations.ConstantIterator;
