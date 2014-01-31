@@ -9,7 +9,7 @@ import org.junit.Ignore;
 public class FixedSizeNaturalTest {
 
     @Test
-    public void canConstructASequenceWithLengthAllignedToRappresentation() {
+    public void canConstructANaturalWithLengthAllignedToRappresentation() {
         final int[] intArray = new int[1];
         final int length = 32;
         final FixedSizeNatural got = new FixedSizeNatural(intArray, length);
@@ -17,7 +17,7 @@ public class FixedSizeNaturalTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void constructASequenceWithLengthNotAllignedToRappresentationThrows() {
+    public void constructANaturalWithLengthNotAllignedToRappresentationThrows() {
         final int[] intArray = new int[1];
         new FixedSizeNatural(intArray, 33);
     }

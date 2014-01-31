@@ -20,7 +20,7 @@ public class FixedSizeNatural implements Iterable<Boolean> {
 
     public FixedSizeNatural(int[] internal, int lengthInBits) {
         dbc.precondition(internal.length == lengthOfIntContainer(lengthInBits), "Internal representation must be aligned to lengthInBits");
-        dbc.precondition(internal.length > 0, "Cannot create a sequence with empty data");
+        dbc.precondition(internal.length > 0, "Cannot create a fixed size natural with empty data");
         dbc.precondition((lengthInBits % 32) == 0 || (internal[0] & (0xFFFFFFFF << (lengthInBits % 32))) == 0, "Unused bits contain data");
         this.internal = internal;
         this.length = lengthInBits;
@@ -114,7 +114,7 @@ public class FixedSizeNatural implements Iterable<Boolean> {
     }
 
     public FixedSizeNatural and(FixedSizeNatural other) {
-        dbc.precondition(this.length == other.length, "Sequences length is different");
+        dbc.precondition(this.length == other.length, "FixedSizeNatural length is different");
         final int[] conjunction = new int[internal.length];
         for (int index = 0; index != internal.length; ++index) {
             conjunction[index] = this.internal[index] & other.internal[index];
@@ -123,7 +123,7 @@ public class FixedSizeNatural implements Iterable<Boolean> {
     }
 
     public FixedSizeNatural or(FixedSizeNatural other) {
-        dbc.precondition(this.length == other.length, "Sequences length is different");
+        dbc.precondition(this.length == other.length, "FixedSizeNatural length is different");
         final int[] inclusiveDisjunction = new int[internal.length];
         for (int index = 0; index != internal.length; ++index) {
             inclusiveDisjunction[index] = this.internal[index] | other.internal[index];
@@ -132,7 +132,7 @@ public class FixedSizeNatural implements Iterable<Boolean> {
     }
 
     public FixedSizeNatural xor(FixedSizeNatural other) {
-        dbc.precondition(this.length == other.length, "Sequences length is different");
+        dbc.precondition(this.length == other.length, "FixedSizeNatural length is different");
         final int[] exclusiveDisjunction = new int[internal.length];
         for (int index = 0; index != internal.length; ++index) {
             exclusiveDisjunction[index] = this.internal[index] ^ other.internal[index];
@@ -234,7 +234,7 @@ public class FixedSizeNatural implements Iterable<Boolean> {
 
     @Override
     public String toString() {
-        return Strings.join(Applications.transform(new SequenceIterator(this), new ToBitValue()));
+        return Strings.join(Applications.transform(new BitsIterator(this), new ToBitValue()));
     }
 
     public String toString(int chunkSize) {
@@ -256,7 +256,7 @@ public class FixedSizeNatural implements Iterable<Boolean> {
 
     @Override
     public Iterator<Boolean> iterator() {
-        return new SequenceIterator(this);
+        return new BitsIterator(this);
     }
 
     public int[] clearExcess(int[] bits, int lengthInBits) {
@@ -273,14 +273,14 @@ public class FixedSizeNatural implements Iterable<Boolean> {
         return copy;
     }
 
-    public static class SequenceIterator extends ReadOnlyIterator<Boolean> {
+    public static class BitsIterator extends ReadOnlyIterator<Boolean> {
 
-        private final FixedSizeNatural sequence;
+        private final FixedSizeNatural natural;
         private int index;
 
-        public SequenceIterator(FixedSizeNatural sequence) {
-            this.sequence = sequence;
-            this.index = sequence.length() - 1;
+        public BitsIterator(FixedSizeNatural natural) {
+            this.natural = natural;
+            this.index = natural.length() - 1;
         }
 
         @Override
@@ -290,7 +290,7 @@ public class FixedSizeNatural implements Iterable<Boolean> {
 
         @Override
         public Boolean next() {
-            return sequence.bit(index--);
+            return natural.bit(index--);
         }
     }
 
