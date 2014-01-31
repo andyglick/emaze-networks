@@ -2,6 +2,7 @@ package net.emaze.networks.my;
 
 import java.math.BigInteger;
 import java.util.Random;
+import net.emaze.dysfunctional.order.Order;
 import org.junit.Test;
 import org.junit.Assert;
 import org.junit.Ignore;
@@ -265,6 +266,58 @@ public class FixedSizeNaturalTest {
         final FixedSizeNatural number = new FixedSizeNatural(ints, 8);
         final boolean bit = number.bit(5);
         Assert.assertEquals(true, bit);
+    }
+
+    @Test
+    public void naturalsAreEqualWhenHaveTheSameRepresentation() {
+        final int[] ints = {1, 2, 3, 4};
+        final FixedSizeNatural first = new FixedSizeNatural(ints, 128);
+        final FixedSizeNatural second = new FixedSizeNatural(ints, 128);
+        Assert.assertEquals(Order.EQ, Order.of(first.compareTo(second)));
+    }
+
+    @Test
+    public void naturalsAreEqualWithSameInternalValuesEvenWhenHaveDifferentLength() {
+        final int[] ints = {1, 2, 3, 4};
+        final FixedSizeNatural first = new FixedSizeNatural(ints, 97);
+        final FixedSizeNatural second = new FixedSizeNatural(ints, 128);
+        Assert.assertEquals(Order.EQ, Order.of(first.compareTo(second)));
+    }
+
+    @Test
+    public void naturalsAreEqualWithSameInternalValuesEvenWhenHaveDifferentArrayLengths() {
+        final int[] firstInts = {1, 2, 3, 4};
+        final int[] secondInts = {0, 1, 2, 3, 4};
+        final FixedSizeNatural first = new FixedSizeNatural(firstInts, 97);
+        final FixedSizeNatural second = new FixedSizeNatural(secondInts, 129);
+        Assert.assertEquals(Order.EQ, Order.of(first.compareTo(second)));
+    }
+
+    @Test
+    public void differentNaturalsAreComparable() {
+        final int[] firstInts = {1, 2, 3, 4};
+        final int[] secondInts = {1, 2, 3, 5};
+        final FixedSizeNatural first = new FixedSizeNatural(firstInts, 128);
+        final FixedSizeNatural second = new FixedSizeNatural(secondInts, 128);
+        Assert.assertEquals(Order.LT, Order.of(first.compareTo(second)));
+    }
+
+    @Test
+    public void differentNaturalsAreComparableEvenWhenHaveDifferentLength() {
+        final int[] firstInts = {1, 2, 3, 4};
+        final int[] secondInts = {1, 2, 3, 5};
+        final FixedSizeNatural first = new FixedSizeNatural(firstInts, 97);
+        final FixedSizeNatural second = new FixedSizeNatural(secondInts, 128);
+        Assert.assertEquals(Order.LT, Order.of(first.compareTo(second)));
+    }
+
+    @Test
+    public void differentNaturalsAreComparableEvenWhenHaveDifferentArrayLengths() {
+        final int[] firstInts = {1, 2, 3, 4};
+        final int[] secondInts = {0, 1, 2, 3, 5};
+        final FixedSizeNatural first = new FixedSizeNatural(firstInts, 97);
+        final FixedSizeNatural second = new FixedSizeNatural(secondInts, 129);
+        Assert.assertEquals(Order.LT, Order.of(first.compareTo(second)));
     }
 
     @Ignore

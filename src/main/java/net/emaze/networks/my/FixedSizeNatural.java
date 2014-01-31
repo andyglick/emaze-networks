@@ -12,8 +12,9 @@ import net.emaze.dysfunctional.dispatching.delegates.Delegate;
 import net.emaze.dysfunctional.equality.EqualsBuilder;
 import net.emaze.dysfunctional.hashing.HashCodeBuilder;
 import net.emaze.dysfunctional.iterations.ReadOnlyIterator;
+import net.emaze.dysfunctional.order.Order;
 
-public class FixedSizeNatural implements Iterable<Boolean> {
+public class FixedSizeNatural implements Iterable<Boolean>, Comparable<FixedSizeNatural> {
 
     private final int[] internal;
     private final int length;
@@ -287,6 +288,20 @@ public class FixedSizeNatural implements Iterable<Boolean> {
         }
         copy[cleared] &= (0xFFFFFFFF >>> remaining);
         return copy;
+    }
+
+    @Override
+    public int compareTo(FixedSizeNatural other) {
+        final int maxLength = this.length >= other.length ? this.length : other.length;
+        final FixedSizeNatural self = this.length == maxLength ? this : this.extendTo(maxLength);
+        other = other.length == maxLength ? other : other.extendTo(maxLength);
+        for (int i = 0; i < self.internal.length; i++) {
+            final Order order = Order.of(self.internal[i] - other.internal[i]);
+            if (order != Order.EQ) {
+                return order.order();
+            }
+        }
+        return Order.EQ.order();
     }
 
     public static class BitsIterator extends ReadOnlyIterator<Boolean> {
