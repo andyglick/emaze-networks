@@ -4,12 +4,12 @@ import net.emaze.dysfunctional.contracts.dbc;
 import net.emaze.dysfunctional.hashing.HashCodeBuilder;
 import net.emaze.dysfunctional.order.Order;
 
-public class MyMask implements Comparable<MyMask> {
+public class Mask implements Comparable<Mask> {
 
     private final int size;
     final IpPolicy policy;
 
-    public MyMask(int size, IpPolicy policy) {
+    public Mask(int size, IpPolicy policy) {
         dbc.precondition(size <= policy.maxPopulation(), "mask exceed maximum size");
         this.size = size;
         this.policy = policy;
@@ -36,12 +36,12 @@ public class MyMask implements Comparable<MyMask> {
         return FixedSizeNatural.one(policy.maxPopulation()).shiftLeft(policy.maxPopulation() - size);
     }
 
-    public MyMask narrowHosts() {
-        return size == policy.maxPopulation() ? policy.getNarrowestMask() : new MyMask(size + 1, policy);
+    public Mask narrowHosts() {
+        return size == policy.maxPopulation() ? policy.getNarrowestMask() : new Mask(size + 1, policy);
     }
 
-    public MyMask widenHosts() {
-        return size == 0 ? policy.getWidestMask() : new MyMask(size - 1, policy);
+    public Mask widenHosts() {
+        return size == 0 ? policy.getWidestMask() : new Mask(size - 1, policy);
     }
 
     public boolean isNarrowest() {
@@ -53,7 +53,7 @@ public class MyMask implements Comparable<MyMask> {
     }
 
     @Override
-    public int compareTo(MyMask other) {
+    public int compareTo(Mask other) {
         return policy.selectForComparison(other.policy).compare(this, other);
     }
 
@@ -64,10 +64,10 @@ public class MyMask implements Comparable<MyMask> {
 
     @Override
     public boolean equals(Object object) {
-        if (object instanceof MyMask == false) {
+        if (object instanceof Mask == false) {
             return false;
         }
-        final MyMask other = (MyMask) object;
+        final Mask other = (Mask) object;
         return Order.of(policy.selectForComparison(other.policy).compare(this, other)) == Order.EQ;
     }
 }

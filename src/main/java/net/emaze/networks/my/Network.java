@@ -7,13 +7,13 @@ import net.emaze.dysfunctional.order.Order;
 import net.emaze.dysfunctional.ranges.Range;
 import net.emaze.dysfunctional.tuples.Pair;
 
-public class MyNetwork {
+public class Network {
 
-    private final MyIp ip;
-    private final MyMask mask;
+    private final Ip ip;
+    private final Mask mask;
     private final IpPolicy policy;
 
-    public MyNetwork(MyIp ip, MyMask mask) {
+    public Network(Ip ip, Mask mask) {
         dbc.precondition(ip.version().equals(mask.version()), "version of ip and mask must be the same");
         this.ip = ip;
         this.mask = mask;
@@ -24,15 +24,15 @@ public class MyNetwork {
         return policy;
     }
 
-    public MyIp firstIp() {
+    public Ip firstIp() {
         return ip;
     }
 
-    public MyIp lastIp() {
-        return new MyIp(ip.bits().or(mask.hostBits()), policy);
+    public Ip lastIp() {
+        return new Ip(ip.bits().or(mask.hostBits()), policy);
     }
 
-    public MyMask netmask() {
+    public Mask netmask() {
         return mask;
     }
 
@@ -40,23 +40,23 @@ public class MyNetwork {
         return mask.hosts();
     }
 
-    public Pair<MyIp, MyMask> toCidr() {
+    public Pair<Ip, Mask> toCidr() {
         return Pair.of(ip, mask);
     }
 
-    public Range<MyIp> toRange() {
+    public Range<Ip> toRange() {
         return policy.getRanges().closed(ip, lastIp());
     }
 
-    public Pair<MyNetwork, MyNetwork> split() {
+    public Pair<Network, Network> split() {
         dbc.precondition(mask.isNarrowest(), "Unsplittable CIDR");
-        final MyMask halfMask = mask.narrowHosts();
-        final MyNetwork first = new MyNetwork(ip, halfMask);
-        final MyNetwork second = new MyNetwork(lastIp().mask(halfMask), halfMask);
+        final Mask halfMask = mask.narrowHosts();
+        final Network first = new Network(ip, halfMask);
+        final Network second = new Network(lastIp().mask(halfMask), halfMask);
         return Pair.of(first, second);
     }
 
-    public boolean contains(MyIp ip) {
+    public boolean contains(Ip ip) {
         if (Order.of(ip.compareTo(this.firstIp())) == Order.LT) {
             return false;
         }
@@ -66,7 +66,7 @@ public class MyNetwork {
         return true;
     }
 
-    public boolean contains(MyNetwork other) {
+    public boolean contains(Network other) {
         final Order first = Order.of(this.firstIp().compareTo(other.firstIp()));
         final Order last = Order.of(this.lastIp().compareTo(other.lastIp()));
         return (first == Order.LT || first == Order.EQ) && (last == Order.EQ || last == Order.GT);
@@ -74,10 +74,10 @@ public class MyNetwork {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof MyNetwork == false) {
+        if (obj instanceof Network == false) {
             return false;
         }
-        final MyNetwork other = (MyNetwork) obj;
+        final Network other = (Network) obj;
         return new EqualsBuilder().append(this.ip, other.ip).append(this.mask, other.mask).isEquals();
     }
 

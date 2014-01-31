@@ -7,22 +7,22 @@ import net.emaze.dysfunctional.dispatching.delegates.BinaryDelegate;
 import net.emaze.dysfunctional.tuples.Pair;
 
 
-public class SubtractIpFromNetwork implements BinaryDelegate<Set<MyNetwork>, MyNetwork, MyIp> {
+public class SubtractIpFromNetwork implements BinaryDelegate<Set<Network>, Network, Ip> {
 
     @Override
-    public Set<MyNetwork> perform(MyNetwork minuend, MyIp subtrahend) {
+    public Set<Network> perform(Network minuend, Ip subtrahend) {
         return recursivelySubtract(minuend, subtrahend);
     }
 
-    private Set<MyNetwork> recursivelySubtract(MyNetwork minuend, MyIp subtrahend) {
+    private Set<Network> recursivelySubtract(Network minuend, Ip subtrahend) {
         if (!minuend.contains(subtrahend)) {
             return Collections.singleton(minuend);
         }
         if (minuend.netmask().isNarrowest()) {
             return Collections.emptySet();
         }
-        final Set<MyNetwork> reminder = new HashSet<>();
-        final Pair<MyNetwork, MyNetwork> split = minuend.split();
+        final Set<Network> reminder = new HashSet<>();
+        final Pair<Network, Network> split = minuend.split();
         if (split.first().contains(subtrahend)) {
             reminder.add(split.second());
             reminder.addAll(recursivelySubtract(split.first(), subtrahend));

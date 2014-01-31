@@ -5,9 +5,9 @@ import java.util.List;
 import net.emaze.dysfunctional.contracts.dbc;
 import net.emaze.dysfunctional.dispatching.delegates.Delegate;
 
-public class MyIpParsers {
+public class IpParsers {
 
-    public static MyIp parse(String ip) {
+    public static Ip parse(String ip) {
         dbc.precondition(ip != null, "address must be not-null");
         if (ip.contains(":")) {
             return parseFromStringV6(ip);
@@ -15,27 +15,27 @@ public class MyIpParsers {
         return parseFromStringV4(ip);
     }
 
-    public static MyIp parseFromStringV4(String dottedIpAddress) {
+    public static Ip parseFromStringV4(String dottedIpAddress) {
         dbc.precondition(dottedIpAddress != null, "address must be not-null");
         final byte[] octets = new Ipv4DottedOctetFormToByteArray().perform(dottedIpAddress);
         final IpPolicy.V4 v4 = new IpPolicy.V4();
-        return new MyIp(FixedSizeNatural.fromByteArray(octets), v4);
+        return new Ip(FixedSizeNatural.fromByteArray(octets), v4);
     }
 
-    public static MyIp parseFromStringV6(String ip) {
+    public static Ip parseFromStringV6(String ip) {
         dbc.precondition(ip != null, "address must be not-null");
         final FixedSizeNatural bits = FixedSizeNatural.fromByteArray(new Ipv6ToByteArray().perform(ip));
-        return new MyIp(bits, new IpPolicy.V6());
+        return new Ip(bits, new IpPolicy.V6());
     }
 
     //FIXME: If I create a BigInteger directly from bits, do I get the same result? NO
-    public static MyIp parseFromBitsV4(int bits) {
+    public static Ip parseFromBitsV4(int bits) {
         final byte firstOctet = (byte) ((bits & 0xFF000000) >>> 24);
         final byte secondOctet = (byte) ((bits & 0x00FF0000) >> 16);
         final byte thirdOctet = (byte) ((bits & 0x0000FF00) >> 8);
         final byte fourthOctet = (byte) (bits & 0x000000FF);
         final byte[] octets = new byte[]{firstOctet, secondOctet, thirdOctet, fourthOctet};
-        return new MyIp(FixedSizeNatural.fromByteArray(octets), new IpPolicy.V4());
+        return new Ip(FixedSizeNatural.fromByteArray(octets), new IpPolicy.V4());
     }
 
     public static class Ipv4DottedOctetFormToByteArray implements Delegate<byte[], String> {

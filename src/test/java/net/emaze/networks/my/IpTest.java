@@ -8,22 +8,22 @@ import org.junit.Test;
 public class IpTest {
 
     private static final int LOCALHOST_AS_INT = 2130706433;
-    private static final MyIp ADDRESS = MyIpParsers.parse("127.0.0.1");
-    private static final MyIp BEFORE_ADDRESS = MyIpParsers.parse("127.0.0.0");
-    private static final MyIp AFTER_ADDRESS = MyIpParsers.parse("127.0.0.2");
+    private static final Ip ADDRESS = IpParsers.parse("127.0.0.1");
+    private static final Ip BEFORE_ADDRESS = IpParsers.parse("127.0.0.0");
+    private static final Ip AFTER_ADDRESS = IpParsers.parse("127.0.0.2");
 
     
 
     @Test
     public void sameMyIpsAreEqual() {
-        final MyIp anAddress = MyIpParsers.parseFromBitsV4(LOCALHOST_AS_INT);
-        final MyIp sameAddress = MyIpParsers.parseFromBitsV4(LOCALHOST_AS_INT);
+        final Ip anAddress = IpParsers.parseFromBitsV4(LOCALHOST_AS_INT);
+        final Ip sameAddress = IpParsers.parseFromBitsV4(LOCALHOST_AS_INT);
         Assert.assertEquals(anAddress, sameAddress);
     }
 
     @Test
     public void sameMyIpInDifferentFormatsAreEquals() {
-        Assert.assertEquals(MyIpParsers.parseFromBitsV4(LOCALHOST_AS_INT), MyIpParsers.parse("127.0.0.1"));
+        Assert.assertEquals(IpParsers.parseFromBitsV4(LOCALHOST_AS_INT), IpParsers.parse("127.0.0.1"));
     }
 
     @Test
@@ -43,8 +43,8 @@ public class IpTest {
 
     @Test
     public void comparingWithSameYieldsEqual() {
-        final MyIp anAddress = MyIpParsers.parseFromBitsV4(1);
-        final MyIp sameAddress = MyIpParsers.parseFromBitsV4(1);
+        final Ip anAddress = IpParsers.parseFromBitsV4(1);
+        final Ip sameAddress = IpParsers.parseFromBitsV4(1);
         Assert.assertEquals(Order.EQ.order(), anAddress.compareTo(sameAddress));
     }
 
@@ -71,7 +71,7 @@ public class IpTest {
 
     @Test
     public void offsetCanYieldAGreaterMyIp() {
-        final MyIp displaced = ADDRESS.next();
+        final Ip displaced = ADDRESS.next();
         Assert.assertEquals(AFTER_ADDRESS, displaced);
     }
 
@@ -83,7 +83,7 @@ public class IpTest {
 
     @Test
     public void offsetCanYieldALesserMyIp() {
-        final MyIp displaced = ADDRESS.previous();
+        final Ip displaced = ADDRESS.previous();
         Assert.assertEquals(BEFORE_ADDRESS, displaced);
     }
 
@@ -95,9 +95,9 @@ public class IpTest {
 
     @Test
     public void maskingAnAddressYieldsNetworkPart() {
-        final MyIp address = MyIpParsers.parse("192.168.1.123");
-        final MyMask netmask = new MyMask(16, new IpPolicy.V4());
-        final MyIp expected = MyIpParsers.parse("192.168.0.0");
+        final Ip address = IpParsers.parse("192.168.1.123");
+        final Mask netmask = new Mask(16, new IpPolicy.V4());
+        final Ip expected = IpParsers.parse("192.168.0.0");
         Assert.assertEquals(expected, address.mask(netmask));
     }
 
