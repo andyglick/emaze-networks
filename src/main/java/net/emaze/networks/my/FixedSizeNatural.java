@@ -3,9 +3,7 @@ package net.emaze.networks.my;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
-import net.emaze.dysfunctional.Applications;
 import net.emaze.dysfunctional.Strings;
 import net.emaze.dysfunctional.contracts.dbc;
 import net.emaze.dysfunctional.dispatching.delegates.Delegate;
@@ -13,7 +11,7 @@ import net.emaze.dysfunctional.equality.EqualsBuilder;
 import net.emaze.dysfunctional.hashing.HashCodeBuilder;
 import net.emaze.dysfunctional.iterations.ReadOnlyIterator;
 
-public class FixedSizeNatural implements Iterable<Boolean>, Comparable<FixedSizeNatural> {
+public class FixedSizeNatural implements Comparable<FixedSizeNatural> {
 
     private final long COMPARISON_MASK = 0xFFFFFFFFL;
     private final int[] internal;
@@ -259,7 +257,22 @@ public class FixedSizeNatural implements Iterable<Boolean>, Comparable<FixedSize
 
     @Override
     public String toString() {
-        return Strings.join(Applications.transform(new BitsIterator(this), new ToBitValue()));
+        final String firstChunk = Integer.toBinaryString(internal[0]);
+        final int remainingBits = length % 32;
+        final StringBuilder stringBuilder = new StringBuilder();
+        appendZeroes(remainingBits - firstChunk.length(), stringBuilder).append(firstChunk);
+        for (int i = 1; i < internal.length; i++) {
+            final String chunk = Integer.toBinaryString(internal[i]);
+            appendZeroes(32 - chunk.length(), stringBuilder).append(chunk);
+        }
+        return stringBuilder.toString();
+    }
+
+    private StringBuilder appendZeroes(int times, StringBuilder builder) {
+        for (int i = 0; i < times; i++) {
+            builder.append('0');
+        }
+        return builder;
     }
 
     public String toString(int chunkSize) {
@@ -277,11 +290,6 @@ public class FixedSizeNatural implements Iterable<Boolean>, Comparable<FixedSize
         dbc.precondition((index >= 0) && (index < length), "index must be a value in [0, %s)", length);
         final int value = (internal[internal.length - 1 - index / 32] & 1 << (index % 32)) >>> index;
         return value > 0;
-    }
-
-    @Override
-    public Iterator<Boolean> iterator() {
-        return new BitsIterator(this);
     }
 
     private static int[] clearExcess(int[] bits, int lengthInBits) {
@@ -310,35 +318,4 @@ public class FixedSizeNatural implements Iterable<Boolean>, Comparable<FixedSize
         }
         return 0;
     }
-
-    public static class BitsIterator extends ReadOnlyIterator<Boolean> {
-
-        private final FixedSizeNatural natural;
-        private int index;
-
-        public BitsIterator(FixedSizeNatural natural) {
-            this.natural = natural;
-            this.index = natural.length() - 1;
-        }
-
-        @Override
-        public boolean hasNext() {
-            return index >= 0;
-        }
-
-        @Override
-        public Boolean next() {
-            return natural.bit(index--);
-        }
-    }
-
-    public static class ToBitValue implements Delegate<String, Boolean> {
-
-        @Override
-        public String perform(Boolean t) {
-            return t ? "1" : "0";
-        }
-
-    }
-
 }
