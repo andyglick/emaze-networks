@@ -1,16 +1,15 @@
 package net.emaze.networks.my;
 
-import java.math.BigInteger;
 import net.emaze.dysfunctional.contracts.dbc;
 import net.emaze.dysfunctional.hashing.HashCodeBuilder;
 import net.emaze.dysfunctional.order.Order;
 
 public class MyIp implements Comparable<MyIp> {
 
-    private final BigInteger address;
+    private final FixedSizeNatural address;
     private final IpPolicy policy;
 
-    public MyIp(BigInteger address, IpPolicy policy) {
+    public MyIp(FixedSizeNatural address, IpPolicy policy) {
         dbc.precondition(Order.of(address.compareTo(policy.getLastIp().bits())).isLte(), "Ip number is out of range");
         this.address = address;
         this.policy = policy;
@@ -24,7 +23,7 @@ public class MyIp implements Comparable<MyIp> {
         return address.toByteArray();
     }
 
-    public BigInteger bits() {
+    public FixedSizeNatural bits() {
         return address;
     }
 
@@ -33,11 +32,11 @@ public class MyIp implements Comparable<MyIp> {
     }
 
     public MyIp next() {
-        return address.equals(policy.maxValue()) ? policy.getLastIp() : new MyIp(address.add(BigInteger.ONE), policy);
+        return address.equals(policy.maxValue()) ? policy.getLastIp() : new MyIp(address.increment(), policy);
     }
 
     public MyIp previous() {
-        return address.equals(policy.minValue()) ? policy.getFirstIp() : new MyIp(address.subtract(BigInteger.ONE), policy);
+        return address.equals(policy.minValue()) ? policy.getFirstIp() : new MyIp(address.decrement(), policy);
     }
 
     @Override

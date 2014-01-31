@@ -1,6 +1,5 @@
 package net.emaze.networks.my;
 
-import java.math.BigInteger;
 import net.emaze.dysfunctional.contracts.dbc;
 import net.emaze.dysfunctional.equality.EqualsBuilder;
 import net.emaze.dysfunctional.hashing.HashCodeBuilder;
@@ -30,14 +29,14 @@ public class MyNetwork {
     }
 
     public MyIp lastIp() {
-        return new MyIp(ip.bits().add(mask.hostBits()), policy);
+        return new MyIp(ip.bits().or(mask.hostBits()), policy);
     }
 
     public MyMask netmask() {
         return mask;
     }
 
-    public BigInteger size() {
+    public FixedSizeNatural size() {
         return mask.hosts();
     }
 

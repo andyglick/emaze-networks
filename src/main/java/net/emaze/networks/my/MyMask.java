@@ -20,12 +20,12 @@ public class MyMask implements Comparable<MyMask> {
         return policy;
     }
 
-    public BigInteger bits() {
-        final BigInteger fullMask = policy.getNarrowestMask().bits();
+    public FixedSizeNatural bits() {
+        final FixedSizeNatural fullMask = policy.getNarrowestMask().bits();
         return fullMask.shiftLeft(policy.maxPopulation() - size).and(fullMask);
     }
 
-    public BigInteger hostBits() {
+    public FixedSizeNatural hostBits() {
         return bits().xor(policy.maxValue());
     }
 
@@ -33,8 +33,8 @@ public class MyMask implements Comparable<MyMask> {
         return size;
     }
 
-    public BigInteger hosts() {
-        return BigInteger.ONE.shiftLeft(policy.maxPopulation() - size);
+    public FixedSizeNatural hosts() {
+        return FixedSizeNatural.one(policy.maxPopulation()).shiftLeft(policy.maxPopulation() - size);
     }
 
     public MyMask narrowHosts() {

@@ -19,12 +19,12 @@ public class MyIpParsers {
     public static MyIp parseFromStringV4(String dottedIpAddress) {
         dbc.precondition(dottedIpAddress != null, "address must be not-null");
         final byte[] octets = new Ipv4DottedOctetFormToByteArray().perform(dottedIpAddress);
-        return new MyIp(new BigInteger(1, octets), new IpPolicy.V4());
+        return new MyIp(FixedSizeNatural.fromByteArray(octets), new IpPolicy.V4());
     }
 
     public static MyIp parseFromStringV6(String ip) {
         dbc.precondition(ip != null, "address must be not-null");
-        final BigInteger bits = new BigInteger(new Ipv6ToByteArray().perform(ip));
+        final FixedSizeNatural bits = FixedSizeNatural.fromByteArray(new Ipv6ToByteArray().perform(ip));
         return new MyIp(bits, new IpPolicy.V6());
     }
 
@@ -35,7 +35,7 @@ public class MyIpParsers {
         final byte thirdOctet = (byte) ((bits & 0x0000FF00) >> 8);
         final byte fourthOctet = (byte) (bits & 0x000000FF);
         final byte[] octets = new byte[]{firstOctet, secondOctet, thirdOctet, fourthOctet};
-        return new MyIp(new BigInteger(1, octets), new IpPolicy.V4());
+        return new MyIp(FixedSizeNatural.fromByteArray(octets), new IpPolicy.V4());
     }
 
     public static class Ipv4DottedOctetFormToByteArray implements Delegate<byte[], String> {

@@ -1,6 +1,5 @@
 package net.emaze.networks.my;
 
-import java.math.BigInteger;
 import net.emaze.dysfunctional.Ranges;
 import net.emaze.dysfunctional.contracts.dbc;
 import net.emaze.dysfunctional.options.Maybe;
@@ -10,8 +9,8 @@ import net.emaze.dysfunctional.tuples.Pair;
 
 public interface IpPolicy extends SequencingPolicy<MyIp> {
 
-    public static final BigInteger IPV4_TO_V6_PREFIX = new BigInteger("000000000000000000000FFFF00000000", 16);
-    public static final BigInteger IPV4_TO_V6_MASK = new BigInteger("FFFFFFFFFFFFFFFFFFFFFFFF00000000", 16);
+    public static final FixedSizeNatural IPV4_TO_V6_PREFIX = FixedSizeNatural.biggest(16).extendTo(128).shiftLeft(32);
+    public static final FixedSizeNatural IPV4_TO_V6_MASK = FixedSizeNatural.biggest(128).shiftLeft(32);
     public static final int IPV4_TO_V6_POPULATION = 96;
 
     MyIp getFirstIp();
@@ -26,9 +25,9 @@ public interface IpPolicy extends SequencingPolicy<MyIp> {
 
     Ranges<MyIp> getRanges();
 
-    BigInteger maxValue();
+    FixedSizeNatural maxValue();
 
-    BigInteger minValue();
+    FixedSizeNatural minValue();
 
     int maxPopulation();
 
@@ -40,9 +39,10 @@ public interface IpPolicy extends SequencingPolicy<MyIp> {
 
     public static class V6 implements IpPolicy {
 
-        private static final BigInteger MIN_ADDRESS_IN_BITS = BigInteger.ZERO;
-        private static final BigInteger MAX_ADDRESS_IN_BITS = new BigInteger("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF", 16);
+        public static final int IPV6_BITS = 128;
         private static final int MAX_MASK_POPULATION = 128;
+        private static final FixedSizeNatural MIN_ADDRESS_IN_BITS = FixedSizeNatural.zero(IPV6_BITS);
+        private static final FixedSizeNatural MAX_ADDRESS_IN_BITS = FixedSizeNatural.biggest(IPV6_BITS);
         private static final MyIp FIRST_IP = new MyIp(MIN_ADDRESS_IN_BITS, new V6());
         private static final MyIp LAST_IP = new MyIp(MAX_ADDRESS_IN_BITS, new V6());
         private static final MyMask NARROWEST = new MyMask(MAX_MASK_POPULATION, new V6());
@@ -80,26 +80,26 @@ public interface IpPolicy extends SequencingPolicy<MyIp> {
         }
 
         @Override
-        public BigInteger maxValue() {
+        public FixedSizeNatural maxValue() {
             return MAX_ADDRESS_IN_BITS;
         }
 
         @Override
-        public BigInteger minValue() {
+        public FixedSizeNatural minValue() {
             return MIN_ADDRESS_IN_BITS;
         }
 
         @Override
         public int compare(MyIp lhs, MyIp rhs) {
-            final BigInteger left = lhs.version() instanceof V6 ? lhs.bits() : IPV4_TO_V6_PREFIX.or(lhs.bits());
-            final BigInteger right = rhs.version() instanceof V6 ? rhs.bits() : IPV4_TO_V6_PREFIX.or(rhs.bits());
+            final FixedSizeNatural left = lhs.version() instanceof V6 ? lhs.bits() : IPV4_TO_V6_PREFIX.or(lhs.bits().extendTo(IPV6_BITS));
+            final FixedSizeNatural right = rhs.version() instanceof V6 ? rhs.bits() : IPV4_TO_V6_PREFIX.or(rhs.bits().extendTo(IPV6_BITS));
             return left.compareTo(right);
         }
 
         @Override
         public int compare(MyMask lhs, MyMask rhs) {
-            final BigInteger left = lhs.version() instanceof V6 ? lhs.bits() : IPV4_TO_V6_PREFIX.or(lhs.bits());
-            final BigInteger right = rhs.version() instanceof V6 ? rhs.bits() : IPV4_TO_V6_PREFIX.or(rhs.bits());
+            final FixedSizeNatural left = lhs.version() instanceof V6 ? lhs.bits() : IPV4_TO_V6_PREFIX.or(lhs.bits().extendTo(IPV6_BITS));
+            final FixedSizeNatural right = rhs.version() instanceof V6 ? rhs.bits() : IPV4_TO_V6_PREFIX.or(rhs.bits().extendTo(IPV6_BITS));
             return left.compareTo(right);
         }
 
@@ -112,7 +112,7 @@ public interface IpPolicy extends SequencingPolicy<MyIp> {
             if (source.version() instanceof V6) {
                 return source;
             }
-            final BigInteger address = IPV4_TO_V6_PREFIX.or(source.bits());
+            final FixedSizeNatural address = IPV4_TO_V6_PREFIX.or(source.bits().extendTo(IPV6_BITS));
             return new MyIp(address, new V6());
         }
 
@@ -120,7 +120,6 @@ public interface IpPolicy extends SequencingPolicy<MyIp> {
             if (source.policy instanceof V6) {
                 return source;
             }
-
             return new MyMask(source.population() + IPV4_TO_V6_POPULATION, new IpPolicy.V6());
         }
 
@@ -158,9 +157,10 @@ public interface IpPolicy extends SequencingPolicy<MyIp> {
 
     public static class V4 implements IpPolicy {
 
-        private static final BigInteger MIN_ADDRESS_IN_BITS = BigInteger.ZERO;
-        private static final BigInteger MAX_ADDRESS_IN_BITS = new BigInteger("FFFFFFFF", 16);
+        public static final int IPV4_BITS = 32;
         private static final int MAX_MASK_POPULATION = 32;
+        private static final FixedSizeNatural MIN_ADDRESS_IN_BITS = FixedSizeNatural.zero(IPV4_BITS);
+        private static final FixedSizeNatural MAX_ADDRESS_IN_BITS = FixedSizeNatural.biggest(IPV4_BITS);
         private static final MyIp FIRST_IP = new MyIp(MIN_ADDRESS_IN_BITS, new V4());
         private static final MyIp LAST_IP = new MyIp(MAX_ADDRESS_IN_BITS, new V4());
         private static final MyMask NARROWEST = new MyMask(MAX_MASK_POPULATION, new V4());
@@ -198,12 +198,12 @@ public interface IpPolicy extends SequencingPolicy<MyIp> {
         }
 
         @Override
-        public BigInteger maxValue() {
+        public FixedSizeNatural maxValue() {
             return MAX_ADDRESS_IN_BITS;
         }
 
         @Override
-        public BigInteger minValue() {
+        public FixedSizeNatural minValue() {
             return MIN_ADDRESS_IN_BITS;
         }
 
@@ -232,7 +232,7 @@ public interface IpPolicy extends SequencingPolicy<MyIp> {
                 return source;
             }
             dbc.precondition(source.bits().and(IPV4_TO_V6_MASK).equals(IPV4_TO_V6_PREFIX), "Address cannot be converted to IPv4");
-            final BigInteger address = source.bits().andNot(IPV4_TO_V6_MASK);
+            final FixedSizeNatural address = source.bits().extendTo(V6.IPV6_BITS).and(IPV4_TO_V6_MASK.not());
             return new MyIp(address, new V4());
         }
 
