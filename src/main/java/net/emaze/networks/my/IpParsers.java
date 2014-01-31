@@ -1,9 +1,15 @@
 package net.emaze.networks.my;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import net.emaze.dysfunctional.Consumers;
+import net.emaze.dysfunctional.Filtering;
+import net.emaze.dysfunctional.Multiplexing;
+import net.emaze.dysfunctional.Strings;
 import net.emaze.dysfunctional.contracts.dbc;
 import net.emaze.dysfunctional.dispatching.delegates.Delegate;
+import net.emaze.dysfunctional.iterations.ConstantIterator;
 
 public class IpParsers {
 
@@ -79,15 +85,11 @@ public class IpParsers {
         }
 
         private String[] normalize(String address, int expectedChunks) {
-            final String[] chunks = address.split(":");
-            final List<String> easier = Arrays.asList(chunks);
-            final int needle = easier.indexOf("");
-            final int add = expectedChunks - chunks.length + 1;
-            easier.remove(needle);
-            for (int times = 0; times != add; ++times) {
-                easier.add(needle, "0000");
-            }
-            return easier.toArray(new String[]{});
+            final String[] halves = address.split("::");
+            final List<String> left = halves[0].isEmpty() ? Collections.<String>emptyList() : Arrays.asList(halves[0].split(":"));
+            final List<String> right = halves.length > 0 ? Arrays.asList(halves[1].split(":")) : Collections.<String>emptyList();
+            final List<String> expanded = Consumers.all(Filtering.take(expectedChunks - left.size() - right.size(), new ConstantIterator<>("0")));
+            return Consumers.all(Multiplexing.flatten(left, expanded, right)).toArray(new String[]{});
         }
 
         private byte[] transform(String[] chunks, int expectedChunks) {
