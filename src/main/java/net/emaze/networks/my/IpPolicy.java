@@ -103,29 +103,6 @@ public interface IpPolicy extends SequencingPolicy<Ip> {
             return this;
         }
 
-        public static Ip toV6(Ip source) {
-            if (source.version() instanceof V6) {
-                return source;
-            }
-            final FixedSizeNatural address = IPV4_TO_V6_PREFIX.or(source.bits().extendTo(IPV6_BITS));
-            return new Ip(address, new V6());
-        }
-
-        public static Mask toV6(Mask source) {
-            if (source.policy instanceof V6) {
-                return source;
-            }
-            return new Mask(source.population() + IPV4_TO_V6_POPULATION, new IpPolicy.V6());
-        }
-
-        public static Network toV6(Network source) {
-            if (source.version() instanceof V6) {
-                return source;
-            }
-            final Pair<Ip, Mask> cidr = source.toCidr();
-            return new Network(toV6(cidr.first()), toV6(cidr.second()));
-        }
-
         @Override
         public int maxPopulation() {
             return MAX_MASK_POPULATION;
@@ -215,31 +192,6 @@ public interface IpPolicy extends SequencingPolicy<Ip> {
                 return this;
             }
             return other;
-        }
-
-        public static Ip toV4(Ip source) {
-            if (source.version() instanceof V4) {
-                return source;
-            }
-            dbc.precondition(source.bits().and(IPV4_TO_V6_MASK).equals(IPV4_TO_V6_PREFIX), "Address cannot be converted to IPv4");
-            final FixedSizeNatural address = source.bits().extendTo(V6.IPV6_BITS).and(IPV4_TO_V6_MASK.not());
-            return new Ip(address, new V4());
-        }
-
-        public static Mask toV4(Mask source) {
-            if (source.policy instanceof V4) {
-                return source;
-            }
-            dbc.precondition(source.population() >= IPV4_TO_V6_POPULATION, "Mask cannot be converted to IPv4");
-            return new Mask(source.population() - IPV4_TO_V6_POPULATION, new IpPolicy.V4());
-        }
-
-        public static Network toV4(Network source) {
-            if (source.version() instanceof V4) {
-                return source;
-            }
-            final Pair<Ip, Mask> cidr = source.toCidr();
-            return new Network(toV4(cidr.first()), toV4(cidr.second()));
         }
 
         @Override
