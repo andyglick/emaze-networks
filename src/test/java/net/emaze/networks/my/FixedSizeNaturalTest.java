@@ -320,6 +320,13 @@ public class FixedSizeNaturalTest {
         Assert.assertEquals(Order.LT, Order.of(first.compareTo(second)));
     }
 
+    @Test
+    public void canCountBits() {
+        final int[] ints = {0b01010110};
+        final FixedSizeNatural instance = new FixedSizeNatural(ints, 16);
+        Assert.assertEquals(4, instance.bitCount());
+    }
+
     @Ignore
     @Test
     public void shiftLeftPerformanceTest() {

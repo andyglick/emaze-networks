@@ -195,6 +195,14 @@ public class FixedSizeNatural implements Iterable<Boolean>, Comparable<FixedSize
         return lengthOfIntContainer(length);
     }
 
+    public int bitCount() {
+        int bits = 0;
+        for (int chunk : internal) {
+            bits += Integer.bitCount(chunk);
+        }
+        return bits;
+    }
+
     public boolean isFirst() {
         return Arrays.equals(this.internal, first().internal);
     }
