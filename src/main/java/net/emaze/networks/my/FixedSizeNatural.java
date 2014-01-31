@@ -13,12 +13,12 @@ import net.emaze.dysfunctional.equality.EqualsBuilder;
 import net.emaze.dysfunctional.hashing.HashCodeBuilder;
 import net.emaze.dysfunctional.iterations.ReadOnlyIterator;
 
-public class Sequence implements Iterable<Boolean> {
+public class FixedSizeNatural implements Iterable<Boolean> {
 
     private final int[] internal;
     private final int length;
 
-    public Sequence(int[] internal, int lengthInBits) {
+    public FixedSizeNatural(int[] internal, int lengthInBits) {
         dbc.precondition(internal.length == lengthOfIntContainer(lengthInBits), "Internal representation must be aligned to lengthInBits");
         dbc.precondition(internal.length > 0, "Cannot create a sequence with empty data");
         dbc.precondition((lengthInBits % 32) == 0 || (internal[0] & (0xFFFFFFFF << (lengthInBits % 32))) == 0, "Unused bits contain data");
@@ -26,7 +26,7 @@ public class Sequence implements Iterable<Boolean> {
         this.length = lengthInBits;
     }
 
-    public static Sequence fromByteArray(byte[] in) {
+    public static FixedSizeNatural fromByteArray(byte[] in) {
         final int[] out = new int[(in.length * Byte.SIZE) / Integer.SIZE + ((in.length * Byte.SIZE) % Integer.SIZE > 0 ? 1 : 0)];
         final int remaining = in.length % 4;
         final ByteBuffer buffer = ByteBuffer.wrap(new byte[in.length + (remaining > 0 ? 4 - remaining : 0)]);
@@ -34,7 +34,7 @@ public class Sequence implements Iterable<Boolean> {
         buffer.put(in);
         buffer.flip();
         buffer.asIntBuffer().get(out);
-        return new Sequence(out, in.length * Byte.SIZE);
+        return new FixedSizeNatural(out, in.length * Byte.SIZE);
     }
 
     public byte[] toByteArray() {
@@ -48,7 +48,7 @@ public class Sequence implements Iterable<Boolean> {
 
     }
 
-    public Sequence shiftLeft(int shift) {
+    public FixedSizeNatural shiftLeft(int shift) {
         dbc.precondition(shift >= 0, "cannot shift for negative values");
         if (shift == 0) {
             return this;
@@ -73,10 +73,10 @@ public class Sequence implements Iterable<Boolean> {
             }
             shifted[i] = internal[j] << bitsToShift;
         }
-        return new Sequence(clearExcess(shifted, length), length);
+        return new FixedSizeNatural(clearExcess(shifted, length), length);
     }
 
-    public Sequence shiftRight(int shift) {
+    public FixedSizeNatural shiftRight(int shift) {
         dbc.precondition(shift >= 0, "cannot shift for negative values");
         if (shift == 0) {
             return this;
@@ -102,45 +102,45 @@ public class Sequence implements Iterable<Boolean> {
                 i++;
             }
         }
-        return new Sequence(clearExcess(shifted, length), length);
+        return new FixedSizeNatural(clearExcess(shifted, length), length);
     }
 
-    public Sequence not() {
+    public FixedSizeNatural not() {
         final int[] negation = new int[internal.length];
         for (int index = 0; index != internal.length; ++index) {
             negation[index] = ~internal[index];
         }
-        return new Sequence(clearExcess(negation, length), length);
+        return new FixedSizeNatural(clearExcess(negation, length), length);
     }
 
-    public Sequence and(Sequence other) {
+    public FixedSizeNatural and(FixedSizeNatural other) {
         dbc.precondition(this.length == other.length, "Sequences length is different");
         final int[] conjunction = new int[internal.length];
         for (int index = 0; index != internal.length; ++index) {
             conjunction[index] = this.internal[index] & other.internal[index];
         }
-        return new Sequence(clearExcess(conjunction, length), length);
+        return new FixedSizeNatural(clearExcess(conjunction, length), length);
     }
 
-    public Sequence or(Sequence other) {
+    public FixedSizeNatural or(FixedSizeNatural other) {
         dbc.precondition(this.length == other.length, "Sequences length is different");
         final int[] inclusiveDisjunction = new int[internal.length];
         for (int index = 0; index != internal.length; ++index) {
             inclusiveDisjunction[index] = this.internal[index] | other.internal[index];
         }
-        return new Sequence(clearExcess(inclusiveDisjunction, length), length);
+        return new FixedSizeNatural(clearExcess(inclusiveDisjunction, length), length);
     }
 
-    public Sequence xor(Sequence other) {
+    public FixedSizeNatural xor(FixedSizeNatural other) {
         dbc.precondition(this.length == other.length, "Sequences length is different");
         final int[] exclusiveDisjunction = new int[internal.length];
         for (int index = 0; index != internal.length; ++index) {
             exclusiveDisjunction[index] = this.internal[index] ^ other.internal[index];
         }
-        return new Sequence(clearExcess(exclusiveDisjunction, length), length);
+        return new FixedSizeNatural(clearExcess(exclusiveDisjunction, length), length);
     }
 
-    public Sequence increment() {
+    public FixedSizeNatural increment() {
         if (this.isLast()) {
             return this;
         }
@@ -150,10 +150,10 @@ public class Sequence implements Iterable<Boolean> {
             incremented[index] = internal[index] + carry;
             carry = internal[index] == 0xFFFFFFFF ? 1 : 0;
         }
-        return new Sequence(clearExcess(incremented, length), length);
+        return new FixedSizeNatural(clearExcess(incremented, length), length);
     }
 
-    public Sequence decrement() {
+    public FixedSizeNatural decrement() {
         if (this.isFirst()) {
             return this;
         }
@@ -163,7 +163,7 @@ public class Sequence implements Iterable<Boolean> {
             decremented[index] = internal[index] + carry;
             carry = internal[index] == 0 ? -1 : 0;
         }
-        return new Sequence(clearExcess(decremented, length), length);
+        return new FixedSizeNatural(clearExcess(decremented, length), length);
     }
 
     public int length() {
@@ -186,26 +186,26 @@ public class Sequence implements Iterable<Boolean> {
         return Arrays.equals(this.internal, last().internal);
     }
 
-    public Sequence first() {
-        return new Sequence(new int[this.intsLength()], length);
+    public FixedSizeNatural first() {
+        return new FixedSizeNatural(new int[this.intsLength()], length);
     }
 
-    public Sequence last() {
+    public FixedSizeNatural last() {
         return this.first().not();
     }
 
-    public Sequence widen(int newLength) {
+    public FixedSizeNatural widen(int newLength) {
         dbc.precondition(newLength > length, "newLength shoul be greater than current length");
         final int[] wider = new int[lengthOfIntContainer(newLength)];
         System.arraycopy(internal, 0, wider, wider.length - internal.length, internal.length);
-        return new Sequence(wider, newLength);
+        return new FixedSizeNatural(wider, newLength);
     }
 
-    public Sequence narrow(int newLength) {
+    public FixedSizeNatural narrow(int newLength) {
         dbc.precondition(newLength < length, "newLength shoul be lesser than current length");
         final int[] narrower = new int[lengthOfIntContainer(newLength)];
         System.arraycopy(internal, internal.length - narrower.length, narrower, 0, narrower.length);
-        return new Sequence(narrower, newLength);
+        return new FixedSizeNatural(narrower, newLength);
     }
 
     private int lengthOfIntContainer(int numBits) {
@@ -214,10 +214,10 @@ public class Sequence implements Iterable<Boolean> {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof Sequence == false) {
+        if (obj instanceof FixedSizeNatural == false) {
             return false;
         }
-        final Sequence other = (Sequence) obj;
+        final FixedSizeNatural other = (FixedSizeNatural) obj;
         return new EqualsBuilder()
                 .append(internal, other.internal)
                 .append(length, other.length)
@@ -275,10 +275,10 @@ public class Sequence implements Iterable<Boolean> {
 
     public static class SequenceIterator extends ReadOnlyIterator<Boolean> {
 
-        private final Sequence sequence;
+        private final FixedSizeNatural sequence;
         private int index;
 
-        public SequenceIterator(Sequence sequence) {
+        public SequenceIterator(FixedSizeNatural sequence) {
             this.sequence = sequence;
             this.index = sequence.length() - 1;
         }
