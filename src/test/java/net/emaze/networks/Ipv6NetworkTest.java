@@ -1,9 +1,5 @@
 package net.emaze.networks;
 
-import java.util.Arrays;
-import java.util.List;
-import net.emaze.dysfunctional.Consumers;
-import net.emaze.dysfunctional.ranges.Range;
 import net.emaze.dysfunctional.tuples.Pair;
 import org.junit.Test;
 import org.junit.Assert;
