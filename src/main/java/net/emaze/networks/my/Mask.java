@@ -15,6 +15,48 @@ public class Mask implements Comparable<Mask> {
         this.policy = policy;
     }
 
+    public static Mask netV4(String mask) {
+        dbc.precondition(mask != null, "mask must be not-null");
+        final IpPolicy policy = new IpPolicy.V4();
+        if (mask.contains(".")) {
+            final FixedSizeNatural bits = Ip.parseV4(mask).bits();
+            final FixedSizeNatural other = FixedSizeNatural.biggest(32).shiftRight(bits.bitCount());
+            dbc.precondition(bits.and(other).equals(FixedSizeNatural.zero(32)), "Malformed mask");
+            return new Mask(bits.bitCount(), policy);
+        }
+        throw new IllegalArgumentException("Not an IPv4 mask");
+    }
+
+    public static Mask netV4(int mask) {
+        return new Mask(mask, new IpPolicy.V4());
+    }
+
+    public static Mask netV6(int mask) {
+        return new Mask(mask, new IpPolicy.V6());
+    }
+
+    public static Mask hostV4(String mask) {
+        dbc.precondition(mask != null, "mask must be not-null");
+        final IpPolicy policy = new IpPolicy.V4();
+        if (mask.contains(".")) {
+            final FixedSizeNatural bits = Ip.parseV4(mask).bits().not();
+            final FixedSizeNatural other = FixedSizeNatural.biggest(32).shiftRight(bits.bitCount());
+            dbc.precondition(bits.and(other).equals(FixedSizeNatural.zero(32)), "Malformed mask");
+            return new Mask(bits.bitCount(), policy);
+        }
+        throw new IllegalArgumentException("Not an IPv4 mask");
+    }
+
+    public static Mask hostV4(int mask) {
+        final IpPolicy policy = new IpPolicy.V4();
+        return new Mask(policy.maxPopulation() - mask, policy);
+    }
+
+    public static Mask hostV6(int mask) {
+        final IpPolicy policy = new IpPolicy.V6();
+        return new Mask(policy.maxPopulation() - mask, policy);
+    }
+
     public IpPolicy version() {
         return policy;
     }
@@ -32,8 +74,12 @@ public class Mask implements Comparable<Mask> {
         return size;
     }
 
+    public int hostPopulation() {
+        return policy.maxPopulation() - size;
+    }
+
     public FixedSizeNatural hosts() {
-        return FixedSizeNatural.one(policy.maxPopulation()).shiftLeft(policy.maxPopulation() - size);
+        return FixedSizeNatural.one(policy.maxPopulation() + 1).shiftLeft(policy.maxPopulation() - size);
     }
 
     public Mask narrowHosts() {
@@ -45,11 +91,11 @@ public class Mask implements Comparable<Mask> {
     }
 
     public boolean isNarrowest() {
-        return this.equals(policy.getNarrowestMask());
+        return size == policy.maxPopulation();
     }
 
     public boolean isWidest() {
-        return this.equals(policy.getWidestMask());
+        return size == 0;
     }
 
     @Override
@@ -70,4 +116,11 @@ public class Mask implements Comparable<Mask> {
         final Mask other = (Mask) object;
         return Order.of(policy.selectForComparison(other.policy).compare(this, other)) == Order.EQ;
     }
+
+    @Override
+    public String toString() {
+        return String.format("/%s", size);
+    }
+    
+    
 }

@@ -6,8 +6,8 @@ import java.util.Arrays;
 import java.util.List;
 import net.emaze.dysfunctional.Strings;
 import net.emaze.dysfunctional.contracts.dbc;
-import net.emaze.dysfunctional.equality.EqualsBuilder;
 import net.emaze.dysfunctional.hashing.HashCodeBuilder;
+import net.emaze.dysfunctional.order.Order;
 
 public class FixedSizeNatural implements Comparable<FixedSizeNatural> {
 
@@ -21,6 +21,19 @@ public class FixedSizeNatural implements Comparable<FixedSizeNatural> {
         dbc.precondition((lengthInBits % 32) == 0 || (internal[0] & (0xFFFFFFFF << (lengthInBits % 32))) == 0, "Unused bits contain data");
         this.internal = internal;
         this.length = lengthInBits;
+    }
+    
+    public static FixedSizeNatural of(int... value) {
+        return new FixedSizeNatural(value, Integer.SIZE * value.length);
+    }
+    
+    public static FixedSizeNatural of(long... value) {
+        final int[] buf = new int[value.length * 2];
+        for (int index = 0; index != value.length; ++index) {
+            buf[index * 2] = (int) (value[index] >>> 32);
+            buf[index * 2 + 1] = (int) value[index];
+        }
+        return new FixedSizeNatural(buf, Long.SIZE * value.length);
     }
 
     public static FixedSizeNatural zero(int length) {
@@ -239,10 +252,7 @@ public class FixedSizeNatural implements Comparable<FixedSizeNatural> {
             return false;
         }
         final FixedSizeNatural other = (FixedSizeNatural) obj;
-        return new EqualsBuilder()
-                .append(internal, other.internal)
-                .append(length, other.length)
-                .isEquals();
+        return Order.of(this.compareTo(other)).isEq();
     }
 
     @Override
@@ -256,12 +266,12 @@ public class FixedSizeNatural implements Comparable<FixedSizeNatural> {
     @Override
     public String toString() {
         final String firstChunk = Integer.toBinaryString(internal[0]);
-        final int remainingBits = length % 32;
+        final int remainingBits = length % Integer.SIZE;
         final StringBuilder stringBuilder = new StringBuilder();
         appendZeroes(remainingBits - firstChunk.length(), stringBuilder).append(firstChunk);
         for (int i = 1; i < internal.length; i++) {
             final String chunk = Integer.toBinaryString(internal[i]);
-            appendZeroes(32 - chunk.length(), stringBuilder).append(chunk);
+            appendZeroes(Integer.SIZE - chunk.length(), stringBuilder).append(chunk);
         }
         return stringBuilder.toString();
     }

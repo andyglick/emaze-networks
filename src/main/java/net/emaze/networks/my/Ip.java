@@ -10,9 +10,35 @@ public class Ip implements Comparable<Ip> {
     private final IpPolicy policy;
 
     public Ip(FixedSizeNatural address, IpPolicy policy) {
-        dbc.precondition(Order.of(address.compareTo(policy.maxValue())).isLte(), "Ip number is out of range");
+        dbc.precondition(policy.acceptSize(address), "Policy does not accept address");
         this.address = address;
         this.policy = policy;
+    }
+
+    public static Ip parse(String ip) {
+        dbc.precondition(ip != null, "address must be not-null");
+        if (ip.contains(":")) {
+            return parseV6(ip);
+        }
+        return parseV4(ip);
+    }
+
+    public static Ip parseV4(String dottedIpAddress) {
+        dbc.precondition(dottedIpAddress != null, "address must be not-null");
+        final byte[] octets = new Ipv4DottedOctetFormToByteArray().perform(dottedIpAddress);
+        final IpPolicy.V4 v4 = new IpPolicy.V4();
+        return new Ip(FixedSizeNatural.fromByteArray(octets), v4);
+    }
+
+    public static Ip parseV6(String ip) {
+        dbc.precondition(ip != null, "address must be not-null");
+        final FixedSizeNatural bits = FixedSizeNatural.fromByteArray(new Ipv6ToByteArray().perform(ip));
+        return new Ip(bits, new IpPolicy.V6());
+    }
+
+    public static Ip fromBits(int... bits) {
+        dbc.precondition(bits.length == 1 || bits.length == 4, "A new IP must be built with either 32 or 128 bits");
+        return new Ip(new FixedSizeNatural(bits, bits.length * Integer.SIZE), bits.length == 1 ? new IpPolicy.V4() : new IpPolicy.V6());
     }
 
     public IpPolicy version() {
@@ -59,4 +85,11 @@ public class Ip implements Comparable<Ip> {
         final Ip other = (Ip) object;
         return Order.of(policy.selectForComparison(other.policy).compare(this, other)) == Order.EQ;
     }
+
+    @Override
+    public String toString() {
+        return policy.toCanonicalString(address);
+    }
+    
+    
 }

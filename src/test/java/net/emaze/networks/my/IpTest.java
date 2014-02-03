@@ -9,27 +9,27 @@ public class IpTest {
 
     private static final IpPolicy V4 = new IpPolicy.V4();
     private static final int V4_LOCALHOST_AS_INT = 2130706433;
-    private static final Ip V4_ADDRESS = IpParsers.parse("127.0.0.1");
-    private static final Ip V4_BEFORE_ADDRESS = IpParsers.parse("127.0.0.0");
-    private static final Ip V4_AFTER_ADDRESS = IpParsers.parse("127.0.0.2");
+    private static final Ip V4_ADDRESS = Ip.parse("127.0.0.1");
+    private static final Ip V4_BEFORE_ADDRESS = Ip.parse("127.0.0.0");
+    private static final Ip V4_AFTER_ADDRESS = Ip.parse("127.0.0.2");
 
     @Test
     public void sameIpV4AreEqual() {
-        final Ip anAddress = IpParsers.parseFromBitsV4(V4_LOCALHOST_AS_INT);
-        final Ip sameAddress = IpParsers.parseFromBitsV4(V4_LOCALHOST_AS_INT);
+        final Ip anAddress = Ip.fromBits(V4_LOCALHOST_AS_INT);
+        final Ip sameAddress = Ip.fromBits(V4_LOCALHOST_AS_INT);
         Assert.assertEquals(anAddress, sameAddress);
     }
 
     @Test
     public void sameIpRepresentedAsV4AndV6areEqual() {
-        final Ip anAddress = IpParsers.parseFromStringV6("::FFFF:127.0.0.1");
-        final Ip sameAddress = IpParsers.parseFromStringV4("127.0.0.1");
+        final Ip anAddress = Ip.parseV6("::FFFF:127.0.0.1");
+        final Ip sameAddress = Ip.parseV4("127.0.0.1");
         Assert.assertEquals(anAddress, sameAddress);
     }
 
     @Test
     public void sameIpV4InDifferentFormatsAreEquals() {
-        Assert.assertEquals(IpParsers.parseFromBitsV4(V4_LOCALHOST_AS_INT), IpParsers.parse("127.0.0.1"));
+        Assert.assertEquals(Ip.fromBits(V4_LOCALHOST_AS_INT), Ip.parse("127.0.0.1"));
     }
 
     @Test
@@ -49,8 +49,8 @@ public class IpTest {
 
     @Test
     public void comparingWithSameYieldsEqual() {
-        final Ip anAddress = IpParsers.parseFromBitsV4(1);
-        final Ip sameAddress = IpParsers.parseFromBitsV4(1);
+        final Ip anAddress = Ip.fromBits(1);
+        final Ip sameAddress = Ip.fromBits(1);
         Assert.assertEquals(Order.EQ.order(), anAddress.compareTo(sameAddress));
     }
 
@@ -98,9 +98,9 @@ public class IpTest {
 
     @Test
     public void maskingAnAddressYieldsNetworkPart() {
-        final Ip address = IpParsers.parse("192.168.1.123");
+        final Ip address = Ip.parse("192.168.1.123");
         final Mask netmask = new Mask(16, new IpPolicy.V4());
-        final Ip expected = IpParsers.parse("192.168.0.0");
+        final Ip expected = Ip.parse("192.168.0.0");
         Assert.assertEquals(expected, address.mask(netmask));
     }
 

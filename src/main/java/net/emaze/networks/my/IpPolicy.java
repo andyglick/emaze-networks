@@ -20,8 +20,6 @@ public interface IpPolicy extends SequencingPolicy<Ip> {
 
     Mask getWidestMask();
 
-    Mask mask(int size);
-
     Ranges<Ip> getRanges();
 
     FixedSizeNatural maxValue();
@@ -35,6 +33,10 @@ public interface IpPolicy extends SequencingPolicy<Ip> {
     int compare(Mask lhs, Mask rhs);
 
     IpPolicy selectForComparison(IpPolicy other);
+
+    boolean acceptSize(FixedSizeNatural bits);
+
+    String toCanonicalString(FixedSizeNatural bits);
 
     public static class V6 implements IpPolicy {
 
@@ -56,11 +58,6 @@ public interface IpPolicy extends SequencingPolicy<Ip> {
         @Override
         public Mask getNarrowestMask() {
             return new Mask(MAX_MASK_POPULATION, new V6());
-        }
-
-        @Override
-        public Mask mask(int size) {
-            return new Mask(size, this);
         }
 
         @Override
@@ -105,6 +102,22 @@ public interface IpPolicy extends SequencingPolicy<Ip> {
         @Override
         public int maxPopulation() {
             return MAX_MASK_POPULATION;
+        }
+
+        @Override
+        public boolean acceptSize(FixedSizeNatural bits) {
+            return bits.length() == IPV6_BITS;
+        }
+
+        @Override
+        public String toCanonicalString(FixedSizeNatural bits) {
+            final StringBuilder builder = new StringBuilder();
+            final byte[] octets = bits.toByteArray();
+            builder.append(String.format("%02x%02x", octets[0] & 0xFF, octets[1] & 0xFF));
+            for (int index = 2; index != octets.length; index += 2) {
+                builder.append(String.format(":%02x%02x", octets[index] & 0xFF, octets[index + 1] & 0xFF));
+            }
+            return builder.toString();
         }
 
         @Override
@@ -154,11 +167,6 @@ public interface IpPolicy extends SequencingPolicy<Ip> {
         }
 
         @Override
-        public Mask mask(int size) {
-            return new Mask(size, new IpPolicy.V4());
-        }
-
-        @Override
         public Ranges<Ip> getRanges() {
             return new Ranges<>(new ComparableComparator<Ip>(), this, this.getFirstIp());
         }
@@ -196,6 +204,21 @@ public interface IpPolicy extends SequencingPolicy<Ip> {
         @Override
         public int maxPopulation() {
             return MAX_MASK_POPULATION;
+        }
+
+        @Override
+        public boolean acceptSize(FixedSizeNatural bits) {
+            return bits.length() == IPV4_BITS;
+        }
+
+        @Override
+        public String toCanonicalString(FixedSizeNatural bits) {
+            final byte[] octets = bits.toByteArray();
+            final int first = octets[0] & 0xFF;
+            final int second = octets[1] & 0xFF;
+            final int third = octets[2] & 0xFF;
+            final int fourth = octets[3] & 0xFF;
+            return String.format("%s.%s.%s.%s", first, second, third, fourth);
         }
 
         @Override

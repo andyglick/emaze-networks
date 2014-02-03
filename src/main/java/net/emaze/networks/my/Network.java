@@ -9,15 +9,39 @@ import net.emaze.dysfunctional.tuples.Pair;
 
 public class Network {
 
-    private final Ip ip;
-    private final Mask mask;
+    private final Ip network;
+    private final Mask netmask;
     private final IpPolicy policy;
+    private String cachedToString;
 
-    public Network(Ip ip, Mask mask) {
-        dbc.precondition(ip.version().equals(mask.version()), "version of ip and mask must be the same");
-        this.ip = ip;
-        this.mask = mask;
-        this.policy = ip.version();
+    public Network(Ip network, Mask netmask) {
+        dbc.precondition(network.version().equals(netmask.version()), "version of ip and mask must be the same");
+        this.network = network;
+        this.netmask = netmask;
+        this.policy = network.version();
+    }
+
+    public static Network fromCidrNotation(String cidr) {
+        dbc.precondition(cidr != null, "cidr must be not-null");
+        dbc.precondition(cidr.contains("/") && cidr.indexOf("/") == cidr.lastIndexOf("/"), "cidr must contain / separator only once");
+        final String[] split = cidr.split("/");
+        final Ip ip = Ip.parse(split[0]);
+        final Mask mask = new Mask(Integer.parseInt(split[1]), ip.version());
+        return new Network(ip, mask);
+    }
+
+    public static Network fromCidrNotation(String ip, int netmaskPopulation) {
+        final Ip network = Ip.parse(ip);
+        final Mask netmask = new Mask(netmaskPopulation, network.version());
+        return new Network(network, netmask);
+    }
+
+    public static Network fromCidrNotation(Ip network, Mask netmask) {
+        return new Network(network, netmask);
+    }
+
+    public static Network byContainedIp(Ip ip, Mask netmask) {
+        return new Network(ip.mask(netmask), netmask);
     }
 
     public IpPolicy version() {
@@ -25,33 +49,33 @@ public class Network {
     }
 
     public Ip firstIp() {
-        return ip;
+        return network;
     }
 
     public Ip lastIp() {
-        return new Ip(ip.bits().or(mask.hostBits()), policy);
+        return new Ip(network.bits().or(netmask.hostBits()), policy);
     }
 
     public Mask netmask() {
-        return mask;
+        return netmask;
     }
 
     public FixedSizeNatural size() {
-        return mask.hosts();
+        return netmask.hosts();
     }
 
     public Pair<Ip, Mask> toCidr() {
-        return Pair.of(ip, mask);
+        return Pair.of(network, netmask);
     }
 
     public Range<Ip> toRange() {
-        return policy.getRanges().closed(ip, lastIp());
+        return policy.getRanges().closed(network, lastIp());
     }
 
     public Pair<Network, Network> split() {
-        dbc.precondition(mask.isNarrowest(), "Unsplittable CIDR");
-        final Mask halfMask = mask.narrowHosts();
-        final Network first = new Network(ip, halfMask);
+        dbc.precondition(!netmask.isNarrowest(), "Unsplittable CIDR");
+        final Mask halfMask = netmask.narrowHosts();
+        final Network first = new Network(network, halfMask);
         final Network second = new Network(lastIp().mask(halfMask), halfMask);
         return Pair.of(first, second);
     }
@@ -78,12 +102,21 @@ public class Network {
             return false;
         }
         final Network other = (Network) obj;
-        return new EqualsBuilder().append(this.ip, other.ip).append(this.mask, other.mask).isEquals();
+        return new EqualsBuilder().append(this.network, other.network).append(this.netmask, other.netmask).isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.ip).append(this.mask).toHashCode();
+        return new HashCodeBuilder().append(this.network).append(this.netmask).toHashCode();
+    }
+
+    @Override
+    public String toString() {
+        //Network is immutable, so we can cache the toString value
+        if (cachedToString == null) {
+            cachedToString = String.format("%s/%s", network, netmask.population());
+        }
+        return cachedToString;
     }
 
 }

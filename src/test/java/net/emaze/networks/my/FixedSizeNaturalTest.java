@@ -33,7 +33,7 @@ public class FixedSizeNaturalTest {
     public void canConstructFromByteArray() {
         final byte[] bytes = {(byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF};
         final FixedSizeNatural got = FixedSizeNatural.fromByteArray(bytes);
-        Assert.assertEquals(got.last(), got);
+        Assert.assertEquals(new FixedSizeNatural(new int[]{0xFFFFFFFF}, 32), got);
     }
 
     @Test
