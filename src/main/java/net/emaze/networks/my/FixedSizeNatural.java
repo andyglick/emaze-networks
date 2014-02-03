@@ -174,7 +174,7 @@ public class FixedSizeNatural implements Comparable<FixedSizeNatural> {
         int carry = 1;
         for (int index = internal.length - 1; index >= 0; --index) {
             incremented[index] = internal[index] + carry;
-            carry = internal[index] == 0xFFFFFFFF ? 1 : 0;
+            carry = carry != 0 && internal[index] == 0xFFFFFFFF ? 1 : 0;
         }
         return new FixedSizeNatural(clearExcess(incremented, length), length);
     }
@@ -187,7 +187,7 @@ public class FixedSizeNatural implements Comparable<FixedSizeNatural> {
         int borrow = -1;
         for (int index = internal.length - 1; index >= 0; --index) {
             decremented[index] = internal[index] + borrow;
-            borrow = internal[index] == 0 ? -1 : 0;
+            borrow = borrow != 0 && internal[index] == 0 ? -1 : 0;
         }
         return new FixedSizeNatural(clearExcess(decremented, length), length);
     }

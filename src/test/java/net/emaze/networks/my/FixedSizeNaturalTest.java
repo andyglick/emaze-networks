@@ -193,6 +193,13 @@ public class FixedSizeNaturalTest {
     }
 
     @Test
+    public void incrementDoesNotGenerateACarry() {
+        final FixedSizeNatural got = FixedSizeNatural.of(1, 2, 0xffffffff, 4).increment();
+        final FixedSizeNatural expected = FixedSizeNatural.of(1, 2, 0xffffffff, 5);
+        Assert.assertEquals(expected, got);
+    }
+
+    @Test
     public void canDecrementANumber() {
         final int[] ints = {2};
         final int[] expectedInts = {1};
@@ -225,6 +232,13 @@ public class FixedSizeNaturalTest {
     public void decrementCopiesUntouchedBits() {
         final FixedSizeNatural got = FixedSizeNatural.of(1, 2, 3, 4).decrement();
         final FixedSizeNatural expected = FixedSizeNatural.of(1, 2, 3, 3);
+        Assert.assertEquals(expected, got);
+    }
+
+    @Test
+    public void decrementDoesNotGenerateABorrow() {
+        final FixedSizeNatural got = FixedSizeNatural.of(1, 2, 0, 4).decrement();
+        final FixedSizeNatural expected = FixedSizeNatural.of(1, 2, 0, 3);
         Assert.assertEquals(expected, got);
     }
 
