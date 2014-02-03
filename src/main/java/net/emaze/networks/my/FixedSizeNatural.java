@@ -22,11 +22,11 @@ public class FixedSizeNatural implements Comparable<FixedSizeNatural> {
         this.internal = internal;
         this.length = lengthInBits;
     }
-    
+
     public static FixedSizeNatural of(int... value) {
         return new FixedSizeNatural(value, Integer.SIZE * value.length);
     }
-    
+
     public static FixedSizeNatural of(long... value) {
         final int[] buf = new int[value.length * 2];
         for (int index = 0; index != value.length; ++index) {
@@ -172,7 +172,7 @@ public class FixedSizeNatural implements Comparable<FixedSizeNatural> {
         }
         final int[] incremented = new int[internal.length];
         int carry = 1;
-        for (int index = internal.length - 1; index >= 0 && carry > 0; --index) {
+        for (int index = internal.length - 1; index >= 0; --index) {
             incremented[index] = internal[index] + carry;
             carry = internal[index] == 0xFFFFFFFF ? 1 : 0;
         }

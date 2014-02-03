@@ -186,6 +186,13 @@ public class FixedSizeNaturalTest {
     }
 
     @Test
+    public void incrementCopiesUntouchedBits() {
+        final FixedSizeNatural got = FixedSizeNatural.of(1, 2, 3, 4).increment();
+        final FixedSizeNatural expected = FixedSizeNatural.of(1, 2, 3, 5);
+        Assert.assertEquals(expected, got);
+    }
+
+    @Test
     public void canDecrementANumber() {
         final int[] ints = {2};
         final int[] expectedInts = {1};
@@ -319,7 +326,7 @@ public class FixedSizeNaturalTest {
         final FixedSizeNatural second = new FixedSizeNatural(secondInts, 129);
         Assert.assertEquals(Order.LT, Order.of(first.compareTo(second)));
     }
-    
+
     @Test
     public void minimumComparedToMaximumIsLessThanEqual() {
         final FixedSizeNatural first = new FixedSizeNatural(new int[]{0}, 32);
