@@ -222,6 +222,13 @@ public class FixedSizeNaturalTest {
     }
 
     @Test
+    public void decrementCopiesUntouchedBits() {
+        final FixedSizeNatural got = FixedSizeNatural.of(1, 2, 3, 4).decrement();
+        final FixedSizeNatural expected = FixedSizeNatural.of(1, 2, 3, 3);
+        Assert.assertEquals(expected, got);
+    }
+
+    @Test
     public void firstIsZero() {
         final int[] ints = {0};
         final FixedSizeNatural expected = new FixedSizeNatural(ints, 32);

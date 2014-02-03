@@ -185,7 +185,7 @@ public class FixedSizeNatural implements Comparable<FixedSizeNatural> {
         }
         final int[] decremented = new int[internal.length];
         int borrow = -1;
-        for (int index = internal.length - 1; index >= 0 && borrow < 0; --index) {
+        for (int index = internal.length - 1; index >= 0; --index) {
             decremented[index] = internal[index] + borrow;
             borrow = internal[index] == 0 ? -1 : 0;
         }
