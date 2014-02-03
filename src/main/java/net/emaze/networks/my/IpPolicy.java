@@ -67,7 +67,7 @@ public interface IpPolicy extends SequencingPolicy<Ip> {
 
         @Override
         public Ranges<Ip> getRanges() {
-            return new Ranges<>(new ComparableComparator<Ip>(), new V6(), this.getFirstIp());
+            return new Ranges<>(new ComparableComparator<Ip>(), this, this.getFirstIp());
         }
 
         @Override
