@@ -7,6 +7,16 @@ public class MaskTest {
     
     public static final IpPolicy V4 = new IpPolicy.V4();
     public static final IpPolicy V6 = new IpPolicy.V6();
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void cannotCreateMaskBiggerThanPolicyAllows() {
+        new Mask(33, V4);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void cannotCreateMaskWithNegativeSize() {
+        new Mask(-1, V4);
+    }
 
     @Test
     public void canExtractFirstOctet() {
@@ -27,6 +37,11 @@ public class MaskTest {
     public void netOf0CreatesMaskOfOnlyZeros() {
         Assert.assertEquals(FixedSizeNatural.of(0x00000000), Mask.netV4(0).bits());
     }
+    
+    @Test
+    public void canCreateIpv6Netmask() {
+        Assert.assertEquals(V6.getWidestMask(), Mask.netV6(0));
+    }
 
     @Test
     public void hostCreatesAMaskWithPopulationOfTrailingOnes() {
@@ -43,6 +58,18 @@ public class MaskTest {
         Assert.assertEquals(FixedSizeNatural.of(0x00000000), Mask.hostV4(0).hostBits());
     }
 
+    @Test
+    public void canCreateIpv6Hostmask() {
+        Assert.assertEquals(V6.getNarrowestMask(), Mask.hostV6(0));
+    }
+    
+    @Test
+    public void hostMaskIsComplementaryToNetMask() {
+        final Mask net = Mask.netV4(16);
+        final Mask host = Mask.hostV4(16);
+        Assert.assertEquals(net.bits().and(host.hostBits()), FixedSizeNatural.zero(32));
+    }
+    
     @Test
     public void narrowerYieldsANarrowerNetmask() {
         final Mask narrower = Mask.netV4(16).narrowHosts();

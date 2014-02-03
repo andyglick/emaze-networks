@@ -34,7 +34,7 @@ public class Ipv6ToByteArray implements Delegate<byte[], String> {
     private String[] normalize(String address, int expectedChunks) {
         final String[] halves = address.split("::");
         final List<String> left = halves[0].isEmpty() ? Collections.<String>emptyList() : Arrays.asList(halves[0].split(":"));
-        final List<String> right = halves.length > 0 ? Arrays.asList(halves[1].split(":")) : Collections.<String>emptyList();
+        final List<String> right = halves.length > 1 ? Arrays.asList(halves[1].split(":")) : Collections.<String>emptyList();
         final List<String> expanded = Consumers.all(Filtering.take(expectedChunks - left.size() - right.size(), new ConstantIterator<>("0")));
         return Consumers.all(Multiplexing.flatten(left, expanded, right)).toArray(new String[]{});
     }
@@ -51,7 +51,7 @@ public class Ipv6ToByteArray implements Delegate<byte[], String> {
 
     private byte[] decode(String s) {
         final Integer chunk = Integer.parseInt(s, 16); // Do not use .decode() since standard chunk form has leading zeroes.
-        dbc.precondition((chunk & 0xFFFF0000) == 0, "chunk form is not valid");
+        dbc.precondition((chunk & 0xFFFF0000) == 0, "Chunk value should be between 0x0000 and 0xFFFF");
         final byte firstOctet = (byte) ((chunk & 0xFF00) >> 8);
         final byte secondOctet = (byte) (chunk & 0x00FF);
         return new byte[]{firstOctet, secondOctet};

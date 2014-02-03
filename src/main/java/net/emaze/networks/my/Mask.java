@@ -11,6 +11,7 @@ public class Mask implements Comparable<Mask> {
 
     public Mask(int size, IpPolicy policy) {
         dbc.precondition(size <= policy.maxPopulation(), "mask exceed maximum size");
+        dbc.precondition(size >= 0, "mask must be non-negative");
         this.size = size;
         this.policy = policy;
     }
