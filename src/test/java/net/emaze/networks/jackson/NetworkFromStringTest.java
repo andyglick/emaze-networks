@@ -18,4 +18,14 @@ public class NetworkFromStringTest {
         final BeanWithCidr got = mapper.readValue(serialized, BeanWithCidr.class);
         Assert.assertEquals(expected, got.getCidr());
     }
+
+    @Test
+    public void deserializingIPv6NetworkYieldsExpected() throws IOException {
+        final String serialized = "{'cidr':'1234:0000:0000:0000:0000:0000:0000:0000/16'}".replace("'", "\"");
+        final Network expected = Network.fromCidrNotation("1234::/16");
+        final ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new NetworksModule());
+        final BeanWithCidr got = mapper.readValue(serialized, BeanWithCidr.class);
+        Assert.assertEquals(expected, got.getCidr());
+    }
 }

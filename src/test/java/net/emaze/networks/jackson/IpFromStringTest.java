@@ -18,4 +18,14 @@ public class IpFromStringTest {
         final BeanWithIp got = mapper.readValue(serialized, BeanWithIp.class);
         Assert.assertEquals(expected, got.getIp());
     }
+
+    @Test
+    public void deserializingIPv6YieldsExpected() throws IOException {
+        final String serialized = "{'ip':'1234:0000:0000:0000:0000:0000:0000:0001'}".replace("'", "\"");
+        final Ip expected = Ip.parse("1234::1");
+        final ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new NetworksModule());
+        final BeanWithIp got = mapper.readValue(serialized, BeanWithIp.class);
+        Assert.assertEquals(expected, got.getIp());
+    }
 }

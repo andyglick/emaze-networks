@@ -19,6 +19,17 @@ public class IpToStringTest {
         Assert.assertEquals(expected, got);
     }
 
+    @Test
+    public void testIPv6Serialization() throws IOException {
+        final String expected = "{'ip':'1234:0000:0000:0000:0000:0000:0000:0001'}".replace("'", "\"");
+        final ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new NetworksModule());
+        final BeanWithIp bwi = new BeanWithIp();
+        bwi.setIp(Ip.parse("1234::1"));
+        final String got = mapper.writeValueAsString(bwi);
+        Assert.assertEquals(expected, got);
+    }
+
     public static class BeanWithIp {
 
         private Ip ip;

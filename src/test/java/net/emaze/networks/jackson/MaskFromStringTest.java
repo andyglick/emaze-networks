@@ -18,4 +18,14 @@ public class MaskFromStringTest {
         final BeanWithNetmask got = mapper.readValue(serialized, BeanWithNetmask.class);
         Assert.assertEquals(expected, got.getNetmask());
     }
+
+    @Test
+    public void deserializingIPv6MaskYieldsExpected() throws IOException {
+        final String serialized = "{'netmask':'115'}".replace("'", "\"");
+        final Mask expected = Mask.netV6(115);
+        final ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new NetworksModule());
+        final BeanWithNetmask got = mapper.readValue(serialized, BeanWithNetmask.class);
+        Assert.assertEquals(expected, got.getNetmask());
+    }
 }
