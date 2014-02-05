@@ -3,9 +3,9 @@ package net.emaze.networks;
 import java.math.BigInteger;
 import java.util.Random;
 import net.emaze.dysfunctional.order.Order;
-import org.junit.Test;
 import org.junit.Assert;
 import org.junit.Ignore;
+import org.junit.Test;
 
 public class FixedSizeNaturalTest {
 

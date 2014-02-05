@@ -334,6 +334,7 @@ public class FixedSizeNatural implements Comparable<FixedSizeNatural> {
 
     @Override
     public int compareTo(FixedSizeNatural other) {
+        dbc.precondition(other != null, "Cannot compare a null FixedSizeNatural"); // THIS BREAKS Comparable! (expects a NPE)
         final int maxLength = this.length >= other.length ? this.length : other.length;
         final FixedSizeNatural lhs = this.length == maxLength ? this : this.extendTo(maxLength);
         final FixedSizeNatural rhs = other.length == maxLength ? other : other.extendTo(maxLength);

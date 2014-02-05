@@ -12,26 +12,26 @@ import javax.validation.Payload;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = Ipv6Mask.Validator.class)
+@Constraint(validatedBy = Ipv6.Validator.class)
 @Documented
-public @interface Ipv6Mask {
+public @interface Ipv6 {
 
-    String message() default "Non è una hostmask valida";
+    String message() default "Non è un indirizzo IP valido";
 
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
 
-    public static class Validator implements ConstraintValidator<Ipv6Mask, String> {
+    public static class Validator implements ConstraintValidator<Ipv6, String> {
 
         @Override
-        public void initialize(Ipv6Mask constraintAnnotation) {
+        public void initialize(Ipv6 constraintAnnotation) {
         }
 
         @Override
         public boolean isValid(String value, ConstraintValidatorContext context) {
             try {
-                net.emaze.networks.Ipv6Mask.net(Integer.parseInt(value));
+                net.emaze.networks.Ipv6.parse(value);
                 return true;
             } catch (Exception ex) {
                 return false;

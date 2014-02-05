@@ -1,8 +1,11 @@
 package net.emaze.networks.dozer;
 
-import net.emaze.networks.Ip;
-import net.emaze.networks.Mask;
-import net.emaze.networks.Network;
+import net.emaze.networks.Ipv4;
+import net.emaze.networks.Ipv4Mask;
+import net.emaze.networks.Ipv4Network;
+import net.emaze.networks.Ipv6;
+import net.emaze.networks.Ipv6Mask;
+import net.emaze.networks.Ipv6Network;
 import org.dozer.DozerBeanMapper;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -19,83 +22,92 @@ public class ImmutableBeanFactoryTest {
 
     @Test
     public void canMapIPv4() {
-        final Ip got = mapper.map(Ip.parse("127.0.0.1"), Ip.class);
-        Assert.assertEquals(Ip.parse("127.0.0.1"), got);
+        final Ipv4 got = mapper.map(Ipv4.parse("127.0.0.1"), Ipv4.class);
+        Assert.assertEquals(Ipv4.parse("127.0.0.1"), got);
     }
 
     @Test
     public void canMapContainedIPv4() {
-        final IpContainer got = mapper.map(IpContainer.of(Ip.parse("127.0.0.1")), IpContainer.class);
-        Assert.assertEquals(Ip.parse("127.0.0.1"), got.getValue());
+        final Ipv4Container got = mapper.map(Ipv4Container.of(Ipv4.parse("127.0.0.1")), Ipv4Container.class);
+        Assert.assertEquals(Ipv4.parse("127.0.0.1"), got.getValue());
     }
 
     @Test
-    public void canMapIPv4Mask() {
-        final Mask got = mapper.map(Mask.netV4("255.255.255.0"), Mask.class);
-        Assert.assertEquals(Mask.netV4(24), got);
+    public void canMapIPv4Ipv4Mask() {
+        final Ipv4Mask got = mapper.map(Ipv4Mask.net("255.255.255.0"), Ipv4Mask.class);
+        Assert.assertEquals(Ipv4Mask.net(24), got);
     }
 
     @Test
-    public void canMapContainedIPv4Mask() {
-        final MaskContainer got = mapper.map(MaskContainer.of(Mask.netV4("255.255.255.0")), MaskContainer.class);
-        Assert.assertEquals(Mask.netV4(24), got.getValue());
+    public void canMapContainedIPv4Ipv4Mask() {
+        final Ipv4MaskContainer got = mapper.map(Ipv4MaskContainer.of(Ipv4Mask.net("255.255.255.0")), Ipv4MaskContainer.class);
+        Assert.assertEquals(Ipv4Mask.net(24), got.getValue());
     }
 
     @Test
-    public void canMapIPv4Network() {
-        final Network got = mapper.map(Network.fromCidrNotation("127.0.0.0/16"), Network.class);
-        Assert.assertEquals(Network.fromCidrNotation("127.0.0.0/16"), got);
+    public void canMapIPv4Ipv4Network() {
+        final Ipv4Network got = mapper.map(Ipv4Network.fromCidrNotation("127.0.0.0/16"), Ipv4Network.class);
+        Assert.assertEquals(Ipv4Network.fromCidrNotation("127.0.0.0/16"), got);
     }
 
     @Test
-    public void canMapContainedIPv4Network() {
-        final NetworkContainer got = mapper.map(NetworkContainer.of(Network.fromCidrNotation("127.0.0.0/16")), NetworkContainer.class);
-        Assert.assertEquals(Network.fromCidrNotation("127.0.0.0/16"), got.getValue());
+    public void canMapContainedIPv4Ipv4Network() {
+        final Ipv4NetworkContainer got = mapper.map(Ipv4NetworkContainer.of(Ipv4Network.fromCidrNotation("127.0.0.0/16")), Ipv4NetworkContainer.class);
+        Assert.assertEquals(Ipv4Network.fromCidrNotation("127.0.0.0/16"), got.getValue());
     }
 
     @Test
     public void canMapIPv6() {
-        final Ip got = mapper.map(Ip.parse("::1"), Ip.class);
-        Assert.assertEquals(Ip.parse("::1"), got);
+        final Ipv6 got = mapper.map(Ipv6.parse("::1"), Ipv6.class);
+        Assert.assertEquals(Ipv6.parse("::1"), got);
     }
 
     @Test
     public void canMapContainedIPv6() {
-        final IpContainer got = mapper.map(IpContainer.of(Ip.parse("::1")), IpContainer.class);
-        Assert.assertEquals(Ip.parse("::1"), got.getValue());
+        final Ipv6Container got = mapper.map(Ipv6Container.of(Ipv6.parse("::1")), Ipv6Container.class);
+        Assert.assertEquals(Ipv6.parse("::1"), got.getValue());
     }
 
     @Test
-    public void canMapIPv6Mask() {
-        final Mask got = mapper.map(Mask.netV6(64), Mask.class);
-        Assert.assertEquals(Mask.netV6(64), got);
+    public void canMapIPv6Ipv6Mask() {
+        final Ipv6Mask got = mapper.map(Ipv6Mask.net(64), Ipv6Mask.class);
+        Assert.assertEquals(Ipv6Mask.net(64), got);
     }
 
     @Test
-    public void canMapContainedIPv6Mask() {
-        final MaskContainer got = mapper.map(MaskContainer.of(Mask.netV6(64)), MaskContainer.class);
-        Assert.assertEquals(Mask.netV6(64), got.getValue());
+    public void canMapContainedIPv6Ipv6Mask() {
+        final Ipv6MaskContainer got = mapper.map(Ipv6MaskContainer.of(Ipv6Mask.net(64)), Ipv6MaskContainer.class);
+        Assert.assertEquals(Ipv6Mask.net(64), got.getValue());
     }
 
     @Test
-    public void canMapIPv6Network() {
-        final Network got = mapper.map(Network.fromCidrNotation("::/64"), Network.class);
-        Assert.assertEquals(Network.fromCidrNotation("::/64"), got);
+    public void canMapIPv6Ipv6Network() {
+        final Ipv6Network got = mapper.map(Ipv6Network.fromCidrNotation("::/64"), Ipv6Network.class);
+        Assert.assertEquals(Ipv6Network.fromCidrNotation("::/64"), got);
     }
 
     @Test
-    public void canMapContainedIPv6Network() {
-        final NetworkContainer got = mapper.map(NetworkContainer.of(Network.fromCidrNotation("::/64")), NetworkContainer.class);
-        Assert.assertEquals(Network.fromCidrNotation("::/64"), got.getValue());
+    public void canMapContainedIPv6Ipv6Network() {
+        final Ipv6NetworkContainer got = mapper.map(Ipv6NetworkContainer.of(Ipv6Network.fromCidrNotation("::/64")), Ipv6NetworkContainer.class);
+        Assert.assertEquals(Ipv6Network.fromCidrNotation("::/64"), got.getValue());
     }
 
-    public static class IpContainer extends Container<Ip> {
+    public static class Ipv4Container extends Container<Ipv4> {
     };
 
-    public static class MaskContainer extends Container<Mask> {
+    public static class Ipv4MaskContainer extends Container<Ipv4Mask> {
     };
 
-    public static class NetworkContainer extends Container<Network> {
+    public static class Ipv4NetworkContainer extends Container<Ipv4Network> {
+    };
+
+    public static class Ipv6Container extends Container<Ipv6> {
+    };
+
+    public static class Ipv6MaskContainer extends Container<Ipv6Mask> {
+    };
+
+    public static class Ipv6NetworkContainer extends Container<Ipv6Network> {
     };
 
     public static class Container<T> {

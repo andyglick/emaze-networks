@@ -9,7 +9,6 @@ import javax.validation.Constraint;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import javax.validation.Payload;
-import net.emaze.networks.Mask;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
@@ -32,7 +31,7 @@ public @interface Ipv4Mask {
         @Override
         public boolean isValid(String value, ConstraintValidatorContext context) {
             try {
-                Mask.netV4(value);
+                net.emaze.networks.Ipv4Mask.net(value);
                 return true;
             } catch (Exception ex) {
                 return false;
