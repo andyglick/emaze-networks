@@ -29,11 +29,23 @@ public class FixedSizeNaturalTest {
         FixedSizeNatural.fromByteArray(bytes);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void constructWithUnusedBitSetThrows() {
+        final int[] bytes = new int[]{0xFF};
+        new FixedSizeNatural(bytes, 1);
+    }
+
     @Test
     public void canConstructFromByteArray() {
         final byte[] bytes = {(byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF};
         final FixedSizeNatural got = FixedSizeNatural.fromByteArray(bytes);
         Assert.assertEquals(new FixedSizeNatural(new int[]{0xFFFFFFFF}, 32), got);
+    }
+
+    @Test
+    public void canConstructFromLong() {
+        final FixedSizeNatural got = FixedSizeNatural.of(Long.MAX_VALUE);
+        Assert.assertEquals(FixedSizeNatural.biggest(Long.SIZE - 1), got);
     }
 
     @Test
@@ -68,6 +80,11 @@ public class FixedSizeNaturalTest {
         Assert.assertArrayEquals(expected, got);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void shiftNegativeLeftThrows() {
+        FixedSizeNatural.one(32).shiftLeft(-1);
+    }
+
     @Test
     public void shiftLeft() {
         final int[] ints = {1};
@@ -75,6 +92,12 @@ public class FixedSizeNaturalTest {
         final int[] expectedInts = {2};
         final FixedSizeNatural expected = new FixedSizeNatural(expectedInts, 32);
         Assert.assertEquals(expected, got);
+    }
+
+    @Test
+    public void shiftLeftOfZeroDoesntShift() {
+        final FixedSizeNatural got = FixedSizeNatural.one(32).shiftLeft(0);
+        Assert.assertEquals(FixedSizeNatural.one(32), got);
     }
 
     @Test
@@ -95,6 +118,17 @@ public class FixedSizeNaturalTest {
         Assert.assertEquals(expected, got);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void shiftNegativeRightThrows() {
+        FixedSizeNatural.one(32).shiftRight(-1);
+    }
+
+    @Test
+    public void shiftLeftOfMoreThanSizeReturnZero() {
+        final FixedSizeNatural got = FixedSizeNatural.one(32).shiftLeft(33);
+        Assert.assertEquals(FixedSizeNatural.zero(32), got);
+    }
+
     @Test
     public void shiftRight() {
         final int[] ints = {2};
@@ -102,6 +136,18 @@ public class FixedSizeNaturalTest {
         final int[] expectedInts = {1};
         final FixedSizeNatural expected = new FixedSizeNatural(expectedInts, 2);
         Assert.assertEquals(expected, got);
+    }
+
+    @Test
+    public void shiftRightOfZeroDoesntShift() {
+        final FixedSizeNatural got = FixedSizeNatural.one(32).shiftRight(0);
+        Assert.assertEquals(FixedSizeNatural.one(32), got);
+    }
+
+    @Test
+    public void shiftRightOfMoreThanSizeReturnZero() {
+        final FixedSizeNatural got = FixedSizeNatural.one(32).shiftRight(33);
+        Assert.assertEquals(FixedSizeNatural.zero(32), got);
     }
 
     @Test
@@ -361,6 +407,24 @@ public class FixedSizeNaturalTest {
         final int[] ints = {0b01010110};
         final FixedSizeNatural instance = new FixedSizeNatural(ints, 16);
         Assert.assertEquals(4, instance.bitCount());
+    }
+
+    @Test
+    public void getIntValueYieldsExpected() {
+        final int value = Integer.MAX_VALUE;
+        Assert.assertEquals(value, FixedSizeNatural.of(value).intValue());
+    }
+
+    @Test
+    public void getLongValueYieldsExpected() {
+        final long value = Long.MAX_VALUE;
+        Assert.assertEquals(value, FixedSizeNatural.of(value).longValue());
+    }
+
+    @Test
+    public void getLongValueFromIntYieldsExpected() {
+        final int value = Integer.MAX_VALUE;
+        Assert.assertEquals(value, FixedSizeNatural.of(value).longValue());
     }
 
     @Ignore

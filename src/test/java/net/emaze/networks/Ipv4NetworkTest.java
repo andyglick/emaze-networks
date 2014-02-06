@@ -1,6 +1,8 @@
 package net.emaze.networks;
 
+import java.math.BigInteger;
 import junit.framework.Assert;
+import net.emaze.dysfunctional.ranges.Range;
 import net.emaze.dysfunctional.tuples.Pair;
 import org.junit.Test;
 
@@ -21,6 +23,11 @@ public class Ipv4NetworkTest {
     @Test(expected = IllegalArgumentException.class)
     public void parsingMalformedCidrYieldsException() {
         Ipv4Network.fromCidrNotation("");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void parsingCidrWithDoubleDashYieldsException() {
+        Ipv4Network.fromCidrNotation("192.168.0.0//24");
     }
 
     @Test
@@ -51,6 +58,20 @@ public class Ipv4NetworkTest {
     public void containsYieldsTrueForIncludedNetwork() {
         final Ipv4Network container = Ipv4Network.fromCidrNotation("10.0.0.0/8");
         final Ipv4Network contained = Ipv4Network.fromCidrNotation("10.128.0.0/10");
+        Assert.assertTrue(container.contains(contained));
+    }
+
+    @Test
+    public void containsYieldsTrueForIncludedNetworkAtStart() {
+        final Ipv4Network container = Ipv4Network.fromCidrNotation("10.0.0.0/8");
+        final Ipv4Network contained = Ipv4Network.fromCidrNotation("10.0.0.0/9");
+        Assert.assertTrue(container.contains(contained));
+    }
+
+    @Test
+    public void containsYieldsTrueForIncludedNetworkAtEnd() {
+        final Ipv4Network container = Ipv4Network.fromCidrNotation("10.0.0.0/8");
+        final Ipv4Network contained = Ipv4Network.fromCidrNotation("10.128.0.0/9");
         Assert.assertTrue(container.contains(contained));
     }
 
@@ -113,5 +134,25 @@ public class Ipv4NetworkTest {
     @Test
     public void lastIpYieldsUpperEnd() {
         Assert.assertEquals(Ipv4.parse("10.255.255.255"), Ipv4Network.fromCidrNotation("10.0.0.0/8").lastIp());
+    }
+
+    @Test
+    public void rangesOfNetworkYieldsExpected() {
+        final Range<Ipv4> expected = IpRanges.RANGESV4.closed(Ipv4.parse("10.0.0.0"), Ipv4.parse("10.0.0.255"));
+        final Range<Ipv4> got = Ipv4Network.fromCidrNotation("10.0.0.0/24").toRange();
+        Assert.assertEquals(expected, got);
+    }
+
+    @Test
+    public void sizeOfANetworkIsTheNumberOfContainedIps() {
+        final BigInteger got = Ipv4Network.fromCidrNotation("10.0.0.0/24").size();
+        Assert.assertEquals(BigInteger.valueOf(256), got);
+    }
+
+    @Test
+    public void toCidrFormFromNetwork() {
+        final Pair<Ipv4, Ipv4Mask> expected = Pair.of(Ipv4.parse("10.0.0.0"), Ipv4Mask.net(24));
+        final Pair<Ipv4, Ipv4Mask> got = Ipv4Network.fromCidrNotation("10.0.0.0/24").toCidr();
+        Assert.assertEquals(expected, got);
     }
 }

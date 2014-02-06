@@ -6,6 +6,46 @@ import org.junit.Test;
 
 public class Ipv4MaskTest {
 
+    @Test(expected = IllegalArgumentException.class)
+    public void createNullNetMaskThrows() {
+        Ipv4Mask.net(null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void createNullHostMaskThrows() {
+        Ipv4Mask.host(null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void creatInvalidNetMaskThrows() {
+        Ipv4Mask.net("InVaLiD");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void creatInvalidHostMaskThrows() {
+        Ipv4Mask.host("InVaLiD");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void creatNumericInvalidNetMaskThrows() {
+        Ipv4Mask.net(33);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void creatNegativeNetMaskThrows() {
+        Ipv4Mask.host(-1);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void creatNumericInvalidHostMaskThrows() {
+        Ipv4Mask.host(33);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void creatNegativeHostMaskThrows() {
+        Ipv4Mask.host(-1);
+    }
+
     @Test
     public void netCreatesAMaskWithPopulationOfLeadingOnes() {
         final FixedSizeNatural bits = Ipv4Mask.net(24).bits();
