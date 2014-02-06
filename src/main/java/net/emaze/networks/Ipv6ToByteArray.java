@@ -12,9 +12,12 @@ import net.emaze.dysfunctional.iterations.ConstantIterator;
 
 public class Ipv6ToByteArray implements Delegate<byte[], String> {
 
+    private final byte[] IPV4_IPV6_MASK = transform(normalize("::FFFF", 6), 6);
+
     @Override
     public byte[] perform(String address) {
         dbc.precondition(address != null, "address cannot be null");
+        dbc.precondition(address.contains(":"), "address is not in IPv6 compatible form");
         dbc.precondition(address.indexOf("::") == address.lastIndexOf("::"), "IPv6 addresses can be shortened with :: only once");
         final boolean ipv4Mapped = address.contains(".");
         if (ipv4Mapped) {
@@ -23,7 +26,7 @@ public class Ipv6ToByteArray implements Delegate<byte[], String> {
             final String[] ipv6chunks = normalize(ipv6part, 6);
             final byte[] ipv6bytes = transform(ipv6chunks, 6);
             final byte[] ipv4bytes = new Ipv4DottedOctetFormToByteArray().perform(ipv4part);
-            // TODO: check ipv6 bytes for correctness: only ::FFFF is permitted.
+            dbc.precondition(Arrays.equals(ipv6bytes, IPV4_IPV6_MASK), "IPv4 mapped to IPv6 form must be ::FFFF:{IPv4}");
             return concat(ipv6bytes, ipv4bytes);
         }
         final String[] chunks = normalize(address, 8);
