@@ -6,7 +6,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import net.emaze.networks.Ipv4;
 import net.emaze.networks.Ipv6;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
