@@ -255,11 +255,11 @@ public class FixedSizeNatural implements Comparable<FixedSizeNatural> {
         if (internal.length == 1) {
             return internal[0] & 0xFFFFFFFFFFFFFFFFL;
         }
-        final long high = internal[internal.length - 2] & 0xFFFFFFFFFFFFFFFFL;
-        final int low = internal[internal.length - 1];
-        return (high << 32) | low;
+        final long high = ((long) internal[internal.length - 2]) << 32;
+        final long low = internal[internal.length - 1] & 0xFFFFFFFFL;
+        return high | low;
     }
-    
+
     public BigInteger bigIntegerValue() {
         return new BigInteger(1, this.toByteArray());
     }
