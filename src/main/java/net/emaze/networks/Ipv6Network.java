@@ -57,7 +57,7 @@ public class Ipv6Network {
         final Ipv6Network second = new Ipv6Network(lastIp().mask(halfMask), halfMask);
         return Pair.of(first, second);
     }
-
+    
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Ipv6Network == false) {
