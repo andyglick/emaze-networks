@@ -3,7 +3,7 @@ package net.emaze.networks;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.List;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class Ipv4RangeToNetworksTest {

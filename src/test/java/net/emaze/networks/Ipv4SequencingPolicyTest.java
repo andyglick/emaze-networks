@@ -1,7 +1,7 @@
 package net.emaze.networks;
 
-import junit.framework.Assert;
 import net.emaze.dysfunctional.options.Maybe;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class Ipv4SequencingPolicyTest {

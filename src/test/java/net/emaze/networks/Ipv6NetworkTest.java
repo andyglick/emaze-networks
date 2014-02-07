@@ -98,7 +98,7 @@ public class Ipv6NetworkTest {
     public void rangesOfNetworkYieldsExpected() {
         final Range<Ipv6> expected = IpRanges.RANGESV6.closed(Ipv6.parse("1234::"), Ipv6.parse("1234::FFFF"));
         final Range<Ipv6> got = Ipv6Network.fromCidrNotation("1234::/112").toRange();
-        junit.framework.Assert.assertEquals(expected, got);
+        Assert.assertEquals(expected, got);
     }
 
     @Test

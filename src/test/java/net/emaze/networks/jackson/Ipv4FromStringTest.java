@@ -2,9 +2,8 @@ package net.emaze.networks.jackson;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
-import junit.framework.Assert;
 import net.emaze.networks.Ipv4;
-import net.emaze.networks.jackson.BeanWithIpv4;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class Ipv4FromStringTest {

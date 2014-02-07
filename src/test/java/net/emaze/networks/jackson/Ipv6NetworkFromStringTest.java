@@ -2,8 +2,8 @@ package net.emaze.networks.jackson;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
-import junit.framework.Assert;
 import net.emaze.networks.Ipv6Network;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class Ipv6NetworkFromStringTest {

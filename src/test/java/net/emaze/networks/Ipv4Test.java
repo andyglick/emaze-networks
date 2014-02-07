@@ -1,7 +1,7 @@
 package net.emaze.networks;
 
-import junit.framework.Assert;
 import net.emaze.dysfunctional.order.Order;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class Ipv4Test {

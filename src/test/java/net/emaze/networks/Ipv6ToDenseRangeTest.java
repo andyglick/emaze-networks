@@ -2,8 +2,8 @@ package net.emaze.networks;
 
 import net.emaze.dysfunctional.Consumers;
 import net.emaze.dysfunctional.ranges.DenseRange;
-import org.junit.Test;
 import org.junit.Assert;
+import org.junit.Test;
 
 public class Ipv6ToDenseRangeTest {
 

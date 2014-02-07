@@ -1,9 +1,9 @@
 package net.emaze.networks;
 
 import java.math.BigInteger;
-import junit.framework.Assert;
 import net.emaze.dysfunctional.ranges.Range;
 import net.emaze.dysfunctional.tuples.Pair;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class Ipv4NetworkTest {

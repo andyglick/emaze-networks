@@ -1,8 +1,8 @@
 package net.emaze.networks;
 
 import net.emaze.dysfunctional.tuples.Pair;
-import org.junit.Test;
 import org.junit.Assert;
+import org.junit.Test;
 
 public class Ipv6NetworkToIpTest {
 

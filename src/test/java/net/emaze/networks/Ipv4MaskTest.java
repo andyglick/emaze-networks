@@ -1,7 +1,7 @@
 package net.emaze.networks;
 
 import java.math.BigInteger;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class Ipv4MaskTest {
