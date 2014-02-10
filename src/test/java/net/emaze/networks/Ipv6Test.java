@@ -7,6 +7,18 @@ import org.junit.Test;
 public class Ipv6Test {
 
     @Test
+    public void canConstructIPv6FromIntegerArray() {
+        final Ipv6 ip = Ipv6.fromBits(0xFFFF0000, 0, 0, 1);
+        final Ipv6 expected = Ipv6.parse("FFFF::1");
+        Assert.assertEquals(expected, ip);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void constructingIPv6FromIntegerArrayWithSizeDifferentFrom4Throws() {
+        final Ipv6 ip = Ipv6.fromBits(0xFFFF0000, 0, 0, 0, 1);
+    }
+
+    @Test
     public void nextIp() {
         final Ipv6 ip = Ipv6.parse("aaaa::ffff:7f00:1");
         final Ipv6 nextIp = ip.next();
@@ -46,4 +58,10 @@ public class Ipv6Test {
         Assert.assertEquals(Order.LT, Order.of(previousIp.compareTo(ip)));
     }
 
+    @Test
+    public void toByteArrayReturnsIpRepresentation() {
+        final Ipv6 ip = Ipv6.parse("FFFF::1");
+        final byte[] representation = {-1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
+        Assert.assertArrayEquals(representation, ip.toByteArray());
+    }
 }

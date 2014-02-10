@@ -101,7 +101,12 @@ public class Ipv4MaskTest {
 
     @Test
     public void isNarrowestYieldsTrueWhenNetmaskHas32bits() {
-        Assert.assertEquals(Ipv4Mask.getNarrowestMask(), Ipv4Mask.net(32));
+        Assert.assertTrue(Ipv4Mask.net(32).isNarrowest());
+    }
+
+    @Test
+    public void isWidestYieldsTrueWhenNetmaskHasZeroBits() {
+        Assert.assertTrue(Ipv4Mask.net(0).isWidest());
     }
 
     @Test

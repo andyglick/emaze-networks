@@ -6,7 +6,7 @@ import net.emaze.networks.Ipv6Mask;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class Ipv6MaskFromStringTest1 {
+public class Ipv6MaskFromStringTest {
 
     @Test
     public void deserializingIPv6MaskYieldsExpected() throws IOException {

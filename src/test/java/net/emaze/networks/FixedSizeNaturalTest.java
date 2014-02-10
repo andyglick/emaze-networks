@@ -160,6 +160,15 @@ public class FixedSizeNaturalTest {
     }
 
     @Test
+    public void shiftRightWithAMultipleOf32ShiftsIntegers() {
+        final int[] ints = {1, 0};
+        final FixedSizeNatural got = new FixedSizeNatural(ints, 64).shiftRight(32);
+        final int[] expectedInts = {0, 1};
+        final FixedSizeNatural expected = new FixedSizeNatural(expectedInts, 64);
+        Assert.assertEquals(expected, got);
+    }
+
+    @Test
     public void canNegateNaturalBits() {
         final int cases = 2;
         final int[] ints = {0b01};
@@ -425,6 +434,24 @@ public class FixedSizeNaturalTest {
     public void getLongValueFromIntYieldsExpected() {
         final int value = Integer.MAX_VALUE;
         Assert.assertEquals(value, FixedSizeNatural.of(value).longValue());
+    }
+
+    @Test
+    public void toStringReturnsBitsValues() {
+        final FixedSizeNatural value = FixedSizeNatural.of(0xAAAAAAAA);
+        Assert.assertEquals("10101010101010101010101010101010", value.toString());
+    }
+
+    @Test
+    public void toStringPadsWithZeroes() {
+        final FixedSizeNatural value = new FixedSizeNatural(new int[]{1, 0xAAAAAAAA}, 35);
+        Assert.assertEquals("00110101010101010101010101010101010", value.toString());
+    }
+
+    @Test
+    public void toStringReturnsBitsValuesSeparatedInChunksStartingFromTheRight() {
+        final FixedSizeNatural value = FixedSizeNatural.of(0xAAAAAAAA);
+        Assert.assertEquals("10 10101 01010 10101 01010 10101 01010", value.toString(5));
     }
 
     @Ignore

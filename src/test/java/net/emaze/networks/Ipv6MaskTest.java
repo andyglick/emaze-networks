@@ -99,4 +99,22 @@ public class Ipv6MaskTest {
         final Ipv6Mask mask = Ipv6Mask.net(64);
         Assert.assertEquals(new BigInteger("10000000000000000", 16), mask.hosts());
     }
+
+    @Test
+    public void hostPopulationIsComplemntaryToMaskSize() {
+        final Ipv6Mask mask = Ipv6Mask.net(1);
+        Assert.assertEquals(127, mask.hostPopulation());
+    }
+
+    @Test
+    public void maskIsWidestWhenSizeIsZero() {
+        final Ipv6Mask mask = Ipv6Mask.net(0);
+        Assert.assertTrue(mask.isWidest());
+    }
+
+    @Test
+    public void maskIsNarrowestWhenPopulationIsZero() {
+        final Ipv6Mask mask = Ipv6Mask.host(0);
+        Assert.assertTrue(mask.isNarrowest());
+    }
 }
