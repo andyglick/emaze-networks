@@ -19,20 +19,26 @@ public @interface Ipv6Cidr {
 
     String message() default "Non è un CIDR valido";
 
+    int maxPopulation() default 128;
+
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
 
     public static class Validator implements ConstraintValidator<Ipv6Cidr, String> {
 
+        private Ipv6Cidr instance;
+
         @Override
-        public void initialize(Ipv6Cidr constraintAnnotation) {}
+        public void initialize(Ipv6Cidr constraintAnnotation) {
+            this.instance = constraintAnnotation;
+        }
 
         @Override
         public boolean isValid(String value, ConstraintValidatorContext context) {
             try {
-                Ipv6Network.fromCidrNotation(value);
-                return true;
+                final Ipv6Network network = Ipv6Network.fromCidrNotation(value);
+                return network.netmask().population() <= instance.maxPopulation();
             } catch (Exception ex) {
                 return false;
             }
