@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 import net.emaze.networks.Ipv6Mask;
 import org.hibernate.HibernateException;
+import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.usertype.UserType;
 
 public class Ipv6MaskType implements UserType {
@@ -34,7 +35,7 @@ public class Ipv6MaskType implements UserType {
     }
 
     @Override
-    public Object nullSafeGet(ResultSet rs, String[] names, Object owner) throws HibernateException, SQLException {
+    public Object nullSafeGet(ResultSet rs, String[] names, SessionImplementor si, Object owner) throws HibernateException, SQLException {
         final String stored = rs.getString(names[0]);
         if (rs.wasNull()) {
             return null;
@@ -43,7 +44,7 @@ public class Ipv6MaskType implements UserType {
     }
 
     @Override
-    public void nullSafeSet(PreparedStatement st, Object value, int index) throws HibernateException, SQLException {
+    public void nullSafeSet(PreparedStatement st, Object value, int index, SessionImplementor si) throws HibernateException, SQLException {
         if (value == null) {
             st.setNull(index, STORED_SQL_TYPE);
         } else {
