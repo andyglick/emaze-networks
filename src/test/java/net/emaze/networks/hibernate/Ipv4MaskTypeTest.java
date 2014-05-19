@@ -14,8 +14,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate3.HibernateCallback;
-import org.springframework.orm.hibernate3.HibernateOperations;
+import org.springframework.orm.hibernate4.HibernateCallback;
+import org.springframework.orm.hibernate4.HibernateOperations;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -34,7 +34,7 @@ public class Ipv4MaskTypeTest {
 
         hibernateOperations.execute(new HibernateCallback<Ipv4MaskContainer>() {
             @Override
-            public Ipv4MaskContainer doInHibernate(Session session) throws HibernateException, SQLException {
+            public Ipv4MaskContainer doInHibernate(Session session) throws HibernateException {
                 Ipv4MaskContainer got = (Ipv4MaskContainer) session.get(Ipv4MaskContainer.class, id);
                 Assert.assertEquals(Ipv4Mask.net(24), got.getMask());
                 return got;

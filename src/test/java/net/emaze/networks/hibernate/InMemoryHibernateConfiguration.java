@@ -6,14 +6,14 @@ import java.util.Properties;
 import javax.sql.DataSource;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.DefaultComponentSafeNamingStrategy;
-import org.hsqldb.jdbcDriver;
+import org.hsqldb.jdbc.JDBCDriver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.Resource;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
-import org.springframework.orm.hibernate3.HibernateOperations;
-import org.springframework.orm.hibernate3.HibernateTemplate;
-import org.springframework.orm.hibernate3.HibernateTransactionManager;
-import org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean;
+import org.springframework.orm.hibernate4.HibernateOperations;
+import org.springframework.orm.hibernate4.HibernateTemplate;
+import org.springframework.orm.hibernate4.HibernateTransactionManager;
+import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 
 
@@ -21,7 +21,7 @@ public class InMemoryHibernateConfiguration {
 
     @Bean
     public DataSource dataSource() {
-        jdbcDriver driver = new org.hsqldb.jdbcDriver();
+        JDBCDriver driver = new JDBCDriver();
         return new SimpleDriverDataSource(driver, "jdbc:hsqldb:mem:blimp-test", "sa", "");
     }
 
@@ -33,7 +33,7 @@ public class InMemoryHibernateConfiguration {
     }
 
     @Bean
-    public SessionFactory localSessionFactoryBean(final DataSource dataSource) throws IOException, Exception {
+    public LocalSessionFactoryBean localSessionFactoryBean(final DataSource dataSource) throws IOException, Exception {
         final Properties hibernateProperties = new Properties();
         hibernateProperties.put("hibernate.dialect", "org.hibernate.dialect.HSQLDialect");
         hibernateProperties.put("hibernate.hbm2ddl.auto", "create-drop");
@@ -46,19 +46,20 @@ public class InMemoryHibernateConfiguration {
         hibernateProperties.put("hibernate.format_sql", "false");
         hibernateProperties.put("hibernate.generate_statistics", "false");
         hibernateProperties.put("hibernate.default_batch_fetch_size", "200");
-        final AnnotationSessionFactoryBean factoryBean = new AnnotationSessionFactoryBean();
+        final LocalSessionFactoryBean factoryBean = new LocalSessionFactoryBean();
         factoryBean.setDataSource(dataSource);
         factoryBean.setMappingLocations(new Resource[0]);
         factoryBean.setPackagesToScan(new String[]{"net.emaze.networks.hibernate"});
         factoryBean.setNamingStrategy(new DefaultComponentSafeNamingStrategy());
         factoryBean.setHibernateProperties(hibernateProperties);
-        factoryBean.afterPropertiesSet();
-        return factoryBean.getObject();
+        return factoryBean;
     }
 
     @Bean
     public HibernateOperations hibernateOperations(SessionFactory sessionFactory) {
-        return new HibernateTemplate(sessionFactory);
+        HibernateTemplate hibernateTemplate = new HibernateTemplate(sessionFactory);
+        hibernateTemplate.setCheckWriteOperations(false);
+        return hibernateTemplate;
     }
 
 }

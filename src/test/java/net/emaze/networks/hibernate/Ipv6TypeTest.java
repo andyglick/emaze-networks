@@ -14,8 +14,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate3.HibernateCallback;
-import org.springframework.orm.hibernate3.HibernateOperations;
+import org.springframework.orm.hibernate4.HibernateCallback;
+import org.springframework.orm.hibernate4.HibernateOperations;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -33,8 +33,9 @@ public class Ipv6TypeTest {
         final Serializable id = hibernateOperations.save(container);
 
         hibernateOperations.execute(new HibernateCallback<Ipv6Container>() {
+            
             @Override
-            public Ipv6Container doInHibernate(Session session) throws HibernateException, SQLException {
+            public Ipv6Container doInHibernate(Session session) throws HibernateException {
                 Ipv6Container got = (Ipv6Container) session.get(Ipv6Container.class, id);
                 Assert.assertEquals(Ipv6.parse("2001:0DB8:0000:CD31::"), got.getIp());
                 return got;

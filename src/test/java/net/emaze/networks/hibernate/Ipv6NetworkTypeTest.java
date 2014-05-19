@@ -14,8 +14,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate3.HibernateCallback;
-import org.springframework.orm.hibernate3.HibernateOperations;
+import org.springframework.orm.hibernate4.HibernateCallback;
+import org.springframework.orm.hibernate4.HibernateOperations;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -34,7 +34,7 @@ public class Ipv6NetworkTypeTest {
 
         hibernateOperations.execute(new HibernateCallback<Ipv6NetworkContainer>() {
             @Override
-            public Ipv6NetworkContainer doInHibernate(Session session) throws HibernateException, SQLException {
+            public Ipv6NetworkContainer doInHibernate(Session session) throws HibernateException {
                 Ipv6NetworkContainer got = (Ipv6NetworkContainer) session.get(Ipv6NetworkContainer.class, id);
                 Assert.assertEquals(Ipv6Network.fromCidrNotation("::/0"), got.getNetwork());
                 return got;

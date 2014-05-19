@@ -14,8 +14,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate3.HibernateCallback;
-import org.springframework.orm.hibernate3.HibernateOperations;
+import org.springframework.orm.hibernate4.HibernateCallback;
+import org.springframework.orm.hibernate4.HibernateOperations;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -34,7 +34,7 @@ public class Ipv4NetworkTypeTest {
 
         hibernateOperations.execute(new HibernateCallback<Ipv4NetworkContainer>() {
             @Override
-            public Ipv4NetworkContainer doInHibernate(Session session) throws HibernateException, SQLException {
+            public Ipv4NetworkContainer doInHibernate(Session session) throws HibernateException {
                 Ipv4NetworkContainer got = (Ipv4NetworkContainer) session.get(Ipv4NetworkContainer.class, id);
                 Assert.assertEquals(Ipv4Network.fromCidrNotation("0.0.0.0/0"), got.getNetwork());
                 return got;

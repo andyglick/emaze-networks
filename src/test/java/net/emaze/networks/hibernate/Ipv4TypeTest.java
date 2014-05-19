@@ -14,8 +14,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate3.HibernateCallback;
-import org.springframework.orm.hibernate3.HibernateOperations;
+import org.springframework.orm.hibernate4.HibernateCallback;
+import org.springframework.orm.hibernate4.HibernateOperations;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -34,7 +34,7 @@ public class Ipv4TypeTest {
 
         hibernateOperations.execute(new HibernateCallback<Ipv4Container>() {
             @Override
-            public Ipv4Container doInHibernate(Session session) throws HibernateException, SQLException {
+            public Ipv4Container doInHibernate(Session session) throws HibernateException {
                 Ipv4Container got = (Ipv4Container) session.get(Ipv4Container.class, id);
                 Assert.assertEquals(Ipv4.parse("127.0.0.1"), got.getIp());
                 return got;
