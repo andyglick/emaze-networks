@@ -49,7 +49,6 @@ public class Ipv4MaskTypeTest {
         @Id
         @GeneratedValue
         private Integer id;
-        @Type(type = "net.emaze.networks.hibernate.Ipv4MaskType")
         private Ipv4Mask mask;
 
         public Integer getId() {

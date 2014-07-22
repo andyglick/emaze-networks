@@ -49,7 +49,6 @@ public class Ipv6MaskTypeTest {
         @Id
         @GeneratedValue
         private Integer id;
-        @Type(type = "net.emaze.networks.hibernate.Ipv6MaskType")
         private Ipv6Mask mask;
 
         public Integer getId() {

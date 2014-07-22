@@ -33,7 +33,7 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
             <optional>true</optional>
-            <version>4.3.4.Final</version>
+            <version>4.3.5.Final</version>
         </dependency>
         <dependency>
             <groupId>net.sf.dozer</groupId>

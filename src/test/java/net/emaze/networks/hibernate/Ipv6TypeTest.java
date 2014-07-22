@@ -50,7 +50,6 @@ public class Ipv6TypeTest {
         @Id
         @GeneratedValue
         private Integer id;
-        @Type(type = "net.emaze.networks.hibernate.Ipv6Type")
         private Ipv6 ip;
 
         public Integer getId() {

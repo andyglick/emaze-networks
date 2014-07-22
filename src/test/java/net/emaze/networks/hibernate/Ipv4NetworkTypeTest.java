@@ -49,7 +49,6 @@ public class Ipv4NetworkTypeTest {
         @Id
         @GeneratedValue
         private Integer id;
-        @Type(type = "net.emaze.networks.hibernate.Ipv4NetworkType")
         private Ipv4Network network;
 
         public Integer getId() {
