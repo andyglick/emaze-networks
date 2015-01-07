@@ -1,7 +1,6 @@
 package net.emaze.networks.hibernate;
 
 import java.io.Serializable;
-import java.sql.SQLException;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -9,7 +8,6 @@ import javax.persistence.Table;
 import net.emaze.networks.Ipv6Mask;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
-import org.hibernate.annotations.Type;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -22,7 +22,7 @@ public class InMemoryHibernateConfiguration {
     @Bean
     public DataSource dataSource() {
         JDBCDriver driver = new JDBCDriver();
-        return new SimpleDriverDataSource(driver, "jdbc:hsqldb:mem:blimp-test", "sa", "");
+        return new SimpleDriverDataSource(driver, "jdbc:hsqldb:mem:emaze-networks-test", "sa", "");
     }
 
     @Bean
