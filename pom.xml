@@ -88,7 +88,7 @@
     <scm>
         <connection>scm:hg:https://hg.intranet/emaze-networks</connection>
         <developerConnection>scm:hg:file://${basedir}</developerConnection>
-      <tag>HEAD</tag>
-  </scm>  
+        <tag>HEAD</tag>
+    </scm>  
 
 </project>

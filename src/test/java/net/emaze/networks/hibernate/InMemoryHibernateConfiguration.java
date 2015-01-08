@@ -1,4 +1,3 @@
-
 package net.emaze.networks.hibernate;
 
 import java.io.IOException;
@@ -15,7 +14,7 @@ import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
-
+import org.springframework.transaction.support.TransactionTemplate;
 
 public class InMemoryHibernateConfiguration {
 
@@ -56,10 +55,13 @@ public class InMemoryHibernateConfiguration {
     }
 
     @Bean
+    public TransactionTemplate txt(PlatformTransactionManager tx) {
+        return new TransactionTemplate(tx);
+    }
+
+    @Bean
     public HibernateOperations hibernateOperations(SessionFactory sessionFactory) {
-        HibernateTemplate hibernateTemplate = new HibernateTemplate(sessionFactory);
-        hibernateTemplate.setCheckWriteOperations(false);
-        return hibernateTemplate;
+        return new HibernateTemplate(sessionFactory);
     }
 
 }

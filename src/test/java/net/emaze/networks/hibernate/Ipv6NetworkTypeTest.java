@@ -16,6 +16,7 @@ import org.springframework.orm.hibernate4.HibernateCallback;
 import org.springframework.orm.hibernate4.HibernateOperations;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.support.TransactionTemplate;
 
 @ContextConfiguration(classes = InMemoryHibernateConfiguration.class)
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -23,12 +24,16 @@ public class Ipv6NetworkTypeTest {
 
     @Autowired
     private HibernateOperations hibernateOperations;
+    @Autowired
+    private TransactionTemplate tx;
 
     @Test
     public void canSerializeAndDeserializeAIpv6Network() {
         final Ipv6NetworkContainer container = new Ipv6NetworkContainer();
         container.setNetwork(Ipv6Network.fromCidrNotation("::/0"));
-        final Serializable id = hibernateOperations.save(container);
+        final Serializable id = tx.execute((state) -> {
+            return hibernateOperations.save(container);
+        });
 
         hibernateOperations.execute(new HibernateCallback<Ipv6NetworkContainer>() {
             @Override

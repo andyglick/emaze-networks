@@ -16,6 +16,7 @@ import org.springframework.orm.hibernate4.HibernateCallback;
 import org.springframework.orm.hibernate4.HibernateOperations;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.support.TransactionTemplate;
 
 @ContextConfiguration(classes = InMemoryHibernateConfiguration.class)
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -23,13 +24,16 @@ public class Ipv4MaskTypeTest {
 
     @Autowired
     private HibernateOperations hibernateOperations;
+    @Autowired
+    private TransactionTemplate tx;
 
     @Test
     public void canSerializeAndDeserializeAIpv4Network() {
         final Ipv4MaskContainer container = new Ipv4MaskContainer();
         container.setMask(Ipv4Mask.net(24));
-        final Serializable id = hibernateOperations.save(container);
-
+        final Serializable id = tx.execute((state) -> {
+            return hibernateOperations.save(container);
+        });
         hibernateOperations.execute(new HibernateCallback<Ipv4MaskContainer>() {
             @Override
             public Ipv4MaskContainer doInHibernate(Session session) throws HibernateException {
@@ -39,7 +43,7 @@ public class Ipv4MaskTypeTest {
             }
         });
     }
-    
+
     @Entity
     @Table(name = "maskv4_container")
     public static class Ipv4MaskContainer {

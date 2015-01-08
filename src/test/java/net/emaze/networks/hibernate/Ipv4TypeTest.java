@@ -16,6 +16,7 @@ import org.springframework.orm.hibernate4.HibernateCallback;
 import org.springframework.orm.hibernate4.HibernateOperations;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.support.TransactionTemplate;
 
 @ContextConfiguration(classes = InMemoryHibernateConfiguration.class)
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -23,13 +24,16 @@ public class Ipv4TypeTest {
 
     @Autowired
     private HibernateOperations hibernateOperations;
+    @Autowired
+    private TransactionTemplate tx;
 
     @Test
     public void canSerializeAndDeserializeAIpv4() {
         final Ipv4Container container = new Ipv4Container();
         container.setIp(Ipv4.parse("127.0.0.1"));
-        final Serializable id = hibernateOperations.save(container);
-
+        final Serializable id = tx.execute((state) -> {
+            return hibernateOperations.save(container);
+        });
         hibernateOperations.execute(new HibernateCallback<Ipv4Container>() {
             @Override
             public Ipv4Container doInHibernate(Session session) throws HibernateException {
@@ -65,5 +69,5 @@ public class Ipv4TypeTest {
             this.ip = ip;
         }
     }
-    
+
 }
