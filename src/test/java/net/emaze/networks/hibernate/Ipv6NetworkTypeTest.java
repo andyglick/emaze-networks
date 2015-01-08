@@ -35,16 +35,13 @@ public class Ipv6NetworkTypeTest {
             return hibernateOperations.save(container);
         });
 
-        hibernateOperations.execute(new HibernateCallback<Ipv6NetworkContainer>() {
-            @Override
-            public Ipv6NetworkContainer doInHibernate(Session session) throws HibernateException {
-                Ipv6NetworkContainer got = (Ipv6NetworkContainer) session.get(Ipv6NetworkContainer.class, id);
-                Assert.assertEquals(Ipv6Network.fromCidrNotation("::/0"), got.getNetwork());
-                return got;
-            }
+        hibernateOperations.execute(session -> {
+            Ipv6NetworkContainer got = (Ipv6NetworkContainer) session.get(Ipv6NetworkContainer.class, id);
+            Assert.assertEquals(Ipv6Network.fromCidrNotation("::/0"), got.getNetwork());
+            return got;
         });
     }
-    
+
     @Test
     public void canUseNetworkAsPrimaryKey() {
         final Ipv6NetworkKeyContainer container = new Ipv6NetworkKeyContainer();
@@ -53,13 +50,10 @@ public class Ipv6NetworkTypeTest {
             return hibernateOperations.save(container);
         });
 
-        hibernateOperations.execute(new HibernateCallback<Ipv6NetworkKeyContainer>() {
-            @Override
-            public Ipv6NetworkKeyContainer doInHibernate(Session session) throws HibernateException {
-                Ipv6NetworkKeyContainer got = (Ipv6NetworkKeyContainer) session.get(Ipv6NetworkKeyContainer.class, id);
-                Assert.assertEquals(Ipv6Network.fromCidrNotation("::/0"), got.getNetwork());
-                return got;
-            }
+        hibernateOperations.execute(session -> {
+            Ipv6NetworkKeyContainer got = (Ipv6NetworkKeyContainer) session.get(Ipv6NetworkKeyContainer.class, id);
+            Assert.assertEquals(Ipv6Network.fromCidrNotation("::/0"), got.getNetwork());
+            return got;
         });
     }
 

@@ -51,13 +51,10 @@ public class Ipv4TypeTest {
         final Serializable id = tx.execute((state) -> {
             return hibernateOperations.save(container);
         });
-        hibernateOperations.execute(new HibernateCallback<Ipv4KeyContainer>() {
-            @Override
-            public Ipv4KeyContainer doInHibernate(Session session) throws HibernateException {
-                Ipv4KeyContainer got = (Ipv4KeyContainer) session.get(Ipv4KeyContainer.class, id);
-                Assert.assertEquals(Ipv4.parse("127.0.0.1"), got.getIp());
-                return got;
-            }
+        hibernateOperations.execute(session -> {
+            Ipv4KeyContainer got = (Ipv4KeyContainer) session.get(Ipv4KeyContainer.class, id);
+            Assert.assertEquals(Ipv4.parse("127.0.0.1"), got.getIp());
+            return got;
         });
     }
 

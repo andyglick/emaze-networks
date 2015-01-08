@@ -34,13 +34,10 @@ public class Ipv4NetworkTypeTest {
         final Serializable id = tx.execute((state) -> {
             return hibernateOperations.save(container);
         });
-        hibernateOperations.execute(new HibernateCallback<Ipv4NetworkContainer>() {
-            @Override
-            public Ipv4NetworkContainer doInHibernate(Session session) throws HibernateException {
-                Ipv4NetworkContainer got = (Ipv4NetworkContainer) session.get(Ipv4NetworkContainer.class, id);
-                Assert.assertEquals(Ipv4Network.fromCidrNotation("0.0.0.0/0"), got.getNetwork());
-                return got;
-            }
+        hibernateOperations.execute(session -> {
+            Ipv4NetworkContainer got = (Ipv4NetworkContainer) session.get(Ipv4NetworkContainer.class, id);
+            Assert.assertEquals(Ipv4Network.fromCidrNotation("0.0.0.0/0"), got.getNetwork());
+            return got;
         });
     }
 
@@ -51,13 +48,10 @@ public class Ipv4NetworkTypeTest {
         final Serializable id = tx.execute((status) -> {
             return hibernateOperations.save(container);
         });
-        hibernateOperations.execute(new HibernateCallback<Ipv4NetworkKeyContainer>() {
-            @Override
-            public Ipv4NetworkKeyContainer doInHibernate(Session session) throws HibernateException {
-                Ipv4NetworkKeyContainer got = (Ipv4NetworkKeyContainer) session.get(Ipv4NetworkKeyContainer.class, id);
-                Assert.assertEquals(Ipv4Network.fromCidrNotation("0.0.0.0/0"), got.getId());
-                return got;
-            }
+        hibernateOperations.execute(session -> {
+            Ipv4NetworkKeyContainer got = (Ipv4NetworkKeyContainer) session.get(Ipv4NetworkKeyContainer.class, id);
+            Assert.assertEquals(Ipv4Network.fromCidrNotation("0.0.0.0/0"), got.getId());
+            return got;
         });
     }
 

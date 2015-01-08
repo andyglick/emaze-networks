@@ -34,13 +34,10 @@ public class Ipv4MaskTypeTest {
         final Serializable id = tx.execute((state) -> {
             return hibernateOperations.save(container);
         });
-        hibernateOperations.execute(new HibernateCallback<Ipv4MaskContainer>() {
-            @Override
-            public Ipv4MaskContainer doInHibernate(Session session) throws HibernateException {
-                Ipv4MaskContainer got = (Ipv4MaskContainer) session.get(Ipv4MaskContainer.class, id);
-                Assert.assertEquals(Ipv4Mask.net(24), got.getMask());
-                return got;
-            }
+        hibernateOperations.execute(session -> {
+            Ipv4MaskContainer got = (Ipv4MaskContainer) session.get(Ipv4MaskContainer.class, id);
+            Assert.assertEquals(Ipv4Mask.net(24), got.getMask());
+            return got;
         });
     }
 
@@ -51,13 +48,10 @@ public class Ipv4MaskTypeTest {
         final Serializable id = tx.execute((status) -> {
             return hibernateOperations.save(container);
         });
-        hibernateOperations.execute(new HibernateCallback<Ipv4MaskKeyContainer>() {
-            @Override
-            public Ipv4MaskKeyContainer doInHibernate(Session session) throws HibernateException {
-                Ipv4MaskKeyContainer got = (Ipv4MaskKeyContainer) session.get(Ipv4MaskKeyContainer.class, id);
-                Assert.assertEquals(Ipv4Mask.net(24), got.getId());
-                return got;
-            }
+        hibernateOperations.execute(session -> {
+            Ipv4MaskKeyContainer got = (Ipv4MaskKeyContainer) session.get(Ipv4MaskKeyContainer.class, id);
+            Assert.assertEquals(Ipv4Mask.net(24), got.getId());
+            return got;
         });
     }
 

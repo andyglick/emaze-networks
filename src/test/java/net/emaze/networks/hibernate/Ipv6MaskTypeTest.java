@@ -34,15 +34,13 @@ public class Ipv6MaskTypeTest {
         final Serializable id = tx.execute((state) -> {
             return hibernateOperations.save(container);
         });
-        hibernateOperations.execute(new HibernateCallback<Ipv6MaskContainer>() {
-            @Override
-            public Ipv6MaskContainer doInHibernate(Session session) throws HibernateException {
-                Ipv6MaskContainer got = (Ipv6MaskContainer) session.get(Ipv6MaskContainer.class, id);
-                Assert.assertEquals(Ipv6Mask.net(100), got.getMask());
-                return got;
-            }
+        hibernateOperations.execute(session -> {
+            Ipv6MaskContainer got = (Ipv6MaskContainer) session.get(Ipv6MaskContainer.class, id);
+            Assert.assertEquals(Ipv6Mask.net(100), got.getMask());
+            return got;
         });
     }
+
     @Test
     public void canUseMaskAsPrimaryKey() {
         final Ipv6MaskKeyContainer container = new Ipv6MaskKeyContainer();
@@ -50,13 +48,10 @@ public class Ipv6MaskTypeTest {
         final Serializable id = tx.execute((state) -> {
             return hibernateOperations.save(container);
         });
-        hibernateOperations.execute(new HibernateCallback<Ipv6MaskKeyContainer>() {
-            @Override
-            public Ipv6MaskKeyContainer doInHibernate(Session session) throws HibernateException {
-                Ipv6MaskKeyContainer got = (Ipv6MaskKeyContainer) session.get(Ipv6MaskKeyContainer.class, id);
-                Assert.assertEquals(Ipv6Mask.net(100), got.getMask());
-                return got;
-            }
+        hibernateOperations.execute(session -> {
+            Ipv6MaskKeyContainer got = (Ipv6MaskKeyContainer) session.get(Ipv6MaskKeyContainer.class, id);
+            Assert.assertEquals(Ipv6Mask.net(100), got.getMask());
+            return got;
         });
     }
 

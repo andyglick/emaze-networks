@@ -31,18 +31,14 @@ public class Ipv6TypeTest {
     public void canSerializeAndDeserializeAIpv6() {
         final Ipv6Container container = new Ipv6Container();
         container.setIp(Ipv6.parse("2001:0DB8:0000:CD31::"));
-        final Serializable id = tx.execute((state) -> {
+        final Serializable id = tx.execute(state -> {
             return hibernateOperations.save(container);
         });
 
-        hibernateOperations.execute(new HibernateCallback<Ipv6Container>() {
-
-            @Override
-            public Ipv6Container doInHibernate(Session session) throws HibernateException {
-                Ipv6Container got = (Ipv6Container) session.get(Ipv6Container.class, id);
-                Assert.assertEquals(Ipv6.parse("2001:0DB8:0000:CD31::"), got.getIp());
-                return got;
-            }
+        hibernateOperations.execute(session -> {
+            Ipv6Container got = (Ipv6Container) session.get(Ipv6Container.class, id);
+            Assert.assertEquals(Ipv6.parse("2001:0DB8:0000:CD31::"), got.getIp());
+            return got;
         });
     }
 
@@ -54,14 +50,10 @@ public class Ipv6TypeTest {
             return hibernateOperations.save(container);
         });
 
-        hibernateOperations.execute(new HibernateCallback<Ipv6KeyContainer>() {
-
-            @Override
-            public Ipv6KeyContainer doInHibernate(Session session) throws HibernateException {
-                Ipv6KeyContainer got = (Ipv6KeyContainer) session.get(Ipv6KeyContainer.class, id);
-                Assert.assertEquals(Ipv6.parse("2001:0DB8:0000:CD31::"), got.getIp());
-                return got;
-            }
+        hibernateOperations.execute(session -> {
+            Ipv6KeyContainer got = (Ipv6KeyContainer) session.get(Ipv6KeyContainer.class, id);
+            Assert.assertEquals(Ipv6.parse("2001:0DB8:0000:CD31::"), got.getIp());
+            return got;
         });
     }
 
