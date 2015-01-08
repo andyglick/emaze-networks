@@ -1,5 +1,6 @@
 package net.emaze.networks;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 import net.emaze.dysfunctional.contracts.dbc;
 import net.emaze.dysfunctional.equality.EqualsBuilder;
@@ -8,7 +9,7 @@ import net.emaze.dysfunctional.order.Order;
 import net.emaze.dysfunctional.ranges.Range;
 import net.emaze.dysfunctional.tuples.Pair;
 
-public class Ipv6Network {
+public class Ipv6Network implements Serializable {
 
     private final Ipv6 network;
     private final Ipv6Mask netmask;
@@ -57,7 +58,7 @@ public class Ipv6Network {
         final Ipv6Network second = new Ipv6Network(lastIp().mask(halfMask), halfMask);
         return Pair.of(first, second);
     }
-    
+
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Ipv6Network == false) {

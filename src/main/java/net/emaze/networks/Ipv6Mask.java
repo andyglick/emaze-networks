@@ -1,10 +1,11 @@
 package net.emaze.networks;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 import net.emaze.dysfunctional.contracts.dbc;
 import net.emaze.dysfunctional.hashing.HashCodeBuilder;
 
-public class Ipv6Mask implements Comparable<Ipv6Mask> {
+public class Ipv6Mask implements Comparable<Ipv6Mask>, Serializable {
 
     private static final int BIT_SIZE = 128;
     protected final int size;

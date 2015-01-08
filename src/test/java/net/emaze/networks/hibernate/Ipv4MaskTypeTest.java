@@ -44,6 +44,23 @@ public class Ipv4MaskTypeTest {
         });
     }
 
+    @Test
+    public void canUseMaskAsPrimaryKey() {
+        final Ipv4MaskKeyContainer container = new Ipv4MaskKeyContainer();
+        container.setId(Ipv4Mask.net(24));
+        final Serializable id = tx.execute((status) -> {
+            return hibernateOperations.save(container);
+        });
+        hibernateOperations.execute(new HibernateCallback<Ipv4MaskKeyContainer>() {
+            @Override
+            public Ipv4MaskKeyContainer doInHibernate(Session session) throws HibernateException {
+                Ipv4MaskKeyContainer got = (Ipv4MaskKeyContainer) session.get(Ipv4MaskKeyContainer.class, id);
+                Assert.assertEquals(Ipv4Mask.net(24), got.getId());
+                return got;
+            }
+        });
+    }
+
     @Entity
     @Table(name = "maskv4_container")
     public static class Ipv4MaskContainer {
@@ -67,6 +84,22 @@ public class Ipv4MaskTypeTest {
 
         public void setMask(Ipv4Mask mask) {
             this.mask = mask;
+        }
+    }
+
+    @Entity
+    @Table(name = "maskv4_key_container")
+    public static class Ipv4MaskKeyContainer {
+
+        @Id
+        private Ipv4Mask id;
+
+        public Ipv4Mask getId() {
+            return id;
+        }
+
+        public void setId(Ipv4Mask id) {
+            this.id = id;
         }
     }
 }

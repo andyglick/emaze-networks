@@ -1,5 +1,10 @@
 package net.emaze.networks;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.math.BigInteger;
 import net.emaze.dysfunctional.ranges.Range;
 import net.emaze.dysfunctional.tuples.Pair;
@@ -154,5 +159,16 @@ public class Ipv4NetworkTest {
         final Pair<Ipv4, Ipv4Mask> expected = Pair.of(Ipv4.parse("10.0.0.0"), Ipv4Mask.net(24));
         final Pair<Ipv4, Ipv4Mask> got = Ipv4Network.fromCidrNotation("10.0.0.0/24").toCidr();
         Assert.assertEquals(expected, got);
+    }
+
+    @Test
+    public void canSerializeAndDeserialize() throws IOException, ClassNotFoundException {
+        final Ipv4Network value = Ipv4Network.fromCidrNotation("10.0.0.0/24");
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(value);
+        final ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
+        final Object got = ois.readObject();
+        Assert.assertEquals(value, got);
     }
 }

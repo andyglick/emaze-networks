@@ -1,9 +1,10 @@
 package net.emaze.networks;
 
+import java.io.Serializable;
 import net.emaze.dysfunctional.contracts.dbc;
 import net.emaze.dysfunctional.hashing.HashCodeBuilder;
 
-public class Ipv6 implements Comparable<Ipv6> {
+public class Ipv6 implements Comparable<Ipv6>, Serializable {
 
     private static final int BIT_SIZE = 128;
     private static final FixedSizeNatural FIRST_ADDRESS = FixedSizeNatural.zero(BIT_SIZE);
@@ -24,7 +25,7 @@ public class Ipv6 implements Comparable<Ipv6> {
         dbc.precondition(bits.length == 4, "An IPv6 must be built with 128 bits");
         return new Ipv6(new FixedSizeNatural(bits, bits.length * Integer.SIZE));
     }
-    
+
     public static Ipv6 getFirstIp() {
         return new Ipv6(FIRST_ADDRESS);
     }

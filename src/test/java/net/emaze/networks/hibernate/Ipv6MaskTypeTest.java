@@ -43,6 +43,22 @@ public class Ipv6MaskTypeTest {
             }
         });
     }
+    @Test
+    public void canUseMaskAsPrimaryKey() {
+        final Ipv6MaskKeyContainer container = new Ipv6MaskKeyContainer();
+        container.setMask(Ipv6Mask.net(100));
+        final Serializable id = tx.execute((state) -> {
+            return hibernateOperations.save(container);
+        });
+        hibernateOperations.execute(new HibernateCallback<Ipv6MaskKeyContainer>() {
+            @Override
+            public Ipv6MaskKeyContainer doInHibernate(Session session) throws HibernateException {
+                Ipv6MaskKeyContainer got = (Ipv6MaskKeyContainer) session.get(Ipv6MaskKeyContainer.class, id);
+                Assert.assertEquals(Ipv6Mask.net(100), got.getMask());
+                return got;
+            }
+        });
+    }
 
     @Entity
     @Table(name = "maskv6_container")
@@ -60,6 +76,22 @@ public class Ipv6MaskTypeTest {
         public void setId(Integer id) {
             this.id = id;
         }
+
+        public Ipv6Mask getMask() {
+            return mask;
+        }
+
+        public void setMask(Ipv6Mask mask) {
+            this.mask = mask;
+        }
+    }
+
+    @Entity
+    @Table(name = "maskv6_key_container")
+    public static class Ipv6MaskKeyContainer {
+
+        @Id
+        private Ipv6Mask mask;
 
         public Ipv6Mask getMask() {
             return mask;

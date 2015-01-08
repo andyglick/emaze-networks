@@ -1,5 +1,6 @@
 package net.emaze.networks;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 import net.emaze.dysfunctional.contracts.dbc;
 import net.emaze.dysfunctional.equality.EqualsBuilder;
@@ -8,7 +9,7 @@ import net.emaze.dysfunctional.order.Order;
 import net.emaze.dysfunctional.ranges.Range;
 import net.emaze.dysfunctional.tuples.Pair;
 
-public class Ipv4Network {
+public class Ipv4Network implements Serializable {
 
     protected final Ipv4 network;
     protected final Ipv4Mask netmask;

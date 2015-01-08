@@ -1,5 +1,10 @@
 package net.emaze.networks;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import net.emaze.dysfunctional.order.Order;
 import org.junit.Assert;
 import org.junit.Test;
@@ -63,5 +68,16 @@ public class Ipv6Test {
         final Ipv6 ip = Ipv6.parse("FFFF::1");
         final byte[] representation = {-1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
         Assert.assertArrayEquals(representation, ip.toByteArray());
+    }
+
+    @Test
+    public void canSerializeAndDeserialize() throws IOException, ClassNotFoundException {
+        final Ipv6 value = Ipv6.parse("aaaa::ffff:7f00:1");
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(value);
+        final ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
+        final Object got = ois.readObject();
+        Assert.assertEquals(value, got);
     }
 }

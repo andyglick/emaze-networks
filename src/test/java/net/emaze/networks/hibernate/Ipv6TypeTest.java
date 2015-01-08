@@ -46,6 +46,25 @@ public class Ipv6TypeTest {
         });
     }
 
+    @Test
+    public void canUseIpAsPrimaryKey() {
+        final Ipv6KeyContainer container = new Ipv6KeyContainer();
+        container.setIp(Ipv6.parse("2001:0DB8:0000:CD31::"));
+        final Serializable id = tx.execute((state) -> {
+            return hibernateOperations.save(container);
+        });
+
+        hibernateOperations.execute(new HibernateCallback<Ipv6KeyContainer>() {
+
+            @Override
+            public Ipv6KeyContainer doInHibernate(Session session) throws HibernateException {
+                Ipv6KeyContainer got = (Ipv6KeyContainer) session.get(Ipv6KeyContainer.class, id);
+                Assert.assertEquals(Ipv6.parse("2001:0DB8:0000:CD31::"), got.getIp());
+                return got;
+            }
+        });
+    }
+
     @Entity
     @Table(name = "ipv6_container")
     public static class Ipv6Container {
@@ -62,6 +81,22 @@ public class Ipv6TypeTest {
         public void setId(Integer id) {
             this.id = id;
         }
+
+        public Ipv6 getIp() {
+            return ip;
+        }
+
+        public void setIp(Ipv6 ip) {
+            this.ip = ip;
+        }
+    }
+
+    @Entity
+    @Table(name = "ipv6_key_container")
+    public static class Ipv6KeyContainer {
+
+        @Id
+        private Ipv6 ip;
 
         public Ipv6 getIp() {
             return ip;

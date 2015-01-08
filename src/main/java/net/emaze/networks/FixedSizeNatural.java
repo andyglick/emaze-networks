@@ -1,5 +1,6 @@
 package net.emaze.networks;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -10,7 +11,7 @@ import net.emaze.dysfunctional.contracts.dbc;
 import net.emaze.dysfunctional.hashing.HashCodeBuilder;
 import net.emaze.dysfunctional.order.Order;
 
-public class FixedSizeNatural implements Comparable<FixedSizeNatural> {
+public class FixedSizeNatural implements Comparable<FixedSizeNatural>, Serializable {
 
     private final long COMPARISON_MASK = 0xFFFFFFFFL;
     private final int[] internal;

@@ -1,9 +1,10 @@
 package net.emaze.networks;
 
+import java.io.Serializable;
 import net.emaze.dysfunctional.contracts.dbc;
 import net.emaze.dysfunctional.hashing.HashCodeBuilder;
 
-public class Ipv4 implements Comparable<Ipv4> {
+public class Ipv4 implements Comparable<Ipv4>, Serializable {
 
     private static final int BIT_SIZE = 32;
     private static final FixedSizeNatural FIRST_ADDRESS = FixedSizeNatural.zero(BIT_SIZE);

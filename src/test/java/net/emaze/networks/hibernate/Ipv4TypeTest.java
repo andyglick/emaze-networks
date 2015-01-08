@@ -44,6 +44,23 @@ public class Ipv4TypeTest {
         });
     }
 
+    @Test
+    public void canUseIpAsPrimaryKey() {
+        final Ipv4KeyContainer container = new Ipv4KeyContainer();
+        container.setIp(Ipv4.parse("127.0.0.1"));
+        final Serializable id = tx.execute((state) -> {
+            return hibernateOperations.save(container);
+        });
+        hibernateOperations.execute(new HibernateCallback<Ipv4KeyContainer>() {
+            @Override
+            public Ipv4KeyContainer doInHibernate(Session session) throws HibernateException {
+                Ipv4KeyContainer got = (Ipv4KeyContainer) session.get(Ipv4KeyContainer.class, id);
+                Assert.assertEquals(Ipv4.parse("127.0.0.1"), got.getIp());
+                return got;
+            }
+        });
+    }
+
     @Entity
     @Table(name = "ipv4_container")
     public static class Ipv4Container {
@@ -60,6 +77,22 @@ public class Ipv4TypeTest {
         public void setId(Integer id) {
             this.id = id;
         }
+
+        public Ipv4 getIp() {
+            return ip;
+        }
+
+        public void setIp(Ipv4 ip) {
+            this.ip = ip;
+        }
+    }
+
+    @Entity
+    @Table(name = "ipv4_key_container")
+    public static class Ipv4KeyContainer {
+
+        @Id
+        private Ipv4 ip;
 
         public Ipv4 getIp() {
             return ip;

@@ -44,6 +44,23 @@ public class Ipv4NetworkTypeTest {
         });
     }
 
+    @Test
+    public void canUseNetworkAsPrimaryKey() {
+        final Ipv4NetworkKeyContainer container = new Ipv4NetworkKeyContainer();
+        container.setId(Ipv4Network.fromCidrNotation("0.0.0.0/0"));
+        final Serializable id = tx.execute((status) -> {
+            return hibernateOperations.save(container);
+        });
+        hibernateOperations.execute(new HibernateCallback<Ipv4NetworkKeyContainer>() {
+            @Override
+            public Ipv4NetworkKeyContainer doInHibernate(Session session) throws HibernateException {
+                Ipv4NetworkKeyContainer got = (Ipv4NetworkKeyContainer) session.get(Ipv4NetworkKeyContainer.class, id);
+                Assert.assertEquals(Ipv4Network.fromCidrNotation("0.0.0.0/0"), got.getId());
+                return got;
+            }
+        });
+    }
+
     @Entity
     @Table(name = "networkv4_container")
     public static class Ipv4NetworkContainer {
@@ -67,6 +84,22 @@ public class Ipv4NetworkTypeTest {
 
         public void setNetwork(Ipv4Network network) {
             this.network = network;
+        }
+    }
+
+    @Entity
+    @Table(name = "networkv4_key_container")
+    public static class Ipv4NetworkKeyContainer {
+
+        @Id
+        private Ipv4Network id;
+
+        public Ipv4Network getId() {
+            return id;
+        }
+
+        public void setId(Ipv4Network id) {
+            this.id = id;
         }
     }
 }

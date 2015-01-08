@@ -44,6 +44,24 @@ public class Ipv6NetworkTypeTest {
             }
         });
     }
+    
+    @Test
+    public void canUseNetworkAsPrimaryKey() {
+        final Ipv6NetworkKeyContainer container = new Ipv6NetworkKeyContainer();
+        container.setNetwork(Ipv6Network.fromCidrNotation("::/0"));
+        final Serializable id = tx.execute((state) -> {
+            return hibernateOperations.save(container);
+        });
+
+        hibernateOperations.execute(new HibernateCallback<Ipv6NetworkKeyContainer>() {
+            @Override
+            public Ipv6NetworkKeyContainer doInHibernate(Session session) throws HibernateException {
+                Ipv6NetworkKeyContainer got = (Ipv6NetworkKeyContainer) session.get(Ipv6NetworkKeyContainer.class, id);
+                Assert.assertEquals(Ipv6Network.fromCidrNotation("::/0"), got.getNetwork());
+                return got;
+            }
+        });
+    }
 
     @Entity
     @Table(name = "networkv6_container")
@@ -61,6 +79,22 @@ public class Ipv6NetworkTypeTest {
         public void setId(Integer id) {
             this.id = id;
         }
+
+        public Ipv6Network getNetwork() {
+            return network;
+        }
+
+        public void setNetwork(Ipv6Network network) {
+            this.network = network;
+        }
+    }
+
+    @Entity
+    @Table(name = "networkv6_key_container")
+    public static class Ipv6NetworkKeyContainer {
+
+        @Id
+        private Ipv6Network network;
 
         public Ipv6Network getNetwork() {
             return network;

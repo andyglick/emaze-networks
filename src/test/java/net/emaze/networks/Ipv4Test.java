@@ -1,5 +1,10 @@
 package net.emaze.networks;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import net.emaze.dysfunctional.order.Order;
 import org.junit.Assert;
 import org.junit.Test;
@@ -109,4 +114,16 @@ public class Ipv4Test {
     public void toStringRendersCorrectlyWhenHighestBitOff() {
         Assert.assertEquals("0.0.0.0", Ipv4.getFirstIp().toString());
     }
+
+    @Test
+    public void canSerializeAndDeserialize() throws IOException, ClassNotFoundException {
+        final Ipv4 value = Ipv4.parse("192.168.1.123");
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(value);
+        final ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
+        final Object got = ois.readObject();
+        Assert.assertEquals(value, got);
+    }
+
 }

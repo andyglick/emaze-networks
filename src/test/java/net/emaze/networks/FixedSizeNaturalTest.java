@@ -1,5 +1,10 @@
 package net.emaze.networks;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.math.BigInteger;
 import java.util.Random;
 import net.emaze.dysfunctional.order.Order;
@@ -452,6 +457,17 @@ public class FixedSizeNaturalTest {
     public void toStringReturnsBitsValuesSeparatedInChunksStartingFromTheRight() {
         final FixedSizeNatural value = FixedSizeNatural.of(0xAAAAAAAA);
         Assert.assertEquals("10 10101 01010 10101 01010 10101 01010", value.toString(5));
+    }
+
+    @Test
+    public void canSerializeAndDeserialize() throws IOException, ClassNotFoundException {
+        final FixedSizeNatural value = new FixedSizeNatural(new int[]{1, 0xAAAAAAAA}, 35);
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(value);
+        final ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
+        final Object got = ois.readObject();
+        Assert.assertEquals(value, got);
     }
 
     @Ignore

@@ -1,5 +1,10 @@
 package net.emaze.networks;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.math.BigInteger;
 import net.emaze.dysfunctional.order.Order;
 import org.junit.Assert;
@@ -116,5 +121,15 @@ public class Ipv6MaskTest {
     public void maskIsNarrowestWhenPopulationIsZero() {
         final Ipv6Mask mask = Ipv6Mask.host(0);
         Assert.assertTrue(mask.isNarrowest());
+    }
+        @Test
+    public void canSerializeAndDeserialize() throws IOException, ClassNotFoundException {
+        final Ipv6Mask value = Ipv6Mask.net(64);
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(value);
+        final ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
+        final Object got = ois.readObject();
+        Assert.assertEquals(value, got);
     }
 }

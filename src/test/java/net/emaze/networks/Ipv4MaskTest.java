@@ -1,5 +1,10 @@
 package net.emaze.networks;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.math.BigInteger;
 import org.junit.Assert;
 import org.junit.Test;
@@ -204,5 +209,16 @@ public class Ipv4MaskTest {
     @Test
     public void hostsOfWidestNetmaskIsLots() {
         Assert.assertEquals(BigInteger.ONE.shiftLeft(32), Ipv4Mask.getWidestMask().hosts());
+    }
+
+    @Test
+    public void canSerializeAndDeserialize() throws IOException, ClassNotFoundException {
+        final Ipv4Mask value = Ipv4Mask.net(16);
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(value);
+        final ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
+        final Object got = ois.readObject();
+        Assert.assertEquals(value, got);
     }
 }
