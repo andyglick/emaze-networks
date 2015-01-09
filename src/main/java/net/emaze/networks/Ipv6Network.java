@@ -9,7 +9,7 @@ import net.emaze.dysfunctional.order.Order;
 import net.emaze.dysfunctional.ranges.Range;
 import net.emaze.dysfunctional.tuples.Pair;
 
-public class Ipv6Network implements Serializable {
+public class Ipv6Network implements Serializable, Comparable<Ipv6Network> {
 
     private final Ipv6 network;
     private final Ipv6Mask netmask;
@@ -112,6 +112,15 @@ public class Ipv6Network implements Serializable {
             cachedToString = String.format("%s/%s", network, netmask.population());
         }
         return cachedToString;
+    }
+
+    @Override
+    public int compareTo(Ipv6Network other) {
+        final int networkCompare = this.firstIp().compareTo(other.firstIp());
+        if (networkCompare == 0) {
+            return this.netmask().compareTo(other.netmask());
+        }
+        return networkCompare;
     }
 
 }

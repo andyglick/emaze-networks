@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.math.BigInteger;
+import net.emaze.dysfunctional.order.Order;
 import net.emaze.dysfunctional.ranges.Range;
 import net.emaze.dysfunctional.tuples.Pair;
 import org.junit.Assert;
@@ -170,5 +171,40 @@ public class Ipv4NetworkTest {
         final ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
         final Object got = ois.readObject();
         Assert.assertEquals(value, got);
+    }
+
+    @Test
+    public void comparingWithSameYieldsEqual() {
+        final Ipv4Network anCidr = Ipv4Network.fromCidrNotation("127.0.0.0/24");
+        final Ipv4Network anotherCidr = Ipv4Network.fromCidrNotation("127.0.0.0/24");
+        Assert.assertEquals(Order.EQ.order(), anCidr.compareTo(anotherCidr));
+    }
+
+    @Test
+    public void comparingWithNextNetworkYieldsLessThan() {
+        final Ipv4Network anCidr = Ipv4Network.fromCidrNotation("127.0.0.0/24");
+        final Ipv4Network anotherCidr = Ipv4Network.fromCidrNotation("128.0.0.0/24");
+        Assert.assertEquals(Order.LT.order(), anCidr.compareTo(anotherCidr));
+    }
+
+    @Test
+    public void comparingWithPreviousNetworkYieldsGreatherThan() {
+        final Ipv4Network anCidr = Ipv4Network.fromCidrNotation("127.0.0.0/24");
+        final Ipv4Network anotherCidr = Ipv4Network.fromCidrNotation("126.0.0.0/24");
+        Assert.assertEquals(Order.GT.order(), anCidr.compareTo(anotherCidr));
+    }
+
+    @Test
+    public void comparingWithNextNetmaskYieldsLessThan() {
+        final Ipv4Network anCidr = Ipv4Network.fromCidrNotation("127.0.0.0/24");
+        final Ipv4Network anotherCidr = Ipv4Network.fromCidrNotation("127.0.0.0/25");
+        Assert.assertEquals(Order.LT.order(), anCidr.compareTo(anotherCidr));
+    }
+
+    @Test
+    public void comparingWithPreviousNetmaskYieldsGreatherThan() {
+        final Ipv4Network anCidr = Ipv4Network.fromCidrNotation("127.0.0.0/24");
+        final Ipv4Network anotherCidr = Ipv4Network.fromCidrNotation("127.0.0.0/23");
+        Assert.assertEquals(Order.GT.order(), anCidr.compareTo(anotherCidr));
     }
 }

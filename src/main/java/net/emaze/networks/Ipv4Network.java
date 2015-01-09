@@ -9,7 +9,7 @@ import net.emaze.dysfunctional.order.Order;
 import net.emaze.dysfunctional.ranges.Range;
 import net.emaze.dysfunctional.tuples.Pair;
 
-public class Ipv4Network implements Serializable {
+public class Ipv4Network implements Serializable, Comparable<Ipv4Network> {
 
     protected final Ipv4 network;
     protected final Ipv4Mask netmask;
@@ -113,6 +113,15 @@ public class Ipv4Network implements Serializable {
             cachedToString = String.format("%s/%s", network, netmask.population());
         }
         return cachedToString;
+    }
+
+    @Override
+    public int compareTo(Ipv4Network other) {
+        final int networkCompare = this.firstIp().compareTo(other.firstIp());
+        if (networkCompare == 0) {
+            return this.netmask().compareTo(other.netmask());
+        }
+        return networkCompare;
     }
 
 }

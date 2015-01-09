@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.math.BigInteger;
+import net.emaze.dysfunctional.order.Order;
 import net.emaze.dysfunctional.ranges.Range;
 import net.emaze.dysfunctional.tuples.Pair;
 import org.junit.Assert;
@@ -118,6 +119,7 @@ public class Ipv6NetworkTest {
         final Pair<Ipv6, Ipv6Mask> got = Ipv6Network.fromCidrNotation("1234::/16").toCidr();
         Assert.assertEquals(expected, got);
     }
+
     @Test
     public void canSerializeAndDeserialize() throws IOException, ClassNotFoundException {
         final Ipv6Network value = Ipv6Network.fromCidrNotation("1234::", 16);
@@ -128,4 +130,40 @@ public class Ipv6NetworkTest {
         final Object got = ois.readObject();
         Assert.assertEquals(value, got);
     }
+
+    @Test
+    public void comparingWithSameYieldsEqual() {
+        final Ipv6Network anCidr = Ipv6Network.fromCidrNotation("1234::/112");
+        final Ipv6Network anotherCidr = Ipv6Network.fromCidrNotation("1234::/112");
+        Assert.assertEquals(Order.EQ.order(), anCidr.compareTo(anotherCidr));
+    }
+
+    @Test
+    public void comparingWithNextNetworkYieldsLessThan() {
+        final Ipv6Network anCidr = Ipv6Network.fromCidrNotation("1234::/112");
+        final Ipv6Network anotherCidr = Ipv6Network.fromCidrNotation("1235::/112");
+        Assert.assertEquals(Order.LT.order(), anCidr.compareTo(anotherCidr));
+    }
+
+    @Test
+    public void comparingWithPreviousNetworkYieldsGreatherThan() {
+        final Ipv6Network anCidr = Ipv6Network.fromCidrNotation("1235::/112");
+        final Ipv6Network anotherCidr = Ipv6Network.fromCidrNotation("1234::/112");
+        Assert.assertEquals(Order.GT.order(), anCidr.compareTo(anotherCidr));
+    }
+
+    @Test
+    public void comparingWithNextNetmaskYieldsLessThan() {
+        final Ipv6Network anCidr = Ipv6Network.fromCidrNotation("1234::/111");
+        final Ipv6Network anotherCidr = Ipv6Network.fromCidrNotation("1234::/112");
+        Assert.assertEquals(Order.LT.order(), anCidr.compareTo(anotherCidr));
+    }
+
+    @Test
+    public void comparingWithPreviousNetmaskYieldsGreatherThan() {
+        final Ipv6Network anCidr = Ipv6Network.fromCidrNotation("1234::/112");
+        final Ipv6Network anotherCidr = Ipv6Network.fromCidrNotation("1234::/111");
+        Assert.assertEquals(Order.GT.order(), anCidr.compareTo(anotherCidr));
+    }
+
 }
