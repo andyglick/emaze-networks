@@ -15,7 +15,7 @@ public class Ipv4NetworkOperations {
         return new Ipv4SubtractNetworksFromNetwork().perform(minuend, Arrays.asList(subtrahends));
     }
 
-    public static Set<Ipv4Network> subtract(Ipv4Network minuend, List<Ipv4Network> subtrahends) {
+    public static Set<Ipv4Network> subtract(Ipv4Network minuend, Collection<Ipv4Network> subtrahends) {
         return new Ipv4SubtractNetworksFromNetwork().perform(minuend, subtrahends);
     }
 
