@@ -15,7 +15,7 @@ public class Ipv6NetworkOperations {
         return new Ipv6SubtractNetworksFromNetwork().perform(minuend, Arrays.asList(subtrahends));
     }
 
-    public static Set<Ipv6Network> subtract(Ipv6Network minuend, List<Ipv6Network> subtrahends) {
+    public static Set<Ipv6Network> subtract(Ipv6Network minuend, Collection<Ipv6Network> subtrahends) {
         return new Ipv6SubtractNetworksFromNetwork().perform(minuend, subtrahends);
     }
 
