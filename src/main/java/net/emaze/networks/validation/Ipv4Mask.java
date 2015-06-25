@@ -31,7 +31,7 @@ public @interface Ipv4Mask {
         @Override
         public boolean isValid(String value, ConstraintValidatorContext context) {
             try {
-                net.emaze.networks.Ipv4Mask.net(value);
+                net.emaze.networks.ipv4.Ipv4Mask.net(value);
                 return true;
             } catch (Exception ex) {
                 return false;

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import java.io.IOException;
-import net.emaze.networks.Ipv4Mask;
+import net.emaze.networks.ipv4.Ipv4Mask;
 
 public class Ipv4MaskToString extends JsonSerializer<Ipv4Mask> {
 

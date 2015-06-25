@@ -9,7 +9,7 @@ import javax.validation.Constraint;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import javax.validation.Payload;
-import net.emaze.networks.Ipv6Network;
+import net.emaze.networks.ipv6.Ipv6Network;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)

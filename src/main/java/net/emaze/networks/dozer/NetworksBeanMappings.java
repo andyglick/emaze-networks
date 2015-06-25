@@ -1,15 +1,13 @@
-
 package net.emaze.networks.dozer;
 
-import net.emaze.networks.Ipv4;
-import net.emaze.networks.Ipv4Mask;
-import net.emaze.networks.Ipv4Network;
-import net.emaze.networks.Ipv6;
-import net.emaze.networks.Ipv6Mask;
-import net.emaze.networks.Ipv6Network;
+import net.emaze.networks.ipv4.Ipv4;
+import net.emaze.networks.ipv4.Ipv4Mask;
+import net.emaze.networks.ipv4.Ipv4Network;
+import net.emaze.networks.ipv6.Ipv6;
+import net.emaze.networks.ipv6.Ipv6Mask;
+import net.emaze.networks.ipv6.Ipv6Network;
 import org.dozer.loader.api.BeanMappingBuilder;
 import org.dozer.loader.api.TypeMappingOptions;
-
 
 public class NetworksBeanMappings extends BeanMappingBuilder {
 

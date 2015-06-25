@@ -1,6 +1,6 @@
 package net.emaze.networks.jackson;
 
-import net.emaze.networks.Ipv4Network;
+import net.emaze.networks.ipv4.Ipv4Network;
 
 public class BeanWithIpv4Cidr {
 

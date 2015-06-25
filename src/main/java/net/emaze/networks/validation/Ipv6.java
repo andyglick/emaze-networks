@@ -31,7 +31,7 @@ public @interface Ipv6 {
         @Override
         public boolean isValid(String value, ConstraintValidatorContext context) {
             try {
-                net.emaze.networks.Ipv6.parse(value);
+                net.emaze.networks.ipv6.Ipv6.parse(value);
                 return true;
             } catch (Exception ex) {
                 return false;

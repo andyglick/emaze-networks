@@ -5,7 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import java.io.IOException;
-import net.emaze.networks.Ipv4;
+import net.emaze.networks.ipv4.Ipv4;
 
 public class Ipv4ToString extends JsonSerializer<Ipv4> {
 

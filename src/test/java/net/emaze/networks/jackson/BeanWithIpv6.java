@@ -1,6 +1,6 @@
 package net.emaze.networks.jackson;
 
-import net.emaze.networks.Ipv6;
+import net.emaze.networks.ipv6.Ipv6;
 
 public class BeanWithIpv6 {
 

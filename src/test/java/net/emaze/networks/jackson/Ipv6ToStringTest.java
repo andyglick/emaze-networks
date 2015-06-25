@@ -2,7 +2,7 @@ package net.emaze.networks.jackson;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
-import net.emaze.networks.Ipv6;
+import net.emaze.networks.ipv6.Ipv6;
 import org.junit.Assert;
 import org.junit.Test;
 

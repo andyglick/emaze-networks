@@ -1,6 +1,6 @@
 package net.emaze.networks.jackson;
 
-import net.emaze.networks.Ipv6Mask;
+import net.emaze.networks.ipv6.Ipv6Mask;
 
 public class BeanWithIpv6Mask {
 

@@ -9,7 +9,7 @@ import javax.validation.Constraint;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import javax.validation.Payload;
-import net.emaze.networks.Ipv4Network;
+import net.emaze.networks.ipv4.Ipv4Network;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
@@ -26,7 +26,8 @@ public @interface Ipv4Cidr {
     public static class Validator implements ConstraintValidator<Ipv4Cidr, String> {
 
         @Override
-        public void initialize(Ipv4Cidr constraintAnnotation) {}
+        public void initialize(Ipv4Cidr constraintAnnotation) {
+        }
 
         @Override
         public boolean isValid(String value, ConstraintValidatorContext context) {
