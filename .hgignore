@@ -1,6 +1,0 @@
-syntax: glob
-*nb-configuration.xml
-nb-configuration.xml
-
-syntax: regexp
-^([^/]+/)?target/
