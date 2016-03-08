@@ -9,51 +9,51 @@ public class Ipv4RangeToSpanningNetworkTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void nullFirstIpYieldsException() {
-        new Ipv4RangeToSpanningNetwork().perform(null, ADDRESS);
+        new Ipv4RangeToSpanningNetwork().apply(null, ADDRESS);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void nullLastIpYieldsException() {
-        new Ipv4RangeToSpanningNetwork().perform(ADDRESS, null);
+        new Ipv4RangeToSpanningNetwork().apply(ADDRESS, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void firstAddressGreaterThanLastAddressThrows() {
-        new Ipv4RangeToSpanningNetwork().perform(ADDRESS.next(), ADDRESS);
+        new Ipv4RangeToSpanningNetwork().apply(ADDRESS.next(), ADDRESS);
     }
 
     @Test
     public void spanningWhenFirstAndLastCoincidesYieldsCidr() {
         final Ipv4Network expected = Ipv4Network.byContainedIp(ADDRESS, Ipv4Mask.net(32));
-        final Ipv4Network spanning = new Ipv4RangeToSpanningNetwork().perform(ADDRESS, ADDRESS);
+        final Ipv4Network spanning = new Ipv4RangeToSpanningNetwork().apply(ADDRESS, ADDRESS);
         Assert.assertEquals(expected, spanning);
     }
 
     @Test
     public void spanningAValidRangeYieldsExpected() {
         final Ipv4Network expected = Ipv4Network.byContainedIp(Ipv4.parse("37.116.130.0"), Ipv4Mask.net(18));
-        final Ipv4Network spanning = new Ipv4RangeToSpanningNetwork().perform(Ipv4.parse("37.116.130.0"), Ipv4.parse("37.116.191.255"));
+        final Ipv4Network spanning = new Ipv4RangeToSpanningNetwork().apply(Ipv4.parse("37.116.130.0"), Ipv4.parse("37.116.191.255"));
         Assert.assertEquals(expected, spanning);
     }
 
     @Test
     public void spanningAroundLastIpCornerCase() {
         final Ipv4Network expected = Ipv4Network.fromCidrNotation(Ipv4.parse("255.255.255.254"), Ipv4Mask.net(31));
-        final Ipv4Network spanning = new Ipv4RangeToSpanningNetwork().perform(Ipv4.parse("255.255.255.254"), Ipv4.parse("255.255.255.255"));
+        final Ipv4Network spanning = new Ipv4RangeToSpanningNetwork().apply(Ipv4.parse("255.255.255.254"), Ipv4.parse("255.255.255.255"));
         Assert.assertEquals(expected, spanning);
     }
 
     @Test
     public void spanningAroundFirstIpCornerCase() {
         final Ipv4Network expected = Ipv4Network.fromCidrNotation(Ipv4.parse("0.0.0.0"), Ipv4Mask.net(31));
-        final Ipv4Network spanning = new Ipv4RangeToSpanningNetwork().perform(Ipv4.parse("0.0.0.0"), Ipv4.parse("0.0.0.1"));
+        final Ipv4Network spanning = new Ipv4RangeToSpanningNetwork().apply(Ipv4.parse("0.0.0.0"), Ipv4.parse("0.0.0.1"));
         Assert.assertEquals(expected, spanning);
     }
 
     @Test
     public void spanningWholeAddressSpaceCornerCase() {
         final Ipv4Network expected = Ipv4Network.fromCidrNotation(Ipv4.parse("0.0.0.0"), Ipv4Mask.net(0));
-        final Ipv4Network spanning = new Ipv4RangeToSpanningNetwork().perform(Ipv4.getFirstIp(), Ipv4.getLastIp());
+        final Ipv4Network spanning = new Ipv4RangeToSpanningNetwork().apply(Ipv4.getFirstIp(), Ipv4.getLastIp());
         Assert.assertEquals(expected, spanning);
     }
 }

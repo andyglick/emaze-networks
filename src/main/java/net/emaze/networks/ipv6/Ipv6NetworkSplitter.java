@@ -2,14 +2,14 @@ package net.emaze.networks.ipv6;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.BiFunction;
 import net.emaze.dysfunctional.contracts.dbc;
-import net.emaze.dysfunctional.dispatching.delegates.BinaryDelegate;
 import net.emaze.networks.FixedSizeNatural;
 
-public class Ipv6NetworkSplitter implements BinaryDelegate<List<Ipv6Network>, Ipv6Network, Integer> {
+public class Ipv6NetworkSplitter implements BiFunction<Ipv6Network, Integer, List<Ipv6Network>> {
 
     @Override
-    public List<Ipv6Network> perform(Ipv6Network source, Integer newNetmaskSize) {
+    public List<Ipv6Network> apply(Ipv6Network source, Integer newNetmaskSize) {
         dbc.precondition(source != null, "Cannot split a null network");
         dbc.precondition(newNetmaskSize != null, "Cannot split to a null netmask");
         final List<Ipv6Network> networks = new LinkedList<>();

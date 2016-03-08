@@ -20,11 +20,11 @@ public class Ipv4SortNetworksByFirstThenLastIpTest {
                 Ipv4Network.fromCidrNotation("192.168.1.0/24"),
                 Ipv4Network.fromCidrNotation("192.168.16.0/24"),
                 Ipv4Network.fromCidrNotation("192.168.17.0/24"));
-        Assert.assertEquals(sorted, new Ipv4SortNetworksByFirstThenLastIp().perform(unsorted));
+        Assert.assertEquals(sorted, new Ipv4SortNetworksByFirstThenLastIp().apply(unsorted));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void nullCidrsThrows() {
-        new Ipv4SortNetworksByFirstThenLastIp().perform(null);
+        new Ipv4SortNetworksByFirstThenLastIp().apply(null);
     }
 }

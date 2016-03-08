@@ -1,5 +1,6 @@
 package net.emaze.networks.ipv6;
 
+import java.util.Optional;
 import net.emaze.dysfunctional.options.Maybe;
 import org.junit.Assert;
 import org.junit.Test;
@@ -10,11 +11,11 @@ public class Ipv6SequencingPolicyTest {
 
     @Test
     public void thereIsNotNextIpAfterLastOne() {
-        Assert.assertEquals(Maybe.nothing(), instance.next(Ipv6.getLastIp()));
+        Assert.assertEquals(Optional.empty(), instance.next(Ipv6.getLastIp()));
     }
 
     @Test
     public void canFetchNextIp() {
-        Assert.assertEquals(Maybe.just(Ipv6.parse("::1")), instance.next(Ipv6.getFirstIp()));
+        Assert.assertEquals(Optional.of(Ipv6.parse("::1")), instance.next(Ipv6.getFirstIp()));
     }
 }

@@ -18,7 +18,7 @@ public class Ipv6 implements Comparable<Ipv6>, Serializable {
 
     public static Ipv6 parse(String ip) {
         dbc.precondition(ip != null, "Cannot parse a null ip address");
-        final FixedSizeNatural bits = FixedSizeNatural.fromByteArray(new Ipv6ToByteArray().perform(ip));
+        final FixedSizeNatural bits = FixedSizeNatural.fromByteArray(new Ipv6ToByteArray().apply(ip));
         return new Ipv6(bits);
     }
 

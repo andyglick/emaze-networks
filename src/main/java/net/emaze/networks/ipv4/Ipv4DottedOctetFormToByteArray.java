@@ -1,12 +1,12 @@
 package net.emaze.networks.ipv4;
 
+import java.util.function.Function;
 import net.emaze.dysfunctional.contracts.dbc;
-import net.emaze.dysfunctional.dispatching.delegates.Delegate;
 
-public class Ipv4DottedOctetFormToByteArray implements Delegate<byte[], String> {
+public class Ipv4DottedOctetFormToByteArray implements Function<String,byte[]> {
 
     @Override
-    public byte[] perform(String dottedOctetForm) {
+    public byte[] apply(String dottedOctetForm) {
         dbc.precondition(dottedOctetForm != null, "dottedOctetForm cannot be null");
         final String[] split = dottedOctetForm.split("\\.");
         dbc.precondition(split.length == 4, "dottedOctetForm is not valid");

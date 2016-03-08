@@ -3,20 +3,20 @@ package net.emaze.networks.ipv6;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 import net.emaze.dysfunctional.Consumers;
 import net.emaze.dysfunctional.Filtering;
 import net.emaze.dysfunctional.Multiplexing;
 import net.emaze.dysfunctional.contracts.dbc;
-import net.emaze.dysfunctional.dispatching.delegates.Delegate;
 import net.emaze.dysfunctional.iterations.ConstantIterator;
 import net.emaze.networks.ipv4.Ipv4DottedOctetFormToByteArray;
 
-public class Ipv6ToByteArray implements Delegate<byte[], String> {
+public class Ipv6ToByteArray implements Function<String, byte[]> {
 
     private final byte[] IPV4_IPV6_MASK = transform(normalize("::FFFF", 6), 6);
 
     @Override
-    public byte[] perform(String address) {
+    public byte[] apply(String address) {
         dbc.precondition(address != null, "address cannot be null");
         dbc.precondition(address.contains(":"), "address is not in IPv6 compatible form");
         dbc.precondition(address.indexOf("::") == address.lastIndexOf("::"), "IPv6 addresses can be shortened with :: only once");
@@ -26,7 +26,7 @@ public class Ipv6ToByteArray implements Delegate<byte[], String> {
             final String ipv4part = address.substring(address.lastIndexOf(":") + 1);
             final String[] ipv6chunks = normalize(ipv6part, 6);
             final byte[] ipv6bytes = transform(ipv6chunks, 6);
-            final byte[] ipv4bytes = new Ipv4DottedOctetFormToByteArray().perform(ipv4part);
+            final byte[] ipv4bytes = new Ipv4DottedOctetFormToByteArray().apply(ipv4part);
             dbc.precondition(Arrays.equals(ipv6bytes, IPV4_IPV6_MASK), "IPv4 mapped to IPv6 form must be ::FFFF:{IPv4}");
             return concat(ipv6bytes, ipv4bytes);
         }

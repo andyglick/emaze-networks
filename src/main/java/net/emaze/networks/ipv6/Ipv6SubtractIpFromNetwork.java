@@ -3,13 +3,13 @@ package net.emaze.networks.ipv6;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import net.emaze.dysfunctional.dispatching.delegates.BinaryDelegate;
+import java.util.function.BiFunction;
 import net.emaze.dysfunctional.tuples.Pair;
 
-public class Ipv6SubtractIpFromNetwork implements BinaryDelegate<Set<Ipv6Network>, Ipv6Network, Ipv6> {
+public class Ipv6SubtractIpFromNetwork implements BiFunction<Ipv6Network, Ipv6,Set<Ipv6Network>> {
 
     @Override
-    public Set<Ipv6Network> perform(Ipv6Network minuend, Ipv6 subtrahend) {
+    public Set<Ipv6Network> apply(Ipv6Network minuend, Ipv6 subtrahend) {
         return recursivelySubtract(minuend, subtrahend);
     }
 

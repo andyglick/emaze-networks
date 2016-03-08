@@ -15,7 +15,7 @@ public class Ipv6DensifyNetworksTest {
         final Ipv6Network lhs = Ipv6Network.fromCidrNotation("1234::/17");
         final Ipv6Network rhs = Ipv6Network.fromCidrNotation("1234:8000::/17");
         final Set<Ipv6Network> expected = Collections.singleton(Ipv6Network.fromCidrNotation("1234::/16"));
-        Assert.assertEquals(expected, new Ipv6DensifyNetworks().perform(Arrays.asList(lhs, rhs)));
+        Assert.assertEquals(expected, new Ipv6DensifyNetworks().apply(Arrays.asList(lhs, rhs)));
     }
 
     @Test
@@ -23,7 +23,7 @@ public class Ipv6DensifyNetworksTest {
         final Ipv6Network lhs = Ipv6Network.fromCidrNotation("1234::/17");
         final Ipv6Network rhs = Ipv6Network.fromCidrNotation("4321::/17");
         final HashSet<Ipv6Network> expected = new HashSet<>(Arrays.asList(lhs, rhs));
-        Assert.assertEquals(expected, new Ipv6DensifyNetworks().perform(Arrays.asList(lhs, rhs)));
+        Assert.assertEquals(expected, new Ipv6DensifyNetworks().apply(Arrays.asList(lhs, rhs)));
     }
 
     @Test
@@ -36,11 +36,11 @@ public class Ipv6DensifyNetworksTest {
         final HashSet<Ipv6Network> expected = new HashSet<>(Arrays.asList(
                 Ipv6Network.fromCidrNotation("1234::/16"),
                 Ipv6Network.fromCidrNotation("4321:8000:/17")));
-        Assert.assertEquals(expected, new Ipv6DensifyNetworks().perform(toBeJoined));
+        Assert.assertEquals(expected, new Ipv6DensifyNetworks().apply(toBeJoined));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void nullCidrsThrows() {
-        new Ipv6DensifyNetworks().perform(null);
+        new Ipv6DensifyNetworks().apply(null);
     }
 }

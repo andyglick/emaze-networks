@@ -18,7 +18,7 @@ public class Ipv4 implements Comparable<Ipv4>, Serializable {
 
     public static Ipv4 parse(String dottedIpAddress) {
         dbc.precondition(dottedIpAddress != null, "address must be not-null");
-        final byte[] octets = new Ipv4DottedOctetFormToByteArray().perform(dottedIpAddress);
+        final byte[] octets = new Ipv4DottedOctetFormToByteArray().apply(dottedIpAddress);
         return new Ipv4(FixedSizeNatural.fromByteArray(octets));
     }
 

@@ -15,7 +15,7 @@ public class Ipv4DensifyNetworksTest {
         final Ipv4Network lhs = Ipv4Network.fromCidrNotation("192.168.0.0/24");
         final Ipv4Network rhs = Ipv4Network.fromCidrNotation("192.168.1.0/24");
         final Set<Ipv4Network> expected = Collections.singleton(Ipv4Network.fromCidrNotation("192.168.0.0/23"));
-        Assert.assertEquals(expected, new Ipv4DensifyNetworks().perform(Arrays.asList(lhs, rhs)));
+        Assert.assertEquals(expected, new Ipv4DensifyNetworks().apply(Arrays.asList(lhs, rhs)));
     }
 
     @Test
@@ -23,7 +23,7 @@ public class Ipv4DensifyNetworksTest {
         final Ipv4Network lhs = Ipv4Network.fromCidrNotation("192.168.0.0/24");
         final Ipv4Network rhs = Ipv4Network.fromCidrNotation("192.168.2.0/24");
         final Set<Ipv4Network> expected = new HashSet<>(Arrays.asList(lhs, rhs));
-        Assert.assertEquals(expected, new Ipv4DensifyNetworks().perform(Arrays.asList(lhs, rhs)));
+        Assert.assertEquals(expected, new Ipv4DensifyNetworks().apply(Arrays.asList(lhs, rhs)));
     }
 
     @Test
@@ -36,11 +36,11 @@ public class Ipv4DensifyNetworksTest {
         final Set<Ipv4Network> expected = new HashSet<>(Arrays.asList(
                 Ipv4Network.fromCidrNotation("192.168.0.0/23"),
                 Ipv4Network.fromCidrNotation("192.168.16.0/23")));
-        Assert.assertEquals(expected, new Ipv4DensifyNetworks().perform(toBeJoined));
+        Assert.assertEquals(expected, new Ipv4DensifyNetworks().apply(toBeJoined));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void nullCidrsThrows() {
-        new Ipv4DensifyNetworks().perform(null);
+        new Ipv4DensifyNetworks().apply(null);
     }
 }

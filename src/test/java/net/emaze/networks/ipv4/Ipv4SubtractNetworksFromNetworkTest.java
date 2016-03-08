@@ -14,27 +14,27 @@ public class Ipv4SubtractNetworksFromNetworkTest {
         final Ipv4Network minuend = Ipv4Network.fromCidrNotation("192.168.0.0/16");
         final Ipv4Network subtrahend = Ipv4Network.fromCidrNotation("192.168.0.0/17");
         final Ipv4Network expected = Ipv4Network.fromCidrNotation("192.168.128.0/17");
-        Assert.assertEquals(Collections.singleton(expected), new Ipv4SubtractNetworksFromNetwork().perform(minuend, Collections.singleton(subtrahend)));
+        Assert.assertEquals(Collections.singleton(expected), new Ipv4SubtractNetworksFromNetwork().apply(minuend, Collections.singleton(subtrahend)));
     }
 
     @Test
     public void canSubtractCidrFromItself() {
         final Ipv4Network cidr = Ipv4Network.fromCidrNotation("192.168.0.0/16");
-        Assert.assertEquals(Collections.emptySet(), new Ipv4SubtractNetworksFromNetwork().perform(cidr, Collections.singleton(cidr)));
+        Assert.assertEquals(Collections.emptySet(), new Ipv4SubtractNetworksFromNetwork().apply(cidr, Collections.singleton(cidr)));
     }
 
     @Test
     public void subtractingNonOverlappingRangesYieldsMinuend() {
         final Ipv4Network minuend = Ipv4Network.fromCidrNotation("192.168.0.0/16");
         final Ipv4Network nonOverlappingSubtrahend = Ipv4Network.fromCidrNotation("10.0.0.0/8");
-        Assert.assertEquals(Collections.singleton(minuend), new Ipv4SubtractNetworksFromNetwork().perform(minuend, Collections.singleton(nonOverlappingSubtrahend)));
+        Assert.assertEquals(Collections.singleton(minuend), new Ipv4SubtractNetworksFromNetwork().apply(minuend, Collections.singleton(nonOverlappingSubtrahend)));
     }
 
     @Test
     public void subtractingContainerFromContainedYieldsEmptySet() {
         final Ipv4Network minuend = Ipv4Network.fromCidrNotation("192.168.0.0/17");
         final Ipv4Network subtrahend = Ipv4Network.fromCidrNotation("192.168.0.0/16");
-        Assert.assertEquals(Collections.emptySet(), new Ipv4SubtractNetworksFromNetwork().perform(minuend, Collections.singleton(subtrahend)));
+        Assert.assertEquals(Collections.emptySet(), new Ipv4SubtractNetworksFromNetwork().apply(minuend, Collections.singleton(subtrahend)));
     }
 
     @Test
@@ -50,16 +50,16 @@ public class Ipv4SubtractNetworksFromNetworkTest {
                 Ipv4Network.fromCidrNotation("10.32.0.0/11"),
                 Ipv4Network.fromCidrNotation("10.64.0.0/10"),
                 Ipv4Network.fromCidrNotation("10.128.0.0/9")));
-        Assert.assertEquals(expected, new Ipv4SubtractNetworksFromNetwork().perform(minuend, Collections.singleton(subtrahend)));
+        Assert.assertEquals(expected, new Ipv4SubtractNetworksFromNetwork().apply(minuend, Collections.singleton(subtrahend)));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void nullMinuendThrows() {
-        new Ipv4SubtractNetworksFromNetwork().perform(null, Collections.<Ipv4Network>emptySet());
+        new Ipv4SubtractNetworksFromNetwork().apply(null, Collections.<Ipv4Network>emptySet());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void nullSubtrahendThrows() {
-        new Ipv4SubtractNetworksFromNetwork().perform(Ipv4Network.fromCidrNotation("10.0.0.0/8"), null);
+        new Ipv4SubtractNetworksFromNetwork().apply(Ipv4Network.fromCidrNotation("10.0.0.0/8"), null);
     }
 }

@@ -13,22 +13,22 @@ public class Ipv4RangeToNetworksTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void callingWithNullFirstIpThrows() {
-        instance.perform(null, ADDRESS);
+        instance.apply(null, ADDRESS);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void callingWithNullLastIpThrows() {
-        instance.perform(ADDRESS, null);
+        instance.apply(ADDRESS, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void callingWithFirstIpGreaterThanLastIpThrows() {
-        instance.perform(ADDRESS.next(), ADDRESS);
+        instance.apply(ADDRESS.next(), ADDRESS);
     }
 
     @Test
     public void sameFirstAndLastIpYieldsSingleCidr() {
-        final List<Ipv4Network> got = instance.perform(ADDRESS, ADDRESS);
+        final List<Ipv4Network> got = instance.apply(ADDRESS, ADDRESS);
         final List<Ipv4Network> expected = Arrays.asList(Ipv4Network.byContainedIp(ADDRESS, Ipv4Mask.net(32)));
         Assert.assertEquals(expected, got);
     }
@@ -37,7 +37,7 @@ public class Ipv4RangeToNetworksTest {
     public void canTransformARangeWhenItCoincidesWithSpanningCidr() {
         final Ipv4 firstIp = Ipv4.parse("192.168.0.0");
         final Ipv4 lastIp = Ipv4.parse("192.168.0.255");
-        final List<Ipv4Network> got = instance.perform(firstIp, lastIp);
+        final List<Ipv4Network> got = instance.apply(firstIp, lastIp);
         final List<Ipv4Network> expected = Arrays.asList(Ipv4Network.fromCidrNotation("192.168.0.0", 24));
         Assert.assertEquals(expected, got);
     }
@@ -46,7 +46,7 @@ public class Ipv4RangeToNetworksTest {
     public void canTransformARangeWhenRangeIsStartOfSpanningCidr() {
         final Ipv4 firstIp = Ipv4.parse("192.168.0.0");
         final Ipv4 lastIp = Ipv4.parse("192.168.1.1");
-        final List<Ipv4Network> got = instance.perform(firstIp, lastIp);
+        final List<Ipv4Network> got = instance.apply(firstIp, lastIp);
         final List<Ipv4Network> expected = Arrays.asList(
                 Ipv4Network.fromCidrNotation("192.168.0.0", 24),
                 Ipv4Network.fromCidrNotation("192.168.1.0", 31));
@@ -57,7 +57,7 @@ public class Ipv4RangeToNetworksTest {
     public void canTransformARangeWhenRangeIsEndOfSpanningCidr() {
         final Ipv4 firstIp = Ipv4.parse("192.168.0.128");
         final Ipv4 lastIp = Ipv4.parse("192.168.1.255");
-        final List<Ipv4Network> got = instance.perform(firstIp, lastIp);
+        final List<Ipv4Network> got = instance.apply(firstIp, lastIp);
         final List<Ipv4Network> expected = Arrays.asList(
                 Ipv4Network.fromCidrNotation("192.168.0.128", 25),
                 Ipv4Network.fromCidrNotation("192.168.1.0", 24));
@@ -68,7 +68,7 @@ public class Ipv4RangeToNetworksTest {
     public void canTransformARangeWhenRangeIsMiddleOfSpanningCidr() {
         final Ipv4 firstIp = Ipv4.parse("192.168.0.128");
         final Ipv4 lastIp = Ipv4.parse("192.168.1.127");
-        final List<Ipv4Network> got = instance.perform(firstIp, lastIp);
+        final List<Ipv4Network> got = instance.apply(firstIp, lastIp);
         final List<Ipv4Network> expected = Arrays.asList(
                 Ipv4Network.fromCidrNotation("192.168.0.128", 25),
                 Ipv4Network.fromCidrNotation("192.168.1.0", 25));
@@ -79,7 +79,7 @@ public class Ipv4RangeToNetworksTest {
     public void canTransformAComplexRangeToCidr() throws UnknownHostException {
         final Ipv4 firstIp = Ipv4.parse("37.116.130.0");
         final Ipv4 lastIp = Ipv4.parse("37.116.191.255");
-        final List<Ipv4Network> got = instance.perform(firstIp, lastIp);
+        final List<Ipv4Network> got = instance.apply(firstIp, lastIp);
         final List<Ipv4Network> expected = Arrays.asList(
                 Ipv4Network.fromCidrNotation(Ipv4.parse("37.116.130.0"), Ipv4Mask.net(23)),
                 Ipv4Network.fromCidrNotation(Ipv4.parse("37.116.132.0"), Ipv4Mask.net(22)),

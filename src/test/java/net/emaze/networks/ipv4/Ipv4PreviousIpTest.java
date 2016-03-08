@@ -10,11 +10,11 @@ public class Ipv4PreviousIpTest {
     
     @Test
     public void yieldsPreviousIpv4() {
-        Assert.assertEquals(BEFORE_ADDRESS, new Ipv4PreviousIp().perform(ADDRESS));
+        Assert.assertEquals(BEFORE_ADDRESS, new Ipv4PreviousIp().apply(ADDRESS));
     }
     
     @Test(expected = IllegalArgumentException.class)
     public void nullArgumentThrows() {
-        new Ipv4PreviousIp().perform(null);
+        new Ipv4PreviousIp().apply(null);
     }
 }

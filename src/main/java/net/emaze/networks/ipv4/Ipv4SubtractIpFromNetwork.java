@@ -3,13 +3,13 @@ package net.emaze.networks.ipv4;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import net.emaze.dysfunctional.dispatching.delegates.BinaryDelegate;
+import java.util.function.BiFunction;
 import net.emaze.dysfunctional.tuples.Pair;
 
-public class Ipv4SubtractIpFromNetwork implements BinaryDelegate<Set<Ipv4Network>, Ipv4Network, Ipv4> {
+public class Ipv4SubtractIpFromNetwork implements BiFunction<Ipv4Network, Ipv4, Set<Ipv4Network>> {
 
     @Override
-    public Set<Ipv4Network> perform(Ipv4Network minuend, Ipv4 subtrahend) {
+    public Set<Ipv4Network> apply(Ipv4Network minuend, Ipv4 subtrahend) {
         return recursivelySubtract(minuend, subtrahend);
     }
 
