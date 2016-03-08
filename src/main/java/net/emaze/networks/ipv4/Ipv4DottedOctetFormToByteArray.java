@@ -3,7 +3,7 @@ package net.emaze.networks.ipv4;
 import java.util.function.Function;
 import net.emaze.dysfunctional.contracts.dbc;
 
-public class Ipv4DottedOctetFormToByteArray implements Function<String,byte[]> {
+public class Ipv4DottedOctetFormToByteArray implements Function<String, byte[]> {
 
     @Override
     public byte[] apply(String dottedOctetForm) {

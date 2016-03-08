@@ -1,7 +1,6 @@
 package net.emaze.networks.ipv6;
 
 import java.util.Optional;
-import net.emaze.dysfunctional.options.Maybe;
 import org.junit.Assert;
 import org.junit.Test;
 

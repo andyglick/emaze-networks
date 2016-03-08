@@ -5,7 +5,7 @@ import net.emaze.dysfunctional.contracts.dbc;
 import net.emaze.dysfunctional.ranges.DenseRange;
 import net.emaze.networks.IpRanges;
 
-public class Ipv6ToDenseRange implements BiFunction<Ipv6, Ipv6,DenseRange<Ipv6>> {
+public class Ipv6ToDenseRange implements BiFunction<Ipv6, Ipv6, DenseRange<Ipv6>> {
 
     @Override
     public DenseRange<Ipv6> apply(Ipv6 first, Ipv6 last) {

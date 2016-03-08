@@ -1,7 +1,6 @@
 package net.emaze.networks.ipv4;
 
 import java.util.Optional;
-import net.emaze.dysfunctional.options.Maybe;
 import net.emaze.dysfunctional.order.SequencingPolicy;
 
 public class Ipv4SequencingPolicy implements SequencingPolicy<Ipv4> {

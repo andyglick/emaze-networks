@@ -4,7 +4,7 @@ import java.util.function.BiFunction;
 import net.emaze.dysfunctional.contracts.dbc;
 import net.emaze.dysfunctional.order.Order;
 
-public class Ipv4RangeToSpanningNetwork implements BiFunction<Ipv4, Ipv4,Ipv4Network> {
+public class Ipv4RangeToSpanningNetwork implements BiFunction<Ipv4, Ipv4, Ipv4Network> {
 
     @Override
     public Ipv4Network apply(Ipv4 firstIp, Ipv4 lastIp) {

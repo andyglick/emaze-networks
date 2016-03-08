@@ -15,7 +15,7 @@ public class Ipv4DenseRangeToIpTest {
         final DenseRange<Ipv4> range = new Ipv4ToDenseRange().apply(firstIp, lastIp);
         Assert.assertEquals(expected, new Ipv4DenseRangeToIp().apply(range));
     }
-    
+
     @Test
     public void canExtractBoundariesFromHostRange() {
         final Ipv4 address = Ipv4.parse("192.168.0.0");
@@ -23,7 +23,7 @@ public class Ipv4DenseRangeToIpTest {
         final DenseRange<Ipv4> range = new Ipv4ToDenseRange().apply(address, address);
         Assert.assertEquals(expected, new Ipv4DenseRangeToIp().apply(range));
     }
-    
+
     @Test
     public void canExtractBoundariesFromAllSpaceRange() {
         final Ipv4 firstIp = Ipv4.parse("0.0.0.0");
@@ -32,5 +32,5 @@ public class Ipv4DenseRangeToIpTest {
         final DenseRange<Ipv4> range = new Ipv4ToDenseRange().apply(firstIp, lastIp);
         Assert.assertEquals(expected, new Ipv4DenseRangeToIp().apply(range));
     }
-    
+
 }

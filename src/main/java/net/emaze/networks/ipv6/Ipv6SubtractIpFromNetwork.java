@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.function.BiFunction;
 import net.emaze.dysfunctional.tuples.Pair;
 
-public class Ipv6SubtractIpFromNetwork implements BiFunction<Ipv6Network, Ipv6,Set<Ipv6Network>> {
+public class Ipv6SubtractIpFromNetwork implements BiFunction<Ipv6Network, Ipv6, Set<Ipv6Network>> {
 
     @Override
     public Set<Ipv6Network> apply(Ipv6Network minuend, Ipv6 subtrahend) {

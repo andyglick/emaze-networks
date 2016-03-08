@@ -123,7 +123,8 @@ public class Ipv6MaskTest {
         final Ipv6Mask mask = Ipv6Mask.host(0);
         Assert.assertTrue(mask.isNarrowest());
     }
-        @Test
+
+    @Test
     public void canSerializeAndDeserialize() throws IOException, ClassNotFoundException {
         final Ipv6Mask value = Ipv6Mask.net(64);
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
